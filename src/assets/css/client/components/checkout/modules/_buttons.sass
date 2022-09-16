@@ -1,0 +1,26 @@
+@use 'corecss/abstract/variables' as *
+#checkout-content
+    form
+        .btns-group
+            display: flex
+            justify-content: space-between
+            .btn
+                display: block
+                padding: 5px 25px
+                width: 200px
+                outline: none
+                text-decoration: none
+                text-align: center
+                border-radius: .25rem
+                cursor: pointer
+                transition: all .3s ease-in-out
+                &:active
+                    transform: scale(.98)
+        .btn-next,.btn-submit
+            margin-left: auto!important
+        .btn-prev
+            background-color: $color-second
+        .btn-next
+            background-color: $dark-yellow-light
+            &:hover
+                background-color: lighten($dark-yellow, 20%)!important
