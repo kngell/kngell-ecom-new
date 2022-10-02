@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-use FileException;
-
-class FileSystemManagementException extends FileException
+class FileSystemManagementException extends FilesException
 {
-    public function __construct(string $message, int $code = 0, ?FileException $previous = null)
+    public function __construct(string $message, int $code = 0, ?FilesException $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

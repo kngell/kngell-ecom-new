@@ -18,7 +18,6 @@ class Token extends RandomStringGenerator
         $time = time();
         $separator = !empty($frm) ? $frm : '|';
         $hash = hash_hmac('sha256', session_id() . $identifiant . $time . $frm ?? '', CSRF_TOKEN_SECRET, true);
-
         return $this->urlSafeEncode($hash . $separator . $identifiant . $separator . $time);
     }
 
@@ -42,7 +41,6 @@ class Token extends RandomStringGenerator
                 return true;
             }
         }
-
         return false;
     }
 

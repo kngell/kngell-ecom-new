@@ -2,7 +2,8 @@
 $this->start('head'); ?>
 <!-------Costum-------->
 <script src="https://js.stripe.com/v3/"></script>
-<link href="<?= $this->asset('css/components/checkout/checkout', 'css') ?? ''?>" rel="stylesheet" type="text/css">
+<link href="<?= $this->asset('css/client/components/checkout/checkout', 'css') ?? ''?>" rel="stylesheet"
+   type="text/css">
 <?php $this->end(); ?>
 <?php $this->start('body'); ?>
 <main id="main-site">
@@ -31,6 +32,6 @@ $this->start('head'); ?>
 <?php $this->end(); ?>
 <?php $this->start('footer') ?>
 <!----------custom--------->
-<script type="text/javascript" src="<?= $this->asset('js/components/checkout/checkout', 'js') ?? ''?>" defer>
+<script type="text/javascript" src="<?= $this->asset('js/client/components/checkout/checkout', 'js') ?? ''?>" defer>
 </script>
 <?php $this->end();

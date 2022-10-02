@@ -1,0 +1,29 @@
+.table {
+  color: var(--main-text);
+  a {
+    color: var(--highlight);
+  }
+}
+
+.table-middle {
+  td, th {
+    vertical-align: middle!important;
+  }
+}
+
+.table-actions {
+  text-align: center;
+  margin-bottom: 0;
+  li {
+    margin-right: .5rem;
+    display: inline-block;
+  }
+}
+
+body[data-theme-mode="dark-mode"] {
+  .table-hover > tbody > tr:hover {
+    background-color: var(--nav-bar-highlight-background);
+    --bs-table-accent-bg: none;
+    color: #fff;
+  }
+}

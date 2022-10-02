@@ -21,7 +21,7 @@ class CheckUserLoggedInMiddleware extends BeforeMiddleware
         $method = $object->container('method');
         $access = GrantAccess::getInstance()->hasAccess($controller, $method);
         if ($access === false && !AuthManager::isUserLoggedIn()) {
-            $scriptContent = $this->fs->get(ASSET, 'js/main/auth_modals.js');
+            $scriptContent = $this->fs->get(ASSET, 'js/client/main/open_login_modal.js');
             $script = '<script type="text/javascript">' .
                 strval($scriptContent) .
                 '</script>';

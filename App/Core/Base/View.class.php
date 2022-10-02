@@ -140,7 +140,6 @@ class View extends AbstractView
         if ($this->webView) {
             // $this->response->handler()->setContent($this->content('html'))->prepare($this->request->handler())->send();
             $this->response->setContent($this->content('html'))->prepare($this->request)->send();
-
             return null;
         } else {
             return html_entity_decode($this->content('html'));

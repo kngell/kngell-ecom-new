@@ -7,7 +7,7 @@ module.exports = {
     },
     //Home plugins
     "css/plugins/homeplugins": {
-      import: ["css/plugins/homeplugins.sass"],
+      import: ["css/plugins_css/homeplugins.sass"],
       dependOn: "css/librairies/frontlib",
     },
     // Learning

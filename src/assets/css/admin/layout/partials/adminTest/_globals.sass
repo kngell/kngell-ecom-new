@@ -1,0 +1,37 @@
+@use "corecss/abstract/variables" as *
+@use "corecss/abstract/root" as *
+.material-icons-outlined
+   vertical-align: middle
+   line-height: 1px
+.text-primary
+   color: #666666
+
+.text-blue
+   color: #246dec
+
+.text-red
+   color: #cc3c43
+
+.text-green
+   color: #367952
+
+.text-orange
+   color: #f5b74f
+
+.font-weight-bold
+   font-weight: 600
+
+.grid-container
+   display: grid
+   grid-template-columns: 250px 1fr 1fr 1fr
+   grid-template-rows: 0.2fr 3fr 0.1fr
+   grid-template-areas: "sidebar header header header" "sidebar main main main" "sidebar footer footer footer"
+   font-size: 1rem
+   font-weight: 400
+   line-height: 1.5
+   height: 100vh
+   overflow: hidden
+   > *
+      min-width: 0px
+.grid-container.grid-close
+   grid-template-columns: 80px 1fr 1fr 1fr

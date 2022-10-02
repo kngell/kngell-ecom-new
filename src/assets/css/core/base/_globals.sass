@@ -1,23 +1,22 @@
 @use 'corecss/abstract/variables' as *
-
+@use 'corecss/abstract/root' as *
 html
+    height: 100%
     box-sizing: border-box
-    font-size: 100%
+    font-size: 14px
 *
     font-family: $font-roboto,$font-poppins,$font-fira
     box-sizing: inherit
     color: inherit
 
 body
+    height: 100%
     font-family: $font-poppins
     margin: 0
     padding: 0
-ul
-    padding: 0
-    list-style-type: none
-
-hr
-    border: 0
-    border-top: 1px solid #efefef
-img
-    max-width: 100%
+    background-color: var(--web-wash)
+    color: var(--main-text)
+dd
+    color: $info
+.main-container
+    padding: 2rem

@@ -1,9 +1,9 @@
 module.exports = {
   entry: {
     //Admin General Main Js
-    "js/admin/main": {
+    "js/admin/main/main": {
       import: ["js/admin/main/main"],
-      dependOn: "css/librairies/adminlib",
+      dependOn: "js/librairies/adminlib",
     },
   },
 };

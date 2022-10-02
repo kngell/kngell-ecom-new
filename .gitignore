@@ -1,5 +1,5 @@
-/node_modules
-/vendor
+node_modules
+vendor
 .babelrc
 .htacess
 .npmrc
@@ -7,8 +7,8 @@
 .php-cs-fixer.php
 composer.lock
 package-lock.json
-/temp
-/public
-/session_dir
-/App/Core/Env
+temp
+public
+session_dir
+App/Core/Env
 

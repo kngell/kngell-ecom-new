@@ -1,0 +1,36 @@
+.card {
+  background-color: var(--surface-background);
+  position: relative;
+  display: flex;
+  margin-bottom: 24px;
+  box-shadow: 0 0 0.875rem 0 rgba(33,37,41,.05);
+}
+
+.card-header,
+.card-footer {
+  display: flex;
+  align-items: center;
+  background-color: var(--thirtary-background);
+
+  &.card-reverse {
+    background: #000;
+    color: $white;
+  }
+}
+
+.card-widgets {
+  text-align: right;
+
+  a {
+    margin-right: 3px;
+  }
+
+  .btn {
+    padding: 0;
+    font-size: 12px;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    line-height: 14px;
+  }
+}

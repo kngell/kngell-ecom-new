@@ -4,7 +4,7 @@
 
 =fontface($name, $path, $weight: null, $style: null, $exts: eot woff2 woff ttf svg)
   $src: null
-  $extmods: (eot: "?",svg: "#" +str-replace($name, " ", "_"))
+  $extmods: (eot: "?",svg: "#" + str-replace($name, " ", "_"))
   $formats: (otf: "opentype",ttf: "truetype")
   @each $ext in $exts
     $extmod: if(map-has-key($extmods, $ext), $ext + map-get($extmods, $ext), $ext)

@@ -49,7 +49,7 @@ exports.viewRules = {
   },
 };
 
-exports.assetsRuless = {
+exports.assetsRules = {
   module: {
     generator: {
       "asset/resource": {
@@ -59,8 +59,8 @@ exports.assetsRuless = {
     rules: [
       {
         test: /\.js$/,
-        enforce: "pre",
-        use: ["source-map-loader"],
+        // enforce: "pre",
+        // use: ["source-map-loader"],
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
@@ -107,19 +107,6 @@ exports.assetsRuless = {
           },
         ],
       },
-      // {
-      //   test: /\.s[ac]ss$/i,
-      //   include: path.resolve(
-      //     __dirname,
-      //     "src",
-      //     "assets",
-      //     "css",
-      //     "lib",
-      //     "EmailTemplate",
-      //     "emailTemplate.sass"
-      //   ),
-      //   use: ["style-loader", "css-loader", "postcss-loader", "sass-loader"],
-      // },
 
       {
         test: /\.(png|svg|jpg|gif|ico)$/i,

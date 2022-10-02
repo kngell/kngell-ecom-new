@@ -291,6 +291,7 @@ class RequestHandler extends GlobalVariables
                 $this->headers->offsetSet($name, $value);
             }
         }
+        // $this->headers->offsetSet('Access-Control-Allow-Origin', '*');
     }
 
     private function removeQueryString(string $url) : string

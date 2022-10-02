@@ -1,0 +1,76 @@
+@import "variables";
+@import "utilities";
+@import "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900 !default";
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+@import "../../../node_modules/dual-listbox/src/dual-listbox.scss";
+@import "../../../node_modules/dropzone/dist/dropzone.css";
+@import "../../../node_modules/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.css";
+@import '../../../node_modules/datatables.net-bs4/css/dataTables.bootstrap4.css';
+@import '../../../node_modules/britecharts/dist/css/britecharts.min.css';
+@import "../../../node_modules/node-waves/dist/waves.min.css";
+@import "../vendors/bootstrap-datepicker/bootstrap-datepicker.css";
+@import "../vendors/jqvmap/jqvmap.min.css";
+@import "toastr";
+@import "select2";
+// font-awesome
+@import "../fonts/fontawesome/scss/fontawesome";
+@import "../fonts/fontawesome/scss/regular";
+@import "../fonts/fontawesome/scss/light";
+@import "../fonts/fontawesome/scss/solid";
+@import "../fonts/fontawesome/scss/brands";
+@import "../fonts/fontawesome/scss/duotone";
+
+// Configuration
+@import "functions";
+
+@import "mixins";
+
+@import "colors";
+// Layout 
+@import "doc";
+@import "root";
+@import "right_sidebar";
+
+//Components
+@import "avatar";
+@import "button";
+@import "calendar";
+@import "callout";
+@import "card";
+@import "chart";
+@import "chat";
+@import "checkbox";
+@import "cropper";
+@import "custom";
+
+@import "custom_select2";
+@import "custom_datepicker";
+@import "dropdown";
+@import "dual_listbox";
+@import "footer";
+@import "footer";
+@import "forms";
+@import "gallery";
+@import "icon";
+@import "jstree";
+@import "left_sidebar";
+@import "modal";
+@import "pagination";
+@import "positions";
+@import "progress";
+@import "radio";
+@import "sweet_alert";
+@import "table";
+@import "tabs";
+@import "top_sidebar";
+@import "upload";
+@import "widget";
+// theme mode
+@import "theme_mode";
+
+//
+@import "custom_checkbox";
+@import "custom_radio";
+@import "highlight";
+// Helpers
+@import "helpers";

@@ -85,11 +85,19 @@ import "views/client/components/user_account/partials/_transaction_menu.php";
 // -----------------------------------------------------------------------
 
 /** Layout */
+//Test
+import "views/admin/layouts/adminTest.php";
+import "views/admin/layouts/inc/adminTest/footer.php";
+import "views/admin/layouts/inc/adminTest/header.php";
+import "views/admin/layouts/inc/adminTest/topbar.php";
+import "views/admin/layouts/inc/adminTest/sidebar.php";
+//working
 import "views/admin/layouts/admin.php";
 import "views/admin/layouts/inc/admin/footer.php";
 import "views/admin/layouts/inc/admin/header.php";
-import "views/admin/layouts/inc/admin/head.php";
+import "views/admin/layouts/inc/admin/modal.php";
 import "views/admin/layouts/inc/admin/side_bar.php";
-
+import "views/admin/layouts/inc/admin/top_bar.php";
+import "views/admin/layouts/inc/admin/script.php";
 /** Pages */
 import "views/admin/pages/index.php";

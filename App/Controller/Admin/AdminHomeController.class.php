@@ -11,9 +11,9 @@ class AdminHomeController extends Controller
 
     protected function indexPage(array $args = []) : void
     {
-        $this->setLayout('admin');
+        $this->setLayout('adminTest');
         $this->pageTitle('Admin - Ecommerce Management');
         $this->view()->addProperties(['name' => 'Admin Home Page']);
-        $this->render('pages' . DS . 'index', $this->displayAdminHomePage());
+        $this->render('pages' . DS . 'index');
     }
 }

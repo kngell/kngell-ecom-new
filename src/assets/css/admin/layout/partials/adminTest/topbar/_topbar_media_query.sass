@@ -1,0 +1,34 @@
+@media (max-width: 991.98px)
+   .topbar
+      #form-search
+         display: none
+         position: absolute
+         top: 100%
+         left: 1rem
+         right: 1rem
+         padding: 1rem
+         background: #fff
+         box-shadow: 0 0 34px 0 rgba(12, 11, 11, 0.16)
+         // display: block
+         visibility: hidden
+         opacity: 0
+         transition: all 0.3s ease
+         margin-top: 15px
+         &.show
+            display: block
+            visibility: visible
+            opacity: 1
+            margin-top: 0
+      .topbar-dropdown
+         position: static
+      .dropdown-menu-right
+         right: 1rem
+         left: 1rem
+   @media (min-width: 992px)
+      .topbar
+         left: 0
+         position: fixed
+         right: 0
+         top: 0
+         background-color: var(--web-wash)
+         z-index: 50

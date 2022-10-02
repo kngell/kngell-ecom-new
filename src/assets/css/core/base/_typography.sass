@@ -1,4 +1,5 @@
 @use 'corecss/abstract/variables' as *
+@use 'corecss/abstract/root' as *
 
 h1,h2,h3
     line-height: 1.1
@@ -20,11 +21,51 @@ h5
     font-weight: 400
     color: $dark-in
 h6
-    color: $gray-in
+    color: $dark-in
+    font-size: .7rem
 p
     margin-top: 0
+    font-size: 1rem
+    font-weight: 400
 a, a:visited, a:active
     text-decoration: none
     color: inherit
     &:hover
+        cursor: pointer
         color: inherit
+        transition: all 0.3s
+ul
+    padding: 0
+    list-style-type: none
+
+hr
+    border: 0
+    border-top: 1px solid #efefef
+img
+    max-width: 100%
+:focus
+    outline: none
+
+button:focus
+    outline: none
+a[data-bs-toggle="collapse"]
+    position: relative
+.text-gradient
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(25%, #6e4e9e), color-stop(50%, #62468d), color-stop(75%, #0c7cd5), to(#0960a5))
+    background: linear-gradient(180deg, #6e4e9e 25%, #62468d 50%, #0c7cd5 75%, #0960a5 100%)
+    color: #886ab5
+    background-clip: text
+    text-fill-color: transparent
+    -webkit-background-clip: text
+    -webkit-text-fill-color: transparent
+    text-shadow: none
+.text-blurred
+    color: rgba($white, 0.5)
+.bg-faded
+    background-color: #fcfcfc
+.bg-highlight
+    background-color: var(--highlight)
+.form-select
+    height: calc(1.5em + .75rem + 2px)
+.breadcrumb a, table a, .text-highlight
+    color: var(--highlight)

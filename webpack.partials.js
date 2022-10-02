@@ -2,9 +2,10 @@ const path = require("path");
 const { merge } = require("webpack-merge");
 const devMode = process.env.NODE_ENV !== "production";
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const RemoveEmptyScriptsPlugin = require("webpack-remove-empty-scripts");
 const frontendEntries = require("./src/entries/assets/frontend/frontendEntries");
 const adminEntries = require("./src/entries/assets/backend/admin/adminEntries");
-const { viewRules, assetsRuless } = require("./webpack.modules");
+const { viewRules, assetsRules } = require("./webpack.modules");
 const config = require("./config");
 const ASSET_PATH = config.PATH;
 
@@ -19,12 +20,13 @@ exports.alias = {
   corecss: path.resolve(__dirname, "src", "assets", "css", "core"),
   img: path.resolve(__dirname, "src", "assets", "img"),
   fonts: path.resolve(__dirname, "src", "assets", "fonts"),
-  plug: path.resolve(__dirname, "src", "assets", "plugins_admin"),
+  plugins: path.resolve(__dirname, "src", "assets", "plugins"),
   views: path.resolve(__dirname, "src", "views"),
   index: path.resolve(__dirname, "src"),
   entries: path.resolve(__dirname, "src", "entries"),
   js: path.resolve(__dirname, "src", "assets", "js"),
   css: path.resolve(__dirname, "src", "assets", "css"),
+  module: path.resolve(__dirname, "node_modules"),
 };
 
 /**
@@ -32,49 +34,140 @@ exports.alias = {
  * ========================================================================================
  */
 const serverOpt = {
-  static: ["./"],
+  compress: true,
+  allowedHosts: "auto",
+  // host: "localhost",
+  bonjour: true,
+  client: {
+    logging: "none",
+    overlay: {
+      errors: true,
+      warnings: false,
+    },
+    // progress: true,
+    reconnect: true,
+    webSocketTransport: "ws",
+    // webSocketURL: "ws://localhost/ws",
+  },
+  webSocketServer: "ws",
+  devMiddleware: {
+    index: true,
+    publicPath: ASSET_PATH,
+    serverSideRender: true,
+    writeToDisk: true,
+    // writeToDisk: (filePath) => {
+    //   return /^(?!.*(hot)).*/.test(filePath);
+    // },
+  },
+  hot: true,
+  liveReload: false,
+  // magicHtml: true,
   open: {
     app: {
       name: "Chrome",
+      // arguments: ["--incognito", "--new-window"],
     },
   },
-  compress: true,
-  host: "localhost",
   port: 8001,
-  server: {
-    type: "https",
-    options: {
-      key: "/mnt/d/ssl/local/ssl/localhost.key",
-      cert: "/mnt/d/ssl/local/ssl/localhost.crt",
-      // passphrase: "webpack-dev-server",
-      // requestCert: true,
-    },
-  },
   proxy: {
     context: () => true,
     "/**": {
       target: "https://localhost",
       secure: false,
       changeOrigin: true,
-      pathRewrite: { "^/ecom": "" },
+      pathRewrite: { "^/kngell-ecom": "" },
     },
   },
-  devMiddleware: {
-    // index: false,
-    // publicPath: "/public",
-    writeToDisk: (filePath) => {
-      return /^(?!.*(hot)).*/.test(filePath);
+  server: {
+    type: "https",
+    options: {
+      key: "/mnt/d/ssl/local/ssl/localhost.key",
+      cert: "/mnt/d/ssl/local/ssl/localhost.crt",
     },
   },
-  client: {
-    logging: "none",
-    // webSocketURL: "auto://0.0.0.0:0/ws",
+  static: {
+    directory: path.resolve(__dirname, "App", "Views"),
   },
   // headers: {
-  //   "Access-Control-Allow-Origin": "*",
-  //   "Access-Control-Allow-Headers": "*",
-  //   "Access-Control-Allow-Methods": "*",
+  //   "Access-Control-Allow-Origin": "https://corona.lmao.ninja/v2/countries",
+  //   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+  //   "Access-Control-Allow-Headers":
+  //     "X-Requested-With, content-type, Authorization",
   // },
+  // watchFiles: ["App/**/*.php", "public/**/*"],
+};
+const entries = {
+  "css/librairies/frontlib": "./src/assets/css/lib/frontlib.sass",
+  "js/librairies/frontlib": "./src/assets/js/lib/frontlib",
+  "css/librairies/adminlib": "./src/assets/css/lib/adminlib.sass",
+  "js/librairies/adminlib": "./src/assets/js/lib/adminlib",
+};
+const optimConfig = {
+  splitChunks: {
+    cacheGroups: {
+      homeCommonVendor: {
+        test: (module) => {
+          const path = require("path");
+          return (
+            module.resource &&
+            ((module.resource.includes(`${path.sep}node_modules${path.sep}`) &&
+              !module.resource.includes(`${path.sep}@ckeditor${path.sep}`)) ||
+              module.resource.includes(`${path.sep}core${path.sep}`))
+          );
+        },
+        name: "commons/client/commonVendor",
+        chunks: (chunk) => {
+          return (
+            chunk.name &&
+            chunk.name.includes(`${path.sep}client${path.sep}`) &&
+            chunk.name !== "commons/client/commonVendor"
+          );
+        },
+        minSize: 5000,
+      },
+      adminCommonVendor: {
+        test: (module) => {
+          const path = require("path");
+          return (
+            module.resource &&
+            ((module.resource.includes(`${path.sep}node_modules${path.sep}`) &&
+              !module.resource.includes(`${path.sep}@ckeditor${path.sep}`)) ||
+              module.resource.includes(`${path.sep}core${path.sep}`))
+          );
+        },
+        name: "commons/admin/commonVendor",
+        chunks: (chunk) => {
+          return (
+            chunk.name &&
+            chunk.name.includes(`${path.sep}admin${path.sep}`) &&
+            chunk.name !== "commons/admin/commonVendor"
+          );
+        },
+        minSize: 5000,
+      },
+      styles: {
+        test: (module) => {
+          const path = require("path");
+          return (
+            module.resource &&
+            ((module.resource.includes(`${path.sep}node_modules${path.sep}`) &&
+              !module.resource.includes(`${path.sep}@ckeditor${path.sep}`)) ||
+              module.resource.includes(`${path.sep}core${path.sep}`))
+          );
+        },
+        name: "commons/admin/commoncss",
+        chunks: (chunk) => {
+          return (
+            chunk.name &&
+            chunk.name.includes(`${path.sep}admin${path.sep}`) &&
+            chunk.name !== "commons/admin/commoncss"
+          );
+        },
+        type: "css/mini-extract",
+        minSize: 10000,
+      },
+    },
+  },
 };
 
 const assetParams = {
@@ -92,118 +185,39 @@ const assetParams = {
     libraryTarget: "umd",
   },
   plugins: [
+    new RemoveEmptyScriptsPlugin(),
     new MiniCssExtractPlugin({
       filename: devMode ? "[name].css" : "[name].[contenthash].css",
       chunkFilename: devMode
         ? "lazyload/css/home/[name].css"
         : "lazyload/css/home/[name]_[chunkhash].css",
     }),
-    // new PurgecssPlugin({
-    //   paths: glob.sync([`${PATHS.src}/**/*`], { nodir: true }),
-    //   extractors: [
-    //     {
-    //       extractor: (content) => content.match(/[A-z0-9-:\/]+/g) || [],
-    //       extensions: ["js", "css", "php"],
-    //     },
-    //   ],
-    //   whitelist: [],
-    //   whitelistPatterns: [],
-    //   whitelistPatternsChildren: [],
-    // }),
   ],
 };
-/**
- * FrontEnd Assets
- * ========================================================================================
- */
-exports.fontendAssetsConfig = merge(
-  frontendEntries,
+exports.assetConfig = merge(
+  merge({ entry: entries }, frontendEntries, adminEntries),
   assetParams,
+  assetsRules,
   {
-    entry: {
-      "css/librairies/frontlib": "./src/assets/css/lib/frontlib.sass",
-      "js/librairies/frontlib": "./src/assets/js/lib/frontlib",
-    },
-    optimization: {
-      removeEmptyChunks: true,
-      splitChunks: {
-        cacheGroups: {
-          homeCommonVendor: {
-            test: /[\\/]node_modules[\\/]((?!@ckeditor).*)[\\/]/, //except ckeditor5
-            name: "commons/client/commonVendor",
-            chunks: "initial",
-            minSize: 10000,
-            priority: -10,
-            minChunks: 2,
-            reuseExistingChunk: true,
-          },
-          homeCustomModules: {
-            test: /[\\/]((client).*)|((core).*)[\\/]/,
-            name: "commons/client/commonCustomModules",
-            chunks: "initial",
-            minSize: 5000,
-            minChunks: 2,
-            priority: -20,
-            reuseExistingChunk: true,
+    optimization: merge(
+      {
+        removeAvailableModules: true,
+        removeEmptyChunks: true,
+      },
+      {
+        splitChunks: {
+          cacheGroups: {
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true,
+            },
           },
         },
       },
-    },
-    devServer: serverOpt,
-  },
-  assetsRuless
-);
-
-/**
- * Backend Assets -- Admin
- * ========================================================================================
- */
-exports.adminAssetsConfig = merge(
-  adminEntries,
-  assetParams,
-  {
-    entry: {
-      "css/librairies/adminlib": "./src/assets/css/lib/adminlib.sass",
-      "js/librairies/adminlib": "./src/assets/js/lib/adminlib",
-    },
-    // externals: {
-    //   moment: "moment",
-    // },
-    optimization: {
-      splitChunks: {
-        cacheGroups: {
-          adminCommonVendor: {
-            test: /[\\/]node_modules[\\/]((?!@ckeditor).*)[\\/]/, //except ckeditor5
-            name: "commons/admin/commonVendor",
-            chunks: "initial",
-            minSize: 10000,
-            priority: -10,
-            minChunks: 2,
-            reuseExistingChunk: true,
-          },
-          adminCustomModules: {
-            test: /[\\/]((admin).*)|((core).*)|((plugins).*)[\\/]/,
-            name: "commons/admin/commonCustomModules",
-            chunks: "initial",
-            minSize: 10000,
-            minChunks: 2,
-            priority: -20,
-            reuseExistingChunk: true,
-          },
-          styles: {
-            test: /[\\/]((node_modules).*)|((plugins).*)[\\/]((?!@ckeditor).*)[\\/]/,
-            name: "commons/admin/commoncss",
-            type: "css/mini-extract",
-            chunks: "initial",
-            minSize: 10000,
-            minChunks: 2,
-            reuseExistingChunk: true,
-          },
-        },
-      },
-    },
-  },
-  assetsRuless
+      optimConfig
+    ),
+  }
 );
 
 /**
@@ -225,6 +239,7 @@ exports.viewsConfig = merge(
       },
       clean: true,
     },
+    devServer: serverOpt,
     plugins: [],
   },
   viewRules

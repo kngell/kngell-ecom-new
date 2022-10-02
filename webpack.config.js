@@ -2,20 +2,16 @@ const path = require("path");
 const webpack = require("webpack");
 const plugins = require("./webpack.plugins");
 const { merge } = require("webpack-merge");
-const RemoveEmptyScriptsPlugin = require("webpack-remove-empty-scripts");
 const RemovePlugin = require("remove-files-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
+const FileManagerPlugin = require("filemanager-webpack-plugin");
 const config = require("./config");
-const {
-  alias,
-  fontendAssetsConfig,
-  adminAssetsConfig,
-  viewsConfig,
-} = require("./webpack.partials");
+const { alias, assetConfig, viewsConfig } = require("./webpack.partials");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const ASSET_PATH = config.PATH;
+const Files = require("./src/entries/assets/frontend/copyFilesEntries");
 
 const commonConfig = merge(plugins, {
   devtool: false,
@@ -27,38 +23,50 @@ const commonConfig = merge(plugins, {
     children: true,
   },
 });
+const removePlug = () => {
+  return new RemovePlugin({
+    after: {
+      test: [
+        {
+          folder: "public/assets/css",
+          method: (absoluteItemPath) => {
+            return new RegExp(/\.js$/, "m").test(absoluteItemPath);
+          },
+          recursive: true,
+        },
+        {
+          folder: "public/assets/js",
+          method: (absoluteItemPath) => {
+            return new RegExp(/\.hot-update.js$/, "m").test(absoluteItemPath);
+          },
+          recursive: true,
+        },
+        {
+          folder: "public/assets",
+          method: (absoluteItemPath) => {
+            return new RegExp(/\.hot-update.json$/, "m").test(absoluteItemPath);
+          },
+          recursive: true,
+        },
+        {
+          folder: "App/Views",
+          method: (absoluteItemPath) => {
+            return new RegExp(/\.hot-update.json$/, "m").test(absoluteItemPath);
+          },
+          recursive: true,
+        },
+      ],
+    },
+  });
+};
+
 /**
  * Developpement Config
  * =============================================================
  */
 const developmentConfig = {
-  plugins: [
-    new RemovePlugin({
-      after: {
-        test: [
-          {
-            folder: "public/assets/css",
-            method: (absoluteItemPath) => {
-              return new RegExp(/\.js$/, "m").test(absoluteItemPath);
-            },
-            recursive: true,
-          },
-          // {
-          //   folder: 'public/assets/js',
-          //   method: (absoluteItemPath) => {
-          //     return new RegExp(/\.hot-update.js$/, 'm').test(absoluteItemPath);
-          //   },
-          //   recursive: true,
-          // },
-        ],
-      },
-    }),
-    new RemoveEmptyScriptsPlugin({
-      verbose: true,
-      // enabled: devMod === false,
-    }),
-    new webpack.SourceMapDevToolPlugin({}),
-  ],
+  devtool: false,
+  plugins: [new webpack.SourceMapDevToolPlugin()],
   optimization: {
     minimize: false,
   },
@@ -70,7 +78,6 @@ const developmentConfig = {
  */
 const productionConfig = {
   plugins: [
-    new RemoveEmptyScriptsPlugin({ verbose: false }),
     new webpack.SourceMapDevToolPlugin({
       filename: "sourcemaps/[file].map",
       publicPath: ASSET_PATH,
@@ -124,17 +131,26 @@ const productionConfig = {
 module.exports = () => {
   switch (process.env.NODE_ENV) {
     case "development":
-      adminAssetsConfig.plugins.push(new CleanWebpackPlugin({ dry: false }));
+      assetConfig.plugins.push(
+        new CleanWebpackPlugin(),
+        new FileManagerPlugin({
+          events: {
+            onEnd: {
+              copy: Files,
+            },
+          },
+        }),
+        removePlug()
+      );
       viewsConfig.plugins.push(
         new CleanWebpackPlugin({
-          dangerouslyAllowCleanPatternsOutsideProject: true,
           dry: false,
+          dangerouslyAllowCleanPatternsOutsideProject: true,
         })
       );
       return [
         merge(viewsConfig, commonConfig, developmentConfig),
-        merge(fontendAssetsConfig, commonConfig, developmentConfig),
-        merge(adminAssetsConfig, commonConfig, developmentConfig),
+        merge(assetConfig, commonConfig, developmentConfig),
       ];
     case "production":
       viewsConfig.plugins.push(
@@ -150,8 +166,7 @@ module.exports = () => {
       );
       return [
         merge(viewsConfig, commonConfig, productionConfig),
-        merge(fontendAssetsConfig, commonConfig, productionConfig),
-        merge(adminAssetsConfig, commonConfig, productionConfig),
+        merge(assetConfig, commonConfig, developmentConfig),
       ];
     default:
       throw new Error("No matching configuration was found!");

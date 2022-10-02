@@ -1,0 +1,55 @@
+@use 'corecss/abstract/root' as *
+.main-container
+   padding: 2rem
+   .main-head
+      &__title
+         font-size: 1.6rem
+         .fw-300
+            font-weight: 300
+   .main-body
+      position: relative
+      .main-cards
+         margin-top: 20px
+         .card
+            background-color: var(--surface-background)
+            position: relative
+            display: flex
+            margin-bottom: 24px
+            box-shadow: 0 0 0.875rem 0 rgba(33,37,41,.05)
+            .icon-sm
+               display: inline-block
+               height: 2.25rem
+               width: 2.25rem
+               span,i
+                  color: #fff
+                  display: flex
+                  height: 100%
+                  justify-content: center
+                  align-items: center
+                  font-size: 1.5rem
+
+      .charts-sales
+         display: grid
+         grid-template-columns: 1fr 1fr
+         gap: 20px
+         .charts-card
+            background-color: #ffffff
+            margin-bottom: 20px
+            padding: 25px
+            box-sizing: border-box
+            -webkit-column-break-inside: avoid
+            border: 1px solid #d2d2d3
+            border-radius: 5px
+            box-shadow: 0 6px 7px -4px rgba(0, 0, 0, 0.2)
+            .chart-title
+               display: flex
+               align-items: center
+               justify-content: center
+               font-size: 22px
+               font-weight: 600
+      .maps
+         #world_map
+            height: 340px
+            position: relative
+            overflow: hidden
+            background-color: transparent

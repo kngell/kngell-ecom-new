@@ -1,0 +1,69 @@
+/*******************************
+* MODAL AS RIGHT SIDEBAR
+*******************************/
+.modal.right .modal-dialog {
+  position: fixed;
+  margin: auto;
+  width: 320px;
+  height: 100%;
+  transform: translate3d(0%, 0, 0);
+}
+
+.modal.right .modal-content {
+  height: 100%;
+}
+
+.modal.right .modal-body {
+  padding: 15px 15px 80px;
+}
+
+/*Right*/
+.modal.right.fade .modal-dialog {
+  right: -320px;
+  transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+.modal.right.fade.show .modal-dialog {
+  right: 0;
+}
+
+/* ----- MODAL STYLE ----- */
+.h1 small,
+.h2 small,
+.h3 small,
+.h4 small,
+.h5 small,
+.h6 small,
+h1 small,
+h2 small,
+h3 small,
+h4 small,
+h5 small,
+h6 small {
+  font-weight: 300;
+  display: block;
+  font-size: .9375rem;
+  line-height: 1.5;
+  margin: 2px 0 1.5rem;
+}
+
+.h4 small,
+h4 small {
+  font-size: .875rem;
+}
+
+.modal-content {
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, .2);
+  border-radius: 0;
+  border: none;
+  background-color: var(--surface-background);
+}
+
+.modal-header {
+  background-color: var(--thirtary-background);
+  border-color: var(--divider);
+}
+
+.dropdown-header.bg-trans-gradient {
+  padding: 1.25rem 1.5rem;
+}
