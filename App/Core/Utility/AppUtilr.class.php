@@ -65,6 +65,7 @@ final class AppUtil
             'CommentsInterface' => Comments::class,
             'ClientFormBuilder' => ClientFormBuilder::class,
             'DisplayPhonesInterface' => PhonesHomePage::class,
+            'FilesManagerInterface' => ImageManager::class,
         ];
     }
 }

@@ -107,7 +107,6 @@ abstract class AbstractEntity
             $pattern = ['#(?<=(?:[A-Z]))([A-Z]+)([A-Z][a-z])#', '#(?<=(?:[a-z0-9]))([A-Z])#'];
             $replacement = ['\1' . $separator . '\2', $separator . '\1'];
         }
-
         return preg_replace($pattern, $replacement, $value);
     }
 

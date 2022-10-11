@@ -124,6 +124,27 @@ trait ModelTrait
         return isset($this->_media_img) ? $this->_media_img : '';
     }
 
+    public function getMediakey() : ?string
+    {
+        if ($this->entity->exists($this->entity->getColId('media'))) {
+            return $this->entity->getColId('media');
+        }
+        return null;
+    }
+
+    public function isInitialized(string $field) : bool
+    {
+        return $this->entity->isInitialized($field);
+    }
+
+    public function set(string $field, mixed $value) : void
+    {
+        if ($this->isInitialized($field)) {
+            $method = $this->entity->getSetter($field);
+            $this->entity->$method($value);
+        }
+    }
+
     private function getModelProperties()
     {
         $props = YamlFile::get('model_properties');

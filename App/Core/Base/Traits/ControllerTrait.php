@@ -75,16 +75,13 @@ trait ControllerTrait
         return $m;
     }
 
-    protected function isValidRequest(?string $csrfName = null) : array|bool
+    protected function isValidRequest(?string $csrfName = null) : array
     {
         $data = $this->request->get();
         if ($data['csrftoken'] && $this->token->validate($data['csrftoken'], $csrfName == null ? $data['frm_name'] : $csrfName)) {
             return $data;
         }
-
-        return false;
-
-        // $this->jsonResponse(['result' => 'error', 'msg' => $this->helper->showMessage('warning', 'Invalid post Request!')]);
+        throw new BaseException('Veuillez rafraichir la page svp!');
     }
 
     /**

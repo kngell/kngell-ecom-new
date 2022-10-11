@@ -1,9 +1,10 @@
 import { isEmpty } from "lodash";
+import { plugin } from "postcss";
 
 export default class Upload {
   constructor(dz) {
     this.files = [];
-    this.element = dz.dz_element;
+    this.element = dz;
   }
 
   /**
@@ -27,24 +28,67 @@ export default class Upload {
       return false;
     });
     plugin.element.on("click", (e) => {
-      plugin._manageInputFile(e);
+      let inputEl = plugin._createInputFile();
+      plugin._manageInputFile(inputEl);
     });
     plugin.element.on("drop", (e) => {
       plugin.element.find(".button").prop("disabled", true).addClass("disable");
       let files = e.originalEvent.dataTransfer.files;
-      plugin._handleDrop(files);
+      let inputEl = plugin._createInputFile();
+      plugin._handleDrop(files, inputEl);
     });
     return plugin;
+  };
+  /**
+   * Creeate Input
+   * =======================================================================
+   */
+  _createInputFile = () => {
+    const plugin = this;
+    let inputEL = plugin.element.find("input[type='file']");
+    if (!inputEL.length) {
+      inputEL = $("<input/>", {
+        type: "file",
+        name: "files[]",
+        multiple: "multiple",
+      }).css("display", "none");
+    }
+    return inputEL;
+  };
+  /**
+   * Manage Input
+   * =======================================================================
+   */
+  _manageInputFile = (inputEl) => {
+    let plugin = this;
+    inputEl.click();
+    inputEl.on("change", function (e) {
+      let files = e.originalEvent.path[0].files;
+      plugin._handleDrop(files, inputEl);
+    });
+  };
+  /**
+   * Make File list
+   * @param {*} files
+   * @returns
+   */
+  _makeFileList = (files) => {
+    const reducer = (dataTransfer, file) => {
+      dataTransfer.items.add(file);
+      return dataTransfer;
+    };
+    return files.reduce(reducer, new DataTransfer()).files;
   };
   /**
    * Handle Drop Event
    * ======================================================================
    * @param {*} files
    */
-  _handleDrop = (files) => {
+  _handleDrop = (files, inputEl = null) => {
     let plugin = this;
     if (files.length != 0) {
       files = plugin._filter_files(files);
+      plugin.element.addClass("drag-enter");
       if (files instanceof Array) {
         let gallery_item;
         for (let i = 0; i < files.length; i++) {
@@ -52,7 +96,10 @@ export default class Upload {
           plugin._createExtraDiv(files[i], gallery_item);
           plugin.element.find(".gallery").append(gallery_item);
           plugin.files.push(files[i]);
+          // files.add(files[i]);
+          // inputEl !== null ? inputEl[0].files.push(files[i]) : "";
         }
+        inputEl.prop("files", plugin._makeFileList(plugin.files));
         plugin.element.on("click", ".gallery_item", function (e) {
           e.stopPropagation();
         });
@@ -64,6 +111,7 @@ export default class Upload {
     } else {
       plugin.element.find(".message").hide();
     }
+    plugin.element.append(inputEl);
   };
   /**
    * Filter Files (no duplicate)
@@ -93,22 +141,7 @@ export default class Upload {
     }
     return result;
   };
-  /**
-   * Manage Input
-   * =======================================================================
-   */
-  _manageInputFile = () => {
-    let plugin = this;
-    let inputEl = $("<input/>", {
-      type: "file",
-      multiple: "multiple",
-    }).css("display", "none");
-    inputEl.click();
-    inputEl.on("change", function (e) {
-      let files = e.originalEvent.path[0].files;
-      plugin._handleDrop(files);
-    });
-  };
+
   /**
    * Create Gallery Items
    * ========================================================================
@@ -116,11 +149,7 @@ export default class Upload {
    * @returns
    */
   _createGallery = (value) => {
-    var gallery_item = $("<div /> </div>")
-      .addClass("gallery_item")
-      .width(150)
-      .height(150);
-
+    var gallery_item = $("<div /> </div>").addClass("gallery_item");
     var img_remove = $("<div></div>").addClass("remove_item").text("Remove");
     var img_item = $("<div></div>").addClass("img_item");
     var img = $("<img />", {
@@ -150,9 +179,9 @@ export default class Upload {
     );
   };
   //=======================================================================
-  //Create file array
+  //Show file array
   //=======================================================================
-  _createFile = async (url) => {
+  _showFile = async (url) => {
     let myHeaders = new Headers();
     myHeaders.append("Content-Type", "image/jpeg");
     // myHeaders.append("Content-Length", content.length.toString());
@@ -167,6 +196,7 @@ export default class Upload {
     let data = await response.blob();
     return new File([data], url.split(/[\\/]/).pop());
   };
+
   //=======================================================================
   //Remove File
   //=======================================================================
@@ -178,6 +208,7 @@ export default class Upload {
       gallery_item.remove();
       if (plugin.element.find(".gallery").children().length == 0) {
         plugin.element.find(".message").show();
+        plugin.element.removeClass("drag-enter");
         plugin.element
           .find(".button")
           .prop("disabled", false)

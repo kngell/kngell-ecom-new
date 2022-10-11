@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 $this->start('head'); ?>
 <!-------Costum-------->
-<link href="<?= $this->asset('css/custom/client/clothing/clothing', 'css') ?? ''?>" rel="stylesheet" type="text/css">
+<?= $this->asset('css/custom/client/clothing/clothing', 'css') ?? ''?>
 <?php $this->end(); ?>
 <?php $this->start('body'); ?>
 <main id="main-site">
@@ -31,6 +31,5 @@ $this->start('head'); ?>
 <?php $this->end(); ?>
 <?php $this->start('footer') ?>
 <!----------custom--------->
-<script type="text/javascript" src="<?= $this->asset('js/custom/client/clothing/clothing', 'js') ?? ''?>">
-</script>
+<?= $this->asset('js/custom/client/clothing/clothing', 'js') ?? ''?>
 <?php $this->end();

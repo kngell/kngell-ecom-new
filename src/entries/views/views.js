@@ -84,20 +84,21 @@ import "views/client/components/user_account/partials/_transaction_menu.php";
 // Admin Views
 // -----------------------------------------------------------------------
 
-/** Layout */
-//Test
-import "views/admin/layouts/adminTest.php";
-import "views/admin/layouts/inc/adminTest/footer.php";
-import "views/admin/layouts/inc/adminTest/header.php";
-import "views/admin/layouts/inc/adminTest/topbar.php";
-import "views/admin/layouts/inc/adminTest/sidebar.php";
-//working
+/** Admin Layout */
 import "views/admin/layouts/admin.php";
 import "views/admin/layouts/inc/admin/footer.php";
 import "views/admin/layouts/inc/admin/header.php";
-import "views/admin/layouts/inc/admin/modal.php";
-import "views/admin/layouts/inc/admin/side_bar.php";
-import "views/admin/layouts/inc/admin/top_bar.php";
-import "views/admin/layouts/inc/admin/script.php";
-/** Pages */
+import "views/admin/layouts/inc/admin/topbar.php";
+import "views/admin/layouts/inc/admin/sidebar.php";
+
+/** Admin Pages */
 import "views/admin/pages/index.php";
+// products
+import "views/admin/pages/products/allProducts.php";
+//Brands
+import "views/admin/pages/brands/allCategories.php";
+import "views/admin/pages/brands/allBrands.php";
+//Users
+import "views/admin/pages/users/allUsers.php";
+import "views/admin/pages/users/permissions.php";
+import "views/admin/pages/users/profile.php";

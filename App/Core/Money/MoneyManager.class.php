@@ -62,7 +62,6 @@ class MoneyManager
     public function getFormatedAmount(string $p = '')
     {
         $this->isEmpty($p);
-
         return Money::of($p, 'EUR', new CustomContext(2), RoundingMode::DOWN)->formatTo('fr_FR');
     }
 
@@ -88,7 +87,6 @@ class MoneyManager
         if (empty($p)) {
             return 0;
         }
-
         return true;
     }
 }

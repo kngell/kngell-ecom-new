@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 trait DatabaseCacheTrait
 {
-    public function getCachedData(string $fileName, array $cm = [], array $params = [], int $time = 20) : Object
+    public function getCachedData(?string $fileName = null, array $cm = [], array $params = [], int $time = 20) : Object
     {
         if ((!is_array($cm) || !is_array($params)) || empty($cm)) {
             throw new BaseInvalidArgumentException('Paramètres collecte des données invalides', 1);
@@ -26,9 +26,29 @@ trait DatabaseCacheTrait
         return $this->getCachedData('settings', [$this->model(SettingsManager::class), 'getSettings']);
     }
 
-    protected function getProducts(int $brand, ?string $cache) : CollectionInterface
+    protected function getProducts(int|string $brand = null, ?string $cache = null) : CollectionInterface
     {
-        return $this->getCachedData($cache, [$this->model(ProductsManager::class), 'getProducts'], [$brand]);
+        return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(ProductsManager::class), 'getProducts'], [$brand]);
+    }
+
+    protected function getUnits(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    {
+        return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(UnitsManager::class), 'all'], [$brand]);
+    }
+
+    protected function getCompany(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    {
+        return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(CompanyManager::class), 'all'], [$brand]);
+    }
+
+    protected function getWarehouse(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    {
+        return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(WarehouseManager::class), 'all'], [$brand]);
+    }
+
+    protected function getCategories(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    {
+        return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(CategoriesManager::class), 'all'], [$brand]);
     }
 
     protected function getSingleProduct(?string $slug) : ?object

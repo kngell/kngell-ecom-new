@@ -306,7 +306,7 @@ export default class Cruds {
                 dz.files = [];
                 $.each(response.msg.items[field], function (key, value) {
                   let gallery_item = dz._createGallery(value);
-                  dz._createFile(value)
+                  dz._showFile(value)
                     .then((file) => {
                       dz.files.push(file);
                       dz._createExtraDiv(file, gallery_item);

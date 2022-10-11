@@ -1,0 +1,24 @@
+@use 'corecss/abstract/variables' as *
+@use 'corecss/abstract/root' as *
+
+.form-group
+   > label
+      font-weight: 500
+.form-control,.form-select,.form-file-text,input
+   background-color: var(--thirtary-background)
+   color: var(--secondary-text)
+   border-color: var(--input-border)
+   &:focus
+      background-color: var(--thirtary-background)
+      color: var(--secondary-text)
+      border-color: var(--highlight)
+      box-shadow: none
+.form-check-input
+   background-color: var(--thirtary-background)
+.input-group.focus
+   .input-group-text
+      background-color: var(--highlight-400)
+      color: $gray-200
+      border-color: var(--highlight)
+   .btn
+      border-color: var(--highlight)

@@ -4,6 +4,7 @@ declare(strict_types=1);
 class Model extends AbstractModel
 {
     use ModelTrait;
+    protected string $defaultMedia;
 
     private $_results;
     private int $_count;
@@ -32,7 +33,34 @@ class Model extends AbstractModel
     public function assign(array $data) : self
     {
         $this->entity->assign($data);
+        return $this;
+    }
 
+    public function uploadFiles(string $dir, ?string $newName = null) : self
+    {
+        $mediakey = $this->getMediakey();
+        if(is_null($mediakey)) {
+            return $this;
+        }
+        $files = $this->request->getHttpFiles();
+        if($files->count() <= 0 && isset($this->defaultMedia)) {
+            $this->set($mediakey, serialize([$this->tableSchema . DS . $this->defaultMedia]));
+            return $this;
+        }
+        foreach ($files->all() as $uploader) {
+            $incommingPath = $this->tableSchema . DS . $uploader->getOriginalName();
+            if (file_exists($dir . $incommingPath)) {
+                if ($incommingPath == $this->entity->{$$mediakey}) {
+                    return $this;
+                } else {
+                    $setter = $this->entity->getSetter($mediakey);
+                    $this->entity->{$setter}(serialize([$incommingPath]));
+                    return $this;
+                }
+            }
+            $path[] = $uploader->saveFile($dir . $this->tableSchema, $newName);
+        }
+        $this->set($mediakey, serialize($paths));
         return $this;
     }
 
@@ -65,6 +93,12 @@ class Model extends AbstractModel
             ->build();
 
         return $this->findFirst($data_query);
+    }
+
+    public function all() : CollectionInterface
+    {
+        $this->table()->return('object');
+        return new Collection($this->getAll()->get_results());
     }
 
     public function getAll() : ?self

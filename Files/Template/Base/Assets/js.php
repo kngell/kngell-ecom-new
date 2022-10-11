@@ -1,0 +1,2 @@
+<script type="text/javascript" src="{{link}}">
+</script>

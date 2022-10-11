@@ -48,8 +48,12 @@ class Entity extends AbstractEntity
                 exit;
             }
         }
-
         return '';
+    }
+
+    public function exists(string $field) : bool
+    {
+        return $this->reflectionInstance()->hasProperty($field);
     }
 
     public function getInitializedAttributes(bool $output = false) : array
@@ -107,7 +111,6 @@ class Entity extends AbstractEntity
         } else {
             return $this->assingEntity($attrs, $params);
         }
-
         return $this;
     }
 

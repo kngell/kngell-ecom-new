@@ -110,7 +110,19 @@ trait FormalizerTrait
                 array_push($this->htmlAttr[__FUNCTION__], $classStr);
             }
         }
+        return $this;
+    }
 
+    public function closestDivClass(array $class = []) : self
+    {
+        if (!array_key_exists(__FUNCTION__, $this->htmlAttr)) {
+            $this->htmlAttr[__FUNCTION__] = [];
+        }
+        if (!empty($class)) {
+            foreach ($class as $classStr) {
+                array_push($this->htmlAttr[__FUNCTION__], $classStr);
+            }
+        }
         return $this;
     }
 
@@ -139,7 +151,16 @@ trait FormalizerTrait
     {
         $this->htmlAttr['wrapperClass'] = isset($this->htmlAttr['wrapperClass']) ? [] : '';
         $this->htmlAttr['labelClass'] = isset($this->htmlAttr['labelClass']) ? [] : '';
+        return $this;
+    }
 
+    public function removeWrapperClass(string $class = '') : self
+    {
+        if (in_array($class, $this->htmlAttr['wrapperClass'])) {
+            if (($key = array_search($class, $this->htmlAttr['wrapperClass'])) !== false) {
+                unset($this->htmlAttr['wrapperClass'][$key]);
+            }
+        }
         return $this;
     }
 
@@ -225,12 +246,11 @@ trait FormalizerTrait
         return $this;
     }
 
-    public function req() : self
+    public function req(bool $resp = true) : self
     {
         if (count($this->inputObject) === 1) {
-            $this->inputObject[0]->req();
+            $this->inputObject[0]->req($resp);
         }
-
         return $this;
     }
 
@@ -252,7 +272,14 @@ trait FormalizerTrait
                 }
             }
         }
+        return $this;
+    }
 
+    public function helpBlock(string $block = '') : self
+    {
+        if (count($this->inputObject) === 1) {
+            $this->htmlAttr[__FUNCTION__] = $block;
+        }
         return $this;
     }
 

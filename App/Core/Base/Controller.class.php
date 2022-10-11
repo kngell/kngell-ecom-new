@@ -6,6 +6,7 @@ abstract class Controller extends AbstractController
 {
     use DatabaseCacheTrait;
     use DisplayFrontEndPagesTrait;
+    use DisplayBackendPagesTrait;
     use ControllerTrait;
 
     public function __construct(array $params = [])

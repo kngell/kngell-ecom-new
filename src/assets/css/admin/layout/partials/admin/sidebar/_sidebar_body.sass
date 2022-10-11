@@ -1,0 +1,88 @@
+.grid-container
+   .sidebar-body
+      height: 100%
+      overflow-y: auto
+      a[aria-expanded="true"]
+         color: #fff
+         &:before
+            background: #fff
+      a[data-bs-toggle="collapse"]
+         position: relative
+      ul
+         li
+            a
+               padding: 0.8rem 1.5rem
+               display: block
+               text-align: left
+            &:hover,&.active
+               > a
+                  color: #fff
+         ul
+            background-color: rgba(0, 0, 0, 0.1)
+            a
+               font-size: 0.95em
+               padding-left: 3.5rem
+            &.list-item__submenu
+               > li
+                  > a
+                     position: relative
+                     &:before
+                        content: ""
+                        display: block
+                        position: absolute
+                        width: 0.4rem
+                        height: 0.4rem
+                        left: 2.4rem
+                        top: calc(50% - 0.3rem)
+                        border: 1px solid #fff
+                        z-index: 1
+                        transform: rotate(-45deg)
+                     &:hover, &.active
+                        &:before
+                           background: #fff
+            ul
+               &.list-item__submenu3
+                  padding-left: 1rem
+                  > li
+                     > a
+                        position: relative
+         &.body-content__links
+            > li
+               &.list-item
+                  > a
+                     position: relative
+                     &:hover, &.active
+                        background-color: #8b8989
+      .dropdown-toggle
+         &:after
+            display: block
+            position: absolute
+            top: 25%
+            right: 20px
+            font-family: "Font Awesome 6 Free"
+            content: "\f107"
+            font-weight: 900
+            border: 0
+            transition: all 0.3s ease-in-out
+         &.collapsed
+            &:after
+               transform: rotate(-90deg)
+      .body-content
+         &__title
+            margin: 5px 0 0 10px
+            font-size: 0.8em
+            font-weight: 700
+         &__links
+            padding: 10px 0
+            .list-item
+               .icon
+                  margin-right: 0.75rem
+                  font-weight: 300
+                  line-height: 1
+                  font-size: 1.4rem
+         &__footer
+            height: 70px
+            display: flex
+   &.grid-close
+      .sidebar-body
+         overflow-y: visible

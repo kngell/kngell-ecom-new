@@ -5,5 +5,9 @@ module.exports = {
       import: ["js/admin/main/main"],
       dependOn: "js/librairies/adminlib",
     },
+    "js/admin/pages/home/home": {
+      import: ["js/admin/pages/home/home_page"],
+      dependOn: "js/librairies/adminlib",
+    },
   },
 };

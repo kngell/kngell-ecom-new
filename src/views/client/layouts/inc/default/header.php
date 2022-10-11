@@ -17,11 +17,11 @@
       <?= $this->getSiteTitle()?>
    </title>
    <!-- Main style -->
-   <link href="<?= $this->asset('css/librairies/frontlib', 'css') ?? '' ?>" rel="stylesheet" type="text/css">
+   <?= $this->asset('css/librairies/frontlib', 'css') ?? '' ?>
    <!-- Plugins css -->
-   <link href="<?= $this->asset('css/plugins/homeplugins', 'css') ?? '' ?>" rel="stylesheet" type="text/css">
+   <?= $this->asset('css/plugins/homeplugins', 'css') ?? '' ?>
    <!-- Main style -->
-   <link href="<?= $this->asset('css/client/main', 'css') ?? '' ?>" rel="stylesheet" type="text/css">
+   <?= $this->asset('css/client/main', 'css') ?? '' ?>
    <?= $this->content('head'); ?>
 </head>
 

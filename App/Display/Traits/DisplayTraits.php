@@ -43,11 +43,10 @@ trait DisplayTraits
     protected function getTemplate(string $path) : string
     {
         $this->isFileexists($this->paths->offsetGet($path));
-
         return file_get_contents($this->paths->offsetGet($path));
     }
 
-    protected function media(object $obj) : string
+    protected function media(object $obj, ?string $stdMedia = null) : string
     {
         if (isset($obj->media) && !is_null($obj->media)) {
             $media = !is_array($obj->media) ? unserialize($obj->media) : $obj->media;
@@ -55,7 +54,9 @@ trait DisplayTraits
                 return str_starts_with($media[0], IMG) ? $media[0] : ImageManager::asset_img($media[0]);
             }
         }
-
+        if ($stdMedia !== null) {
+            return ImageManager::asset_img($stdMedia);
+        }
         return '';
     }
 

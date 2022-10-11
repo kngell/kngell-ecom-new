@@ -1,0 +1,23 @@
+
+@use 'corecss/abstract/variables' as *
+#footer
+   grid-area: footer
+   display: flex
+   justify-content: space-between
+   align-items: center
+   overflow-y: auto
+   min-height: $footer-min-height
+   border-top: 1px solid var(--divider)
+   padding: 0 2rem
+   .footer-nav-item
+      margin-right: 1.25rem
+
+@media (min-width: 992px)
+   .main-container
+      margin-bottom: $topbar-height
+   #footer
+      left: 0
+      right: 0
+      bottom: 0
+      background-color: var(--web-wash)
+      z-index: 50

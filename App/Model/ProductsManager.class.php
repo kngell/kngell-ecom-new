@@ -11,17 +11,27 @@ class ProductsManager extends Model
         parent::__construct($this->_table, $this->_colID);
     }
 
-    public function getProducts(int $brand) : CollectionInterface
+    public function getProducts(int|string $brand = null) : CollectionInterface
     {
-        $this->table()
-            ->leftJoin('product_categorie', ['pdt_id', 'cat_id'])
-            ->leftJoin('categories', ['categorie'])
-            ->leftJoin('brand', ['br_name'])
-            ->on(['pdt_id',  'pdt_id'], ['cat_id', 'cat_id'], ['br_id', 'br_id'])
-            ->where(['br_id' => [$brand, 'categories']])
-            ->groupBy(['pdt_id DESC' => 'product_categorie'])
-            ->return('object');
-
+        if ($brand === null) {
+            $this->table()
+                ->leftJoin('product_categorie', ['pdt_id', 'cat_id'])
+                ->leftJoin('categories', ['categorie'])
+                ->leftJoin('brand', ['br_name'])
+                ->leftJoin('order_details', ['COUNT|od_quantity|qty_sold'])
+                ->on(['pdt_id',  'pdt_id'], ['cat_id', 'cat_id'], ['br_id', 'br_id'], ['pdt_id|products', 'od_product_id'])
+                ->groupBy(['pdt_id DESC' => 'product_categorie'])
+                ->return('object');
+        } else {
+            $this->table()
+                ->leftJoin('product_categorie', ['pdt_id', 'cat_id'])
+                ->leftJoin('categories', ['categorie'])
+                ->leftJoin('brand', ['br_name'])
+                ->on(['pdt_id',  'pdt_id'], ['cat_id', 'cat_id'], ['br_id', 'br_id'])
+                ->where(['br_id' => [$brand, 'categories']])
+                ->groupBy(['pdt_id DESC' => 'product_categorie'])
+                ->return('object');
+        }
         return new Collection($this->getAll()->get_results());
     }
 

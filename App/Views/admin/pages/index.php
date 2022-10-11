@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 $this->start('head'); ?>
 <!-------Costum-------->
-<link href="<?= $this->asset('css/admin/map/map', 'css') ?? ''?>" rel="stylesheet" type="text/css">
+<?= $this->asset('css/admin/pages/home/home', 'css') ?? ''?>
 <?php $this->end(); ?>
 <?php $this->start('body'); ?>
 
@@ -151,11 +151,11 @@ $this->start('head'); ?>
          <div class="col-md-6 d-flex">
             <div class="card flex-fill w-100 ">
                <div class="d-flex justify-content-between p-3">
-                  <h5 class="card-title mb-0">Total Sales</h5>
-                  <div class="card-actions float-end">
+                  <h5 class="card-title mb-0">Top Selling Products</h5>
+                  <div class="card-actions">
                      <div class="d-inline-block dropdown show">
                         <a href="#" data-bs-toggle="dropdown" data-display="static">
-                           <i class="far fa-ellipsis-v"></i>
+                           <i class="fa-solid fa-ellipsis"></i>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right">
                            <a class="dropdown-item" href="#">Action</a>
@@ -166,30 +166,125 @@ $this->start('head'); ?>
                   </div>
                </div>
                <div class="card-body px-4">
-                  <div class="">
-                     <canvas id="dashboard-doughnut-chartjs"></canvas>
+                  <div class="table-responsive">
+                     <table class="table table-hover">
+                        <thead>
+                           <tr>
+                              <th scope="col"></th>
+                              <th scope="col">Title</th>
+                              <th scope="col">Price</th>
+                              <th scope="col">Quantity</th>
+                              <th scope="col">Amout</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                              <th scope="row">1</th>
+                              <td>PlayStation Store Gift Card</td>
+                              <td>$10</td>
+                              <td>100</td>
+                              <td>$1,000</td>
+                           </tr>
+                           <tr>
+                              <th scope="row">2</th>
+                              <td>Water Sports Shoes</td>
+                              <td>$13.68</td>
+                              <td>100</td>
+                              <td>$1,368</td>
+                           </tr>
+                           <tr>
+                              <th scope="row">3</th>
+                              <td>Wireless Security Camera</td>
+                              <td>$29.99</td>
+                              <td>100</td>
+                              <td>$2,999</td>
+                           </tr>
+                           <tr>
+                              <th scope="row">4</th>
+                              <td>WiFi Sports Action Camera Ultra HD</td>
+                              <td>$50</td>
+                              <td>100</td>
+                              <td>$5,000</td>
+                           </tr>
+                           <tr>
+                              <th scope="row">3</th>
+                              <td>Electronics Universal Smartphone</td>
+                              <td>$6.99</td>
+                              <td>100</td>
+                              <td>$699</td>
+                           </tr>
+                           <tr>
+                              <th scope="row">5</th>
+                              <td>WD 4TB Elements Portable External Hard Drive</td>
+                              <td>$89.99</td>
+                              <td>100</td>
+                              <td>$8,999</td>
+                           </tr>
+                           <tr>
+                              <th scope="row">6</th>
+                              <td>Unlisted by Kenneth Cole Men's Dress Shirt Slim Fit Checks and Stripes</td>
+                              <td>19.99</td>
+                              <td>100</td>
+                              <td>$1,999</td>
+                           </tr>
+                        </tbody>
+                     </table>
                   </div>
                </div>
             </div>
          </div>
       </div>
-      <div class="charts-sales">
-         <div class="charts-card">
-            <p class="chart-title">Top 5 Products</p>
-            <div id="bar-chart"></div>
+      <div class="row">
+         <div class="col-md-6 d-flex">
+            <div class="card w-100 ">
+               <div class="d-flex justify-content-between p-3">
+                  <h5 class="card-title mb-0">Top 5 Products</h5>
+                  <div class="card-actions">
+                     <div class="d-inline-block dropdown show">
+                        <a href="#" data-bs-toggle="dropdown" data-display="static">
+                           <i class="fa-solid fa-ellipsis"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                           <a class="dropdown-item" href="#">Action</a>
+                           <a class="dropdown-item" href="#">Export</a>
+                           <a class="dropdown-item" href="#">Profit</a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="card-body px-4">
+                  <div id="bar-chart"></div>
+               </div>
+            </div>
          </div>
-         <div class="charts-card">
-            <p class="chart-title">Purchase and Sales Orders</p>
-            <div id="area-chart"></div>
+         <div class="col-md-6 d-flex">
+            <div class="card w-100 ">
+               <div class="d-flex justify-content-between p-3">
+                  <h5 class="card-title mb-0">Purchase and Sales Orders</h5>
+                  <div class="card-actions">
+                     <div class="d-inline-block dropdown show">
+                        <a href="#" data-bs-toggle="dropdown" data-display="static">
+                           <i class="fa-solid fa-ellipsis"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right">
+                           <a class="dropdown-item" href="#">Action</a>
+                           <a class="dropdown-item" href="#">Export</a>
+                           <a class="dropdown-item" href="#">Profit</a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div class="card-body px-4">
+                  <div id="area-chart"></div>
+               </div>
+            </div>
          </div>
       </div>
-
    </div>
 </main>
 <?php $this->end(); ?>
 
 <?php $this->start('footer') ?>
 <!----------custom--------->
-<script type="text/javascript" src="<?= $this->asset('js/admin/map/map', 'js') ?? ''?>">
-</script>
+<?= $this->asset('js/admin/pages/home/home', 'js') ?? ''?>
 <?php $this->end();

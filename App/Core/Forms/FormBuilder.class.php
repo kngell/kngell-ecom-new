@@ -85,7 +85,6 @@ class FormBuilder extends AbstractFormBuilder
                 $newTypeObject->configureOptions();
                 $this->inputObject[] = $newTypeObject;
                 $this->currentObject = $newTypeObject;
-
                 return $this->htmlAttr(array_merge(self::FIELD_ARGS, $this->currentObject->htmlAttr()));
             }
         }

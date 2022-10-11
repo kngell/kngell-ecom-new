@@ -26,7 +26,10 @@ class HomeController extends Controller
 
         $this->pageTitle('Modile Phones - Best Aparels Online Store');
         $this->view()->addProperties(['name' => 'Home Page']);
-        $this->render('phones' . DS . 'index', $this->displayPhones(brand:2, cache: 'phones_products'));
+        $this->render('phones' . DS . 'index', $this->displayPhones(
+            brand:2,
+            cache: 'phones_products'
+        ));
     }
 
     protected function vetementsPage(array $args = []) : void

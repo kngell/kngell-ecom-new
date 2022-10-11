@@ -40,7 +40,6 @@ class FileRequest extends SplFileInfo
     public function setOriginalName(?string $originalName): self
     {
         $this->originalName = $originalName;
-
         return $this;
     }
 
@@ -57,7 +56,6 @@ class FileRequest extends SplFileInfo
     public function setMimeType(?string $mimeType): self
     {
         $this->mimeType = $mimeType;
-
         return $this;
     }
 
@@ -69,7 +67,6 @@ class FileRequest extends SplFileInfo
     public function setErrorCode(int $errorCode): self
     {
         $this->errorCode = $errorCode;
-
         return $this;
     }
 
@@ -84,7 +81,6 @@ class FileRequest extends SplFileInfo
             return null;
         }
         $maxFileSize = $this->errorCode === UPLOAD_ERR_INI_SIZE ? FileInfoUtils::getMaxFileSize() : 0;
-
         return sprintf(self::ERROR_MESSGAES[$this->getErrorCode()] ?: self::ERROR_MESSGAES[-1], $this->originalName, $maxFileSize);
     }
 
@@ -105,7 +101,6 @@ class FileRequest extends SplFileInfo
             throw new FilesException(sprintf('Could not move file "%s" to "%s"-->"%s".', $this->getPathname(), $target, strip_tags($error)));
         }
         @chmod($target, 0666 & ~umask());
-
         return $target;
     }
 }

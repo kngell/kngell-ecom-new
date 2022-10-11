@@ -211,6 +211,14 @@ trait ControllerGettersAndSettersTrait
         return $this->previousPage ?? null;
     }
 
+    public function setLayout(string $layout) : self
+    {
+        $this->isValidView();
+        $this->view_instance->layout($layout);
+
+        return $this;
+    }
+
     protected function reflectionInstance() : ReflectionClass
     {
         return CustomReflector::getInstance()->reflectionInstance($this::class);
@@ -239,14 +247,6 @@ trait ControllerGettersAndSettersTrait
     protected function callAfterMiddlewares(): array
     {
         return $this->callAfterMiddlewares;
-    }
-
-    protected function setLayout(string $layout) : self
-    {
-        $this->isValidView();
-        $this->view_instance->layout($layout);
-
-        return $this;
     }
 
     protected function pageTitle(?string $page = null)

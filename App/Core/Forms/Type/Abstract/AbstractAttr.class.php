@@ -93,10 +93,9 @@ abstract class AbstractAttr
         return $this;
     }
 
-    public function req() : self
+    public function req(bool $resp = true) : self
     {
-        $this->attr['required'] = true;
-
+        $this->attr['required'] = $resp;
         return $this;
     }
 

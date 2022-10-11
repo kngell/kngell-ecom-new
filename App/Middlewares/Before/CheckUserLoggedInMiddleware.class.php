@@ -28,7 +28,6 @@ class CheckUserLoggedInMiddleware extends BeforeMiddleware
             echo $script;
             /** @var RooterInterface */
             $rooter = $object->container(RooterInterface::class);
-            // header('Location: ' . $route . '/' . ($script));
             $rooter->resolve($this->route($object, $rooter));
             exit;
         }
@@ -46,7 +45,7 @@ class CheckUserLoggedInMiddleware extends BeforeMiddleware
             );
         }
         return match (true) {
-            is_null($route) || empty($previousRouteParams) || empty(array_diff($routeParams, $previousRouteParams)) => 'restricted' . DS . 'login',
+            is_null($route) || empty($previousRouteParams) || empty(array_diff($routeParams, $previousRouteParams)) => 'client' . DS . 'restricted' . DS . 'login',
             default => $route
         };
     }

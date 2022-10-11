@@ -6,7 +6,7 @@ class ControllerFactory
 {
     private ContainerInterface $container;
 
-    public function __construct(private string $controllerString, private string $method, private string $path, private array $routeParams, private array $controllerProperties)
+    public function __construct(private string $controllerString, private string $method, private array $routeParams, private array $controllerProperties)
     {
     }
 
@@ -27,7 +27,7 @@ class ControllerFactory
     private function getControllerParams() : array
     {
         return array_merge($this->controllerProperties, [
-            'filePath' => $this->path,
+            'filePath' => $this->routeParams['namespace'] ?? '',
             'cachedFiles' => YamlFile::get('cache_files_list'),
             'routeParams' => $this->routeParams,
         ]);

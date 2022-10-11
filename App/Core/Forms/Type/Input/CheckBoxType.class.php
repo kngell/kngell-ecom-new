@@ -28,7 +28,6 @@ class CheckBoxType extends InputType implements FormExtensionTypeInterface
                 file_get_contents($temp), '',
             ];
         }
-
         return [];
     }
 

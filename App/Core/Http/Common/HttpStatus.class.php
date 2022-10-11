@@ -145,7 +145,6 @@ enum HttpStatus : int
                 return $case;
             }
         }
-
         return null;
     }
 }

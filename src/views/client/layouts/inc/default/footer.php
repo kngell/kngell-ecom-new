@@ -75,22 +75,18 @@
      </div>
   </footer>
   <!-- End footer -->
-  <!-- Librairies -->
   <?= $jv_script_from_php ?? ''?>
-  <script type="text/javascript" src="<?= $this->asset('js/librairies/frontlib', 'js') ?? '' ?>">
-  </script>
+  <!-- Librairies -->
+  <?= $this->asset('js/librairies/frontlib', 'js') ?? '' ?>
   <!-- Common vendor -->
-  <script type="text/javascript" src="<?= $this->asset('commons/client/commonVendor', 'js') ?? '' ?>">
-  </script>
+  <?= $this->asset('commons/client/commonVendor', 'js') ?? '' ?>
   <!-- Custom Common Modules  -->
-  <script type="text/javascript" src="<?= $this->asset('commons/client/commonCustomModules', 'js') ?? '' ?>">
-  </script>
+  <?= $this->asset('commons/client/commonCustomModules', 'js') ?? '' ?>
   <!-- Plugins -->
-  <script type="text/javascript" src="<?= $this->asset('js/plugins/homeplugins', 'js') ?? '' ?>">
-  </script>
+  <?= $this->asset('js/plugins/homeplugins', 'js') ?? '' ?>
   <!-- Mainjs -->
-  <script type="text/javascript" src="<?= $this->asset('js/client/main/main', 'js') ?? '' ?>">
-  </script>
+  <?= $this->asset('js/client/main/main', 'js') ?? '' ?>
+  <!-- Custom -->
   <?= $this->content('footer'); ?>
   </body>
 

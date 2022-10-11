@@ -295,9 +295,7 @@ abstract class AbstractQueryBuilder
                 $arr = [];
                 $prefixer = $this->arrayPrefixer($field, $aryCond['value'], $arr);
                 $this->key['where']['bind_array'] = $arr;
-
                 return $braceOpen . $aryCond['tbl'] . '.' . $field . $operator . ' (' . $prefixer . ')' . $braceEnd . $separator;
-                // return "$add" . $tbl . $key . ' ' . $value['operator'] . ' (' . $prefixer . ')';
                 break;
             case trim($operator) === 'LIKE':
 

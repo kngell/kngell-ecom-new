@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 $this->start('head'); ?>
 <!-------Costum-------->
-<link href="<?= $this->asset('css/client/brand/phones/home/home', 'css') ?? ''?>" rel="stylesheet" type="text/css">
+<?= $this->asset('css/client/brand/phones/home/home', 'css') ?? ''?>
 <?php $this->end(); ?>
 <?php $this->start('body'); ?>
 <!-- Start Main -->
@@ -37,6 +37,5 @@ $this->start('head'); ?>
 <?php $this->end(); ?>
 <?php $this->start('footer') ?>
 <!----------custom--------->
-<script type="text/javascript" src="<?= $this->asset('js/client/brand/phones/home/home', 'js') ?? ''?>">
-</script>
+<?= $this->asset('js/client/brand/phones/home/home', 'js') ?? ''?>
 <?php $this->end();

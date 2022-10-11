@@ -48,7 +48,7 @@
   border-radius: 36px;
   cursor: pointer;
   float: left;
-  margin: 0 .67rem .67rem 0;
+  margin: 0 0.67rem 0.67rem 0;
   height: 36px;
   width: 36px;
   transition: all 400ms ease-out;
@@ -76,7 +76,7 @@
   border-radius: 0.25rem;
   cursor: pointer;
   float: left;
-  margin: 0 .67rem .67rem 0;
+  margin: 0 0.67rem 0.67rem 0;
   height: 30px;
   width: 30px;
   transition: all 400ms ease-out;
@@ -136,19 +136,19 @@
 }
 
 .payment-icon-visa {
-  background-image: url('../images/visa.svg');
+  background-image: url("../images/visa.svg");
 }
 
 .payment-icon-master {
-  background-image: url('../images/master.svg');
+  background-image: url("../images/master.svg");
 }
 
 .payment-icon-american-express {
-  background-image: url('../images/american_express.svg');
+  background-image: url("../images/american_express.svg");
 }
 
 .payment-icon-discover {
-  background-image: url('../images/discover.svg');
+  background-image: url("../images/discover.svg");
 }
 
 .payment-gateway-content {
@@ -162,7 +162,7 @@
 .payment-gateway-outsite {
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url('../images/outsite.svg');
+  background-image: url("../images/outsite.svg");
   width: 240px;
   height: 120px;
   display: block;

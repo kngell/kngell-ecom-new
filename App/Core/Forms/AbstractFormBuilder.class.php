@@ -55,6 +55,7 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
     /** @var array */
     const HTML_ELEMENT_PARTS = [
         'wrapperClass' => ['input-box', 'mb-3'],
+        'closestDivClass' => [],
         'wrapperId' => '',
         'feedbackTag' => '<div class="invalid-feedback form-text"></div>',
         'labelTag' => '%s {{label}}',
@@ -113,10 +114,19 @@ abstract class AbstractFormBuilder implements FormBuilderInterface
                 return false;
                 break;
         endswitch;
-
         $this->inputs[$key] = $value;
-
         return true;
+    }
+
+    public function reset() : self
+    {
+        return $this->form([
+            'action' => '#',
+        ])->globalClasses([
+            'wrapper' => [],
+            'input' => [],
+            'label' => [],
+        ]);
     }
 
     /**

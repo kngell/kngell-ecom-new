@@ -23,7 +23,6 @@ class RooterFactory
         if (!$this->rooter instanceof RooterInterface) {
             throw new BaseUnexpectedValueException(get_class($this->rooter) . ' is not a valid rooter Object!');
         }
-
         return $this->buildRoutes();
     }
 
@@ -37,8 +36,8 @@ class RooterFactory
         if (count($this->routes) > 0) {
             if (is_array($this->routes) && !empty($this->routes)) {
                 foreach ($this->routes as $mthd => $routes) {
-                    $args = [];
                     foreach ($routes as $route => $params) {
+                        $args = [];
                         if (str_starts_with($route, '/') && strlen($route) > 1) {
                             $route = substr($route, 1);
                         }

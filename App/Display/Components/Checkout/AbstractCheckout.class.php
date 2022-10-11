@@ -129,7 +129,6 @@ abstract class AbstractCheckout
                 return $this->getCustomerAddress($en, 'ship');
             }
         }
-
         return '';
     }
 }

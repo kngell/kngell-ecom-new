@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 $this->start('head'); ?>
 <!-------Costum-------->
-<link href="<?= $this->asset('path', 'css') ?? ''?>" rel="stylesheet" type="text/css">
+<?= $this->asset('path', 'css') ?? ''?>
 <?php $this->end(); ?>
 <?php $this->start('body'); ?>
 <main id="main-site">
@@ -20,6 +20,5 @@ $this->start('head'); ?>
 <?php $this->end(); ?>
 <?php $this->start('footer') ?>
 <!----------custom--------->
-<script type="text/javascript" src="<?= $this->asset('path', 'js') ?? ''?>">
-</script>
+<?= $this->asset('path', 'js') ?? ''?>
 <?php $this->end();

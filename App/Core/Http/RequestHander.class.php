@@ -46,7 +46,6 @@ class RequestHandler extends GlobalVariables
                 }
             }
         }
-
         return false;
     }
 
@@ -65,7 +64,6 @@ class RequestHandler extends GlobalVariables
         if ($position === false) {
             return $path;
         }
-
         return substr($path, 0, $position);
     }
 
@@ -81,7 +79,6 @@ class RequestHandler extends GlobalVariables
         if (($position = strpos($path, '?')) !== false) {
             $path = substr($path, 0, $position);
         }
-
         return $path;
     }
 
@@ -92,7 +89,6 @@ class RequestHandler extends GlobalVariables
         if ($position === false) {
             return $path;
         }
-
         return substr($path, 0, $position);
     }
 
@@ -135,7 +131,6 @@ class RequestHandler extends GlobalVariables
             foreach ($postData[$input] as $val) {
                 $r[] = $this->sanitizer::clean($val);
             }
-
             return $r;
         }
         if (!$input) {
@@ -143,7 +138,6 @@ class RequestHandler extends GlobalVariables
             foreach ($postData as $field => $value) {
                 $data[$field] = $this->sanitizer::clean($value);
             }
-
             return $data;
         }
 
@@ -166,7 +160,6 @@ class RequestHandler extends GlobalVariables
                     }
                 }
             }
-
             return $r;
         }
     }
@@ -267,13 +260,22 @@ class RequestHandler extends GlobalVariables
         foreach ($files as $key => $file) {
             $file = $this->sanitizer::cleanFiles($file);
             if (!ArrayUtil::isAssoc($file)) {
-                $subFiles = [];
+                // $subFiles = [];
                 foreach ($file as $subFile) {
-                    $subFile[] = new FileRequest($subFile['tmp_name'], $subFile['name'], $subFile['type'], $subFile['error']);
+                    $this->httpFiles->add(Container::getInstance()->make(Uploader::class, [
+                        'path' => $subFile['tmp_name'],
+                        'originalName' => $subFile['name'],
+                        'mimeType' => $subFile['type'],
+                        'errorCode' => $subFile['error'],
+                    ]));
                 }
-                $this->httpFiles->offsetGet($key, $subFile);
             } else {
-                $this->httpFiles->offsetGet($key, new FileRequest($file['tmp_name'], $file['name'], $file['type'], $file['error']));
+                $this->httpFiles->add(Container::getInstance()->make(Uploader::class, [
+                    'path' => $file['tmp_name'],
+                    'originalName' => $file['name'],
+                    'mimeType' => $file['type'],
+                    'errorCode' => $file['error'],
+                ]));
             }
         }
     }

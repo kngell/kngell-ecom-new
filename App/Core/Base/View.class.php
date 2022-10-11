@@ -13,6 +13,8 @@ class View extends AbstractView
     private ResponseHandler $response;
     private RequestHandler $request;
     private array $properties = [];
+    private string $jsTemplate;
+    private string $cssTemplate;
 
     public function __construct(array $viewAry, FilesSystemInterface $fileSyst)
     {
@@ -25,6 +27,8 @@ class View extends AbstractView
             }
         }
         $this->fileSyst = $fileSyst;
+        $this->jsTemplate = $this->fileSyst->get(FILES, 'js.php');
+        $this->cssTemplate = $this->fileSyst->get(FILES, 'css.php');
     }
 
     public function route(string $route)
@@ -110,21 +114,39 @@ class View extends AbstractView
                 $path .= $value . $separator;
                 $i++;
             }
-
             return $this->getAsset($check, $path, $asset, $ext);
         }
-
         return '';
     }
 
     private function getAsset(string $check, string $path, string $asset, string $ext) : string
     {
-        return match (true) {
+        return $this->linkTemplate($asset, match (true) {
             $check == 'img' => HOST ? HOST . US . IMG . $path : IMG . $asset,
             $check == 'fonts' => HOST ? HOST . US . FONT . $path : FONT . $asset,
             isset($this->ressources->$asset->$ext) => HOST ? HOST . $this->ressources->$asset->$ext ?? '' : $this->ressources->$asset->$ext ?? '',
             default => ''
-        };
+        });
+    }
+
+    private function linkTemplate(?string $asset = null, string $link = '') : string
+    {
+        $linkTemplate = '';
+        if ($asset) {
+            if (str_starts_with($asset, 'css')) {
+                $linkTemplate = isset($this->cssTemplate) ? file_get_contents($this->cssTemplate) : '';
+            } elseif (str_starts_with($asset, 'js')) {
+                $linkTemplate = isset($this->jsTemplate) ? file_get_contents($this->jsTemplate) : '';
+            } elseif (str_starts_with($asset, 'commons') && str_ends_with($link, 'js')) {
+                $linkTemplate = isset($this->jsTemplate) ? file_get_contents($this->jsTemplate) : '';
+            } elseif (str_starts_with($asset, 'commons') && str_ends_with($link, 'css')) {
+                $linkTemplate = isset($this->jsTemplate) ? file_get_contents($this->jsTemplate) : '';
+            }
+        }
+        if (!empty($linkTemplate) && $link !== '') {
+            $linkTemplate = str_replace('{{link}}', $link, $linkTemplate);
+        }
+        return $link !== '' ? $linkTemplate : '';
     }
 
     private function renderViewContent($view, array $params = []) : ?string

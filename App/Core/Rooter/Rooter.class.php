@@ -5,10 +5,6 @@ declare(strict_types=1);
 class Rooter extends AbstractRooter implements RooterInterface
 {
     private array $routes = [];
-    private array $controllerAry = [];
-    private mixed $params;
-    private string $controllerSuffix = 'Controller';
-    private string $methodSuffix = 'Page';
     private ContainerInterface $container;
 
     public function __construct(?RooterHelper $helper, ?ResponseHandler $response, ?RequestHandler $request, array $controllerProperties)
@@ -46,10 +42,11 @@ class Rooter extends AbstractRooter implements RooterInterface
         return $this;
     }
 
-    public function getMatchRoute(string $url, array $routes) : bool
+    public function match(string $url, array $routes) : bool
     {
         foreach ($routes as $route => $params) {
             if (preg_match($route, $url, $matches)) {
+                $params['namespace'] = $this->getNamespace($params, $matches);
                 foreach ($matches as $key => $param) {
                     if (is_string($key)) {
                         $params[$key] = $param;
@@ -62,9 +59,21 @@ class Rooter extends AbstractRooter implements RooterInterface
         return false;
     }
 
+    public function resolveWithException(string $url): array
+    {
+        if (!$this->match($url, $this->routes[$this->request->getMethod()])) {
+            http_response_code(404);
+            throw new RouterNoRoutesFound('Route ' . $url . ' does not match any valid route.', 404);
+        }
+        if (!class_exists($controller = $this->createController())) {
+            throw new RouterBadFunctionCallException('Class ' . $controller . ' does not exists.');
+        }
+        return [$controller, $this->createMethod()];
+    }
+
     public function getMatchingRoutes(string $url, array $routes) : array
     {
-        if ($this->getMatchRoute($url, $routes)) {
+        if ($this->match($url, $routes)) {
             return $this->params;
         }
         return [];
@@ -75,7 +84,6 @@ class Rooter extends AbstractRooter implements RooterInterface
         return $this->container->make(ControllerFactory::class, [
             'controllerString' => $controllerString,
             'method' => $method,
-            'path' => $this->getNamespace($controllerString),
             'controllerProperties' => $this->controllerProperties,
             'routeParams' => $this->params,
         ])->create();
@@ -92,58 +100,23 @@ class Rooter extends AbstractRooter implements RooterInterface
      *
      * @return string
      */
-    public function getNamespace() : string
+    public function getNamespace(array $params = [], array $matches = []) : string
     {
-        $namespace = '';
-        if (array_key_exists('namespace', $this->params)) {
-            $namespace .= $this->params['namespace'] . DS;
+        if ($this->namespace !== null) {
+            return $this->namespace;
         }
-
-        return $namespace;
-    }
-
-    public function resolveWithException(string $url): array
-    {
-        if (!$this->getMatchRoute($url, $this->routes[$this->request->getMethod()])) {
-            http_response_code(404);
-            throw new RouterNoRoutesFound('Route ' . $url . ' does not match any valid route.', 404);
+        if ($this->namespace === null && !array_key_exists('namespace', $params)) {
+            return 'Client' . DS;
         }
-        if (!class_exists($controller = $this->createController())) {
-            throw new RouterBadFunctionCallException('Class ' . $controller . ' does not exists.');
-        }
-        return [$controller, $this->createMethod()];
-    }
-
-    private function resolveControllerMethodDependencies(object $controllerObject, string $newAction): mixed
-    {
-        $newAction = $newAction . $this->methodSuffix;
-        $reflectionMethod = new ReflectionMethod($controllerObject, $newAction);
-        $reflectionMethod->setAccessible(true);
-        if ($reflectionMethod) {
-            $dependencies = [];
-            foreach ($reflectionMethod->getParameters() as $param) {
-                $newAction = Application::diGet(YamlFile::get('providers')[$param->getName()]);
-                if (isset($newAction)) {
-                    $dependencies[] = $newAction;
-                } elseif ($param->isDefaultValueAvailable()) {
-                    $dependencies[] = $param->getDefaultValue();
+        if (!array_key_exists('namespace', $params)) {
+            if (is_array($matches) && isset($matches[0])) {
+                $parts = explode(DS, $matches[0]);
+                if (count($parts) > 2) {
+                    return ucfirst($parts[0]) . DS;
                 }
             }
-            $reflectionMethod->setAccessible(false);
-            return $reflectionMethod->invokeArgs($controllerObject, $dependencies);
+            return '';
         }
-    }
-
-    private function createController(): string
-    {
-        $controllerName = $this->params['controller'] . $this->controllerSuffix;
-        $controllerName = StringUtil::studlyCaps($controllerName);
-        return $controllerName;
-    }
-
-    private function createMethod(): string
-    {
-        $method = $this->params['method'];
-        return StringUtil::camelCase($method);
+        return $this->paramsNamespace($params);
     }
 }

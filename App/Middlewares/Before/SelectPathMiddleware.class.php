@@ -17,12 +17,13 @@ class SelectPathMiddleware extends BeforeMiddleware
      */
     public function middleware(object $object, Closure $next) : mixed
     {
+        $route = $object->getRouteParams();
         if (str_contains($object->getFilePath(), 'Client' . DS)) {
-            $object->view()->layout('default');
+            $object->setLayout('default');
             $object->frontComponents($object->displayLayout());
-        } elseif (str_contains($object->getFilePath(), 'Backend' . DS)) {
+        } elseif (str_contains($object->getFilePath(), 'Admin' . DS)) {
+            $object->setLayout('admin');
             $object->view()->siteTitle("K'nGELL Administration");
-            $object->view()->layout('admin');
         }
         return $next($object);
     }

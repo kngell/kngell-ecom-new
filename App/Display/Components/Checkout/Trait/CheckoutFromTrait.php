@@ -29,7 +29,6 @@ trait CheckoutFromTrait
             ButtonType::class => ['type' => 'submit', 'class' => ['button']],
         ])->label('Submit')->id('submitBtnEmail')->content('Submit')->html(), $temp);
         $temp = str_replace('{{form_end}}', $this->frm->end(), $temp);
-
         return $temp;
     }
 

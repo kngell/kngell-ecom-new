@@ -22,7 +22,6 @@ final class StringUtil
         if (empty($text)) {
             return 'n-a';
         }
-
         return $text;
     }
 
@@ -68,7 +67,6 @@ final class StringUtil
         } else {
             $plural = $string . 's'; // just attach an s
         }
-
         return $plural;
     }
 
@@ -87,10 +85,8 @@ final class StringUtil
             if (empty($text)) {
                 return 'n-a';
             }
-
             return $text;
         }
-
         return false;
     }
 
@@ -104,6 +100,22 @@ final class StringUtil
         return lcfirst(self::studlyCaps($string));
     }
 
+    public static function separate(string $str)
+    {
+        $separator = '_';
+        if (!is_scalar($str) && !is_array($str)) {
+            return $str;
+        }
+        if (defined('PREG_BAD_UTF8_OFFSET_ERROR') && preg_match('/\pL/u', 'a') == 1) {
+            $pattern = ['#(?<=(?:\p{Lu}))(\p{Lu}\p{Ll})#', '#(?<=(?:\p{Ll}|\p{Nd}))(\p{Lu})#'];
+            $replacement = [$separator . '\1', $separator . '\1'];
+        } else {
+            $pattern = ['#(?<=(?:[A-Z]))([A-Z]+)([A-Z][a-z])#', '#(?<=(?:[a-z0-9]))([A-Z])#'];
+            $replacement = ['\1' . $separator . '\2', $separator . '\1'];
+        }
+        return strtolower(preg_replace($pattern, $replacement, $str));
+    }
+
     /**
      * Regular expression function that replaces spaces between words with hyphens.
      *
@@ -115,24 +127,17 @@ final class StringUtil
         if (empty($str)) {
             return false;
         }
-
         return preg_replace('/[^A-Za-z0-9-]+/', '-', $str);
     }
 
     public static function endsWith(mixed $haystack, mixed $needle)
     {
-//        $length = strlen($needle);
-//        if (!$length) {
-//            return true;
-//        }
-//        return substr_compare($haystack, $needle, -$length) === 0;
         return str_ends_with($haystack, $needle);
     }
 
     public static function isBlank(string $str) : bool
     {
         $str = trim($str);
-
         return !isset($str) || $str === '';
     }
 
@@ -146,7 +151,6 @@ final class StringUtil
         if (self::endsWith($str, $char)) {
             return $str;
         }
-
         return $str . $char;
     }
 

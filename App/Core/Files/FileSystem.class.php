@@ -7,9 +7,7 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
     public function readFile(string $file): string
     {
         try {
-            $content = file_get_contents($file);
-
-            return $content;
+            return file_get_contents($file);
         } catch (FilesException $th) {
             throw new FilesException($th->getMessage(), $th->getCode());
         }
@@ -59,7 +57,6 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
                 throw new FileSystemManagementException($th->getMessage(), $th->getCode());
             }
         }
-
         return false;
     }
 
@@ -75,7 +72,6 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
                     }
                 }
             }
-
             return array_values($dbAry);
         }
     }
@@ -95,7 +91,6 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
                     return $m;
                 }
             }));
-
             return !is_object($m) ? null : $m;
         }
     }
@@ -107,10 +102,8 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
             foreach ($imgAry as $url) {
                 $dbUslrsModel[] = $this->getFileModel($url, $m);
             }
-
             return $this->files_model_diff($dbUslrsModel, $m->get_results());
         }
-
         return [];
     }
 
@@ -125,15 +118,12 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
                         $filesToRemove[] = $m;
                     }
                 }
-
                 return $this->cleanFilesSystemUrls($filesToRemove);
             }
-
             return true;
         } catch (\Throwable $th) {
             throw new FileSystemManagementException('Impossible de supprimer les fichiers! ' . $th->getMessage(), $th->getCode());
         }
-
         return false;
     }
 
@@ -155,7 +145,6 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
                     }
                 }
             }
-
             return true;
         } catch (\Throwable $th) {
             throw new FileSystemManagementException('Impossible de supprimer les fichiers! ' . $th->getMessage(), $th->getCode());
@@ -177,7 +166,6 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
                     }
                 }
             }
-
             return true;
         } catch (\Throwable $th) {
             throw new FileSystemManagementException('Impossible de supprimer les fichiers! ' . $th->getMessage(), $th->getCode());
@@ -209,10 +197,8 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
                     }
                 }
             }
-
             return $results;
         }
-
         return false;
     }
 }

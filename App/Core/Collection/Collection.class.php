@@ -24,7 +24,6 @@ class Collection implements CollectionInterface
         foreach ($parameters as $key => $value) {
             $this->items[$key] = $value;
         }
-
         return $this;
     }
 
@@ -37,7 +36,6 @@ class Collection implements CollectionInterface
     public function add(mixed $item): self
     {
         $this->items[] = $item;
-
         return $this;
     }
 
@@ -99,9 +97,7 @@ class Collection implements CollectionInterface
     {
         if ($size = $this->size()) {
             $array = array_filter($this->items);
-            $avg = array_sum($array) / $size;
-
-            return $avg;
+            return array_sum($array) / $size;
         }
     }
 

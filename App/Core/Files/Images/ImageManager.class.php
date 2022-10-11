@@ -18,11 +18,11 @@ class ImageManager implements FilesManagerInterface
 
     public function __construct(array $imgAry = [], string $sourcePath = '', string $destination = '')
     {
-        $this->imgAry = $imgAry;
-        $this->sourcePath = $sourcePath != '' ? $sourcePath : dirname($imgAry['tmp_name']);
-        $this->destinationPath = $destination == '' ? $this->sourcePath : $destination;
-        $this->imgName = array_key_exists('name', $imgAry) ? $imgAry['name'] : '';
-        $this->setImgInfos();
+        // $this->imgAry = $imgAry;
+        // $this->sourcePath = $sourcePath != '' ? $sourcePath : dirname($imgAry['tmp_name']);
+        // $this->destinationPath = $destination == '' ? $this->sourcePath : $destination;
+        // $this->imgName = array_key_exists('name', $imgAry) ? $imgAry['name'] : '';
+        // $this->setImgInfos();
     }
 
     public function validate() : bool
@@ -37,7 +37,6 @@ class ImageManager implements FilesManagerInterface
         if ($this->imgInfos[0] > '1840' && $this->imgInfos[1] > '860') {
             throw new FileWidthAndHeightException('Invalid width and height! Please change your file.');
         }
-
         return true;
     }
 

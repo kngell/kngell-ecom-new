@@ -50,21 +50,15 @@ get: # Http Get ===========================================
   proceed_to_checkout:
     controller: checkout
     method: index
-  admin/{controller}/{method}:
-    namespace: Admin
-  admin/{controller}/{method}/{id:[\da-f]+}:
-    namespace: Admin
-  client/{controller}/{method}:
-    namespace: Client
   /{controller}/{method}:
-    namespace: Client/brand
   /{controller}/{method}/{id:[\da-f]+}:
-    namespace: Client
-  client/{controller}/{method}/{id:[\da-f]+}:
-    namespace: Client
+  /admin/{controller}/{method}:
+  /admin/{controller}/{method}/{id:[\da-f]+}:
+  /client/{controller}/{method}:
+  /client/{controller}/{method}/{id:[\da-f]+}:
   #Admin Route
   admin:
-    controller: admin_home
+    controller: admin_pages
     method: index
     namespace: Admin
 post: # Http Post method =========================================================
