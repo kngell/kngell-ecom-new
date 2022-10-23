@@ -1,5 +1,5 @@
 import layout from "js/admin/layout/layout";
-import dz from "../components/dragAndDrop";
+
 class Main {
   constructor(el = {}) {
     this.element = el;
@@ -11,7 +11,6 @@ class Main {
   _setupEvents = () => {
     const plugin = this;
     layout._handle();
-    dz._handle();
   };
 }
 document.addEventListener("DOMContentLoaded", function () {

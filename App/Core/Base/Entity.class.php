@@ -77,7 +77,6 @@ class Entity extends AbstractEntity
                 }
             }
         }
-
         return $properties;
     }
 

@@ -11,7 +11,7 @@ class LogoutUserManager extends Model
     public function __construct()
     {
         parent::__construct($this->_table, $this->_colID);
-        $this->userSession = $this->container->make(UserSessionsManager::class);
+        $this->userSession = $this->container(UserSessionsManager::class);
     }
 
     public function logout()
@@ -35,7 +35,6 @@ class LogoutUserManager extends Model
             $id = $this->session->get(CURRENT_USER_SESSION_NAME)['id'];
             $this->session->invalidate();
         }
-
         return [$token ?? '', $id ?? ''];
     }
 }

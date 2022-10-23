@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 $this->start('head'); ?>
 <!-------Costum-------->
-<?= $this->asset('css/admin/map/map', 'css') ?? ''?>
+<?= $this->asset('css/admin/pages/products/products', 'css') ?? ''?>
 <?php $this->end(); ?>
 <?php $this->start('body'); ?>
 <main id="main" class="main-container">
@@ -27,16 +27,17 @@ $this->start('head'); ?>
          <div class="col-12">
             <div class="input-group">
                <button class="btn btn-highlight" type="button" data-bs-toggle="modal" data-bs-target="#modal-box"><i
-                     class="fa-solid fa-circle-plus"></i><span class="d-none d-md-inline">Add Product</span></button>
+                     class="fa-solid fa-circle-plus"></i><span class="d-none d-md-inline ms-1">Add
+                     Product</span></button>
                <button class="btn btn-highlight" type="button"><i class="fa-solid fa-file-import"></i> <span
-                     class="d-none d-md-inline">Import</span></button>
+                     class="d-none d-md-inline ms-1">Import</span></button>
                <button class="btn btn-highlight" type="button"><i class="fa-solid fa-file-arrow-down"></i> <span
-                     class="d-none d-md-inline">Export</span></button>
+                     class="d-none d-md-inline ms-1">Export</span></button>
                <button class="btn btn-highlight" type="button"><i class="fa-solid fa-list-ul"></i> <span
-                     class="d-none d-md-inline">Customize Columns</span></button>
+                     class="d-none d-md-inline ms-1">Customize Columns</span></button>
                <button type="button" class="btn btn-highlight dropdown-toggle dropdown-toggle-split"
                   data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fa-solid fa-pen"></i> <span class="d-none d-md-inline">Bulk Actions</span>
+                  <i class="fa-solid fa-pen"></i> <span class="d-none d-md-inline ms-1">Bulk Actions</span>
                </button>
                <ul class="dropdown-menu">
                   <li><a class="dropdown-item" href="#">Delete</a></li>
@@ -103,5 +104,5 @@ $this->start('head'); ?>
 <?php $this->end(); ?>
 <?php $this->start('footer') ?>
 <!----------custom--------->
-<?= $this->asset('js/admin/pages/allproducts', 'js') ?? ''?>
+<?= $this->asset('js/admin/pages/products/products', 'js') ?? ''?>
 <?php $this->end();

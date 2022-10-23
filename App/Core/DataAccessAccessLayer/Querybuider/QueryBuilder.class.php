@@ -23,18 +23,16 @@ class QueryBuilder extends AbstractQueryBuilder implements QueryBuilderInterface
     /**
      * @inheritDoc
      */
-    public function insert():string
+    public function insert(): bool|string
     {
         if ($this->isValidquerytype('insert')) {
             if (is_array($this->key['fields']) && count($this->key['fields']) > 0) {
-                $keys = implode(', ', array_keys($this->key['fields']));
-                $values = ':' . implode(', :', array_keys($this->key['fields']));
-                $this->sql = 'INSERT INTO ' . $this->key['table'] . ' (' . $keys . ') VALUES (' . $values . ')';
-
-                return $this->sql;
+                $keys = $this->insertKeys($this->key['fields']);
+                $values = $this->insertValues($this->key['fields']);
+                $this->sql = 'INSERT INTO ' . $this->key['table'] . ' (' . $keys . ') VALUES ' . $values;
+                return $this->sql . (isset($this->key['fields']['bind_array']) ? '&' . serialize($this->key['fields']['bind_array']) : '');
             }
         }
-
         return false;
     }
 
@@ -51,7 +49,6 @@ class QueryBuilder extends AbstractQueryBuilder implements QueryBuilderInterface
             if (array_key_exists('recursive', $this->key['extras'])) {
                 $this->sql = $this->recursive($query, $this->sql);
             }
-
             return $this->sql . (isset($this->key['where']['bind_array']) ? '&' . serialize($this->key['where']['bind_array']) : '');
         }
 
@@ -116,7 +113,6 @@ class QueryBuilder extends AbstractQueryBuilder implements QueryBuilderInterface
         if ($this->isValidQueryType('delete')) {
             if (is_array($this->key['conditions']) && count($this->key['conditions']) > 0) {
                 $this->sql = (isset($this->key['conditions'][0]) && $this->key['conditions'][0] != 'all') ? 'DELETE FROM ' . $this->key['table'] : 'DELETE FROM ' . $this->key['table'] . $this->where();
-
                 return $this->sql . (isset($this->key['where']['bind_array']) ? '&' . serialize($this->key['where']['bind_array']) : '');
             }
         }

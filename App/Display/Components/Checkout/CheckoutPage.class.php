@@ -39,9 +39,7 @@ class CheckoutPage extends AbstractCheckout implements DisplayPagesInterface
         $template = str_replace('{{billiingInfos}}', (new BillingInfos($this->params()))->display(), $template);
         $template = str_replace('{{paiementInfos}}', (new PaiementInfos($this->params()))->display(), $template);
         $template = str_replace('{{creditCard}}', $this->creditcardModal(), $template);
-        $template = str_replace('{{form_end}}', $this->frm->end(), $template);
-
-        return $template;
+        return str_replace('{{form_end}}', $this->frm->end(), $template);
     }
 
     protected function modals() : array
@@ -86,9 +84,7 @@ class CheckoutPage extends AbstractCheckout implements DisplayPagesInterface
             'class' => ['change-address-frm'],
         ]);
         $template = $this->getTemplate('userAddressModalPath');
-        $template = str_replace('{{addressBookContent}}', $this->addressBookContent(), $template);
-
-        return $template;
+        return str_replace('{{addressBookContent}}', $this->addressBookContent(), $template);
     }
 
     protected function changeEmailModal() : string
@@ -99,9 +95,7 @@ class CheckoutPage extends AbstractCheckout implements DisplayPagesInterface
             'id' => 'change-email-frm',
         ]);
         $template = $this->getTemplate('changeEmailModalPath');
-        $template = str_replace('{{changeEmailFormTemplate}}', $this->changeEmailForm($this->frm), $template);
-
-        return $template;
+        return str_replace('{{changeEmailFormTemplate}}', $this->changeEmailForm($this->frm), $template);
     }
 
     protected function changeShippingModeModal() : string
@@ -112,17 +106,13 @@ class CheckoutPage extends AbstractCheckout implements DisplayPagesInterface
             'id' => 'shipping-select-frm',
         ]);
         $template = $this->getTemplate('changeShippingModalPath');
-        $template = str_replace('{{changeShippingModeform}}', $this->changeShippingFrom(), $template);
-
-        return $template;
+        return str_replace('{{changeShippingModeform}}', $this->changeShippingFrom(), $template);
     }
 
     protected function creditcardModal() : string
     {
         $template = $this->getTemplate('creditCardModalPath');
         $template = str_replace('{{price}}', $this->cartSummary->getTTC()->formatTo('fr_FR'), $template);
-        $template = str_replace('{{creditCardTemplate}}', $this->creditCardContent(), $template); //$this->creditCard->creditCard() //$this->creditCardContent()
-
-        return $template;
+        return str_replace('{{creditCardTemplate}}', $this->creditCardContent(), $template); //$this->creditCard->creditCard() //$this->creditCardContent()
     }
 }

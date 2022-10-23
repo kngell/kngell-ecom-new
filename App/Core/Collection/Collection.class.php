@@ -361,7 +361,7 @@ class Collection implements CollectionInterface
      * @param  mixed  $default
      * @return mixed
      */
-    public function first(callable|null $callback = null, $default = null)
+    public function first(callable|null $callback = null, $default = null) : mixed
     {
         return $this->first($this->items, $callback, $default);
     }

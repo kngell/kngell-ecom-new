@@ -9,7 +9,7 @@ interface QueryBuilderInterface
      * Insert/Create a query.
      * @return string
      */
-    public function insert() : string;
+    public function insert(): bool|string;
 
     /**
      * --------------------------------------------------------------------------------------------------

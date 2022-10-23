@@ -70,3 +70,16 @@ PaymentEvent:
     priority: 2
   - callback: DisplayOrderResultListener
     priority: 0
+AddNewProductEvent:
+  - callback: ClearCacheListener
+    priority: 5
+  - callback: SaveProductsCategoriesListener
+    priority: 4
+  - callback: SaveProductsVariantsListener
+    priority: 3
+  - callback: SaveProductsTagsListener
+    priority: 1
+  - callback: ClearUploadedFilesListener
+    priority: 2
+  - callback: RefreshPageListener
+    priority: 0

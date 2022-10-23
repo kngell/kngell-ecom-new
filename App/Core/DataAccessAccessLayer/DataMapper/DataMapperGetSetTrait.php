@@ -42,7 +42,6 @@ trait DataMapperGetSetTrait
                     $this->_lastID = intval($lastID);
                 }
             }
-
             return $this;
         } catch (Throwable $th) {
             throw $th;

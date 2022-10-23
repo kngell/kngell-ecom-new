@@ -12,7 +12,6 @@ trait ModelGetterAndSetterTrait
         if (null != $class) {
             return Application::diGet($class, $args);
         }
-
         return Application::getInstance();
     }
 
@@ -26,7 +25,7 @@ trait ModelGetterAndSetterTrait
      *
      * @return Entity
      */
-    public function getEntity() : Entity
+    public function getEntity() : Entity|CollectionInterface
     {
         return $this->entity;
     }
@@ -36,10 +35,9 @@ trait ModelGetterAndSetterTrait
      *
      * @return  self
      */
-    public function setEntity(Entity $entity) : self
+    public function setEntity(Entity|CollectionInterface $entity) : self
     {
         $this->entity = $entity;
-
         return $this;
     }
 

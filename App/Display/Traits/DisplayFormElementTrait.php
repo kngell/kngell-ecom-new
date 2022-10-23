@@ -27,7 +27,7 @@ trait DisplayFormElementTrait
         foreach ($inputHidden as $input) {
             if ($product !== null) {
                 $inputHtml .= $frm->input([
-                    HiddenType::class => ['name' => $input],
+                    HiddenType::class => ['name' => $input, 'class' => [$input], 'id' => $input],
                 ])->value($product->$input)->noLabel()->noWrapper()->html();
             }
         }
@@ -63,9 +63,9 @@ trait DisplayFormElementTrait
                 ->noWrapper()
                 ->noLabel()
                 ->placeholder($attr['placeholder'])
-                ->class($attr['fieldClass'])
+                ->class(array_merge($attr['fieldClass'], [$input]))
                 ->labelClass($attr['labelClass'])
-                ->id($attr['id'])
+                ->id($input)
                 ->req(false)
                 ->attr($attr['formAttr'])
                 ->html(),
@@ -81,7 +81,8 @@ trait DisplayFormElementTrait
         return str_replace(
             '{{' . $attr['htmlPlace'] . '}}',
             $frm->value($product !== null ? $product->$input : '')
-                ->id($attr['id'])
+                ->id($input)
+                ->class([$input])
                 ->html(),
             $template
         );
@@ -128,9 +129,9 @@ trait DisplayFormElementTrait
             $frm->input([
                 TextAreaType::class => ['name' => $input],
             ])->Labelup($attr['label'])
-                ->id($attr['id'])
+                ->id($input)
                 ->rows(3)
-                ->class($attr['fieldClass'])
+                ->class(array_merge($attr['fieldClass'], [$input]))
                 ->LabelClass($attr['labelClass'])
                 ->value($product !== null ? $product->$input : '')
                 ->html(),
@@ -146,9 +147,9 @@ trait DisplayFormElementTrait
                 NumberType::class => ['name' => $input],
             ])->value($product !== null ? $product->$input : '')
                 ->labelUp($attr['label'])
-                ->class($attr['fieldClass'])
+                ->class(array_merge($attr['fieldClass'], [$input]))
                 ->labelClass($attr['labelClass'])
-                ->id($attr['id'])
+                ->id($input)
                 ->req(false)
                 ->helpBlock($attr['helpBlock'])
                 ->html(),
@@ -163,9 +164,9 @@ trait DisplayFormElementTrait
             $frm->input([
                 CheckBoxType::class => ['name' => $input],
             ])->labelUp($attr['label'])
-                ->class($attr['fieldClass'])
+                ->class(array_merge($attr['fieldClass'], [$input]))
                 ->labelClass($attr['labelClass'])
-                ->id($attr['id'])
+                ->id($input)
                 ->req(false)
                 ->helpBlock($attr['helpBlock'])
                 ->removeWrapperClass('mb-3')
@@ -189,6 +190,7 @@ trait DisplayFormElementTrait
                 $frm->value($item->{$attr['options']['id']});
                 $frm->label($item->{$attr['options']['content']});
                 $frm->id(rtrim($input, '[]') . $item->{$attr['options']['id']});
+                $frm->class([$input]);
                 $html .= $frm->html();
             }
         }
@@ -207,9 +209,9 @@ trait DisplayFormElementTrait
         array_key_exists('formAttr', $attr) ? $frm->attr($attr['formAttr']) : '';
         return str_replace(
             '{{' . $attr['htmlPlace'] . '}}',
-            $frm->class($attr['fieldClass'])
+            $frm->class(array_merge($attr['fieldClass'], [$input]))
                 ->labelClass($attr['labelClass'])
-                ->id($attr['id'])
+                ->id($input)
                 ->req(false)
                 ->helpBlock($attr['helpBlock'])
                 ->html(),

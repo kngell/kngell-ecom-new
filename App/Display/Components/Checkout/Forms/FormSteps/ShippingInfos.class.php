@@ -29,7 +29,6 @@ class ShippingInfos extends AbstractFormSteps implements CheckoutFormStepInterfa
             $temp = str_replace('{{form_shipping_method}}', $this->shippingform($shippingClass), $temp);
             $temp = str_replace('{{buttons_group}}', $this->buttons(), $temp);
         }
-
         return $temp;
     }
 }

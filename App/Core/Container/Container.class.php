@@ -39,7 +39,6 @@ class Container implements ContainerInterface
         if (!isset(static::$instance)) {
             static::$instance = new static();
         }
-
         return static::$instance;
     }
 
@@ -133,7 +132,6 @@ class Container implements ContainerInterface
         if (isset($this->bindings[$abstract]) && $this->bindings[$abstract]['shared']) {
             $this->instances[$abstract] = $object;
         }
-
         return $object;
     }
 
@@ -160,13 +158,11 @@ class Container implements ContainerInterface
         $constructor = $reflector->getConstructor();
         if ($constructor === null) {
             $obj = $reflector->newInstance();
-
             return $this->objectWithContainer($obj, $reflector);
         }
         $dependencies = $constructor->getParameters();
         $instances = $this->resolveDependencies($dependencies, $args, $reflector);
         $obj = $reflector->newInstanceArgs($instances);
-
         return $this->objectWithContainer($obj, $reflector);
     }
 
@@ -217,7 +213,6 @@ class Container implements ContainerInterface
                 }
             }
         }
-
         return $results;
     }
 

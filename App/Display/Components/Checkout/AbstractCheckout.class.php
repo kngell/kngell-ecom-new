@@ -48,11 +48,9 @@ abstract class AbstractCheckout
         $template = $this->creditCard->creditCard(); //$this->getTemplate('creditCardTemplatePath');
         $template = str_replace('{{stripeKey}}', $this->stripKey, $template);
         $template = str_replace('{{cc_image}}', ImageManager::asset_img('visa.png'), $template);
-        $template = str_replace('{{cardHolder}}', $this->frm->input([
+        return str_replace('{{cardHolder}}', $this->frm->input([
             TextType::class => ['name' => 'card_holder', 'class' => ['card_holder']],
         ])->id('card_holder')->Label('Card Holder:')->placeholder(' ')->html(), $template);
-
-        return $template;
     }
 
     protected function params() : array
@@ -109,7 +107,6 @@ abstract class AbstractCheckout
                 if ($type != null) {
                     if ($type == 'ship') {
                         $addr->principale == 'Y' ? $addr->billing_addr = 'Y' : '';
-
                         return $addr->principale == 'Y';
                     }
                     if ($type == 'bill') {
@@ -122,7 +119,6 @@ abstract class AbstractCheckout
             if ($customerAddress->count() === 1) {
                 $get = $type == 'ship' ? 'delivery' : 'billing';
                 list($htmlFrm, $htmlModal, $text) = $this->addressBook->$get();
-
                 return $text;
             }
             if ($customerAddress->count() === 0 && $type == 'bill') {

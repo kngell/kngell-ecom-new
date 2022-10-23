@@ -6,6 +6,7 @@ class WarehouseEntity extends Entity
 {
     /** @id */
     private int $whId;
+    /** @title */
     private string $whName;
     private string $whDescr;
     private string $status;

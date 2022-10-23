@@ -38,7 +38,6 @@ final class StringUtil
         if (empty($string)) {
             return;
         }
-
         $search = ['-', '_', '[]', '[', ']'];
         $replace_search = [' ', ' ', '', ' ', ''];
         $str_replace = str_replace($search, $replace_search, $string);
@@ -152,6 +151,26 @@ final class StringUtil
             return $str;
         }
         return $str . $char;
+    }
+
+    public static function strToUrl(string $url)
+    {
+        $url = preg_replace('~[^\\pL0-9_]+~u', '-', $url);
+        $url = trim($url, '-');
+        $url = iconv('utf-8', 'us-ascii//TRANSLIT', $url);
+        $url = strtolower($url);
+        return preg_replace('~[^-a-z0-9_]+~', '', $url);
+    }
+
+    /**
+     * Get Html Decode texte
+     * ========================================================.
+     * @param string $str
+     * @return string
+     */
+    public static function htmlDecode(string $str) : string
+    {
+        return !empty($str) ? htmlspecialchars_decode(html_entity_decode($str), ENT_QUOTES) : '';
     }
 
     private static function translateString(string $string): string

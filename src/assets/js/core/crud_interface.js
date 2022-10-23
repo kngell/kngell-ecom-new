@@ -1,13 +1,12 @@
 import { Call_controller, Delete } from "corejs/form_crud";
 import { AVATAR, IMG } from "corejs/config";
 import input from "corejs/inputErrManager";
-import Swal from "sweetalert2";
 import OP from "corejs/operator";
+import All from "./cruds_partials/_display_items";
+import AddUpdate from "./cruds_partials/_add_update";
 import { htmlspecialchars_decode } from "corejs/html_decode";
-import { find } from "lodash";
 export default class Cruds {
   constructor(data) {
-    this.table = data.table;
     this.wrapper = data.wrapper;
     this.form = data.form;
     this.modal = data.modal;
@@ -18,43 +17,18 @@ export default class Cruds {
     this.ck_content = data.hasOwnProperty("ck_content") ? data.ck_content : "";
     this.loader = data.hasOwnProperty("loader") ? data.loader : "";
   }
-  /**
-   * Display All Items
-   * ===================================================
-   * @param {*} params
-   */
-  _displayAll = (params) => {
+  _init = () => {
+    return this;
+  };
+  _show_data = (alertEl) => {
     const plugin = this;
-    let wrapper = this.wrapper;
-    var data = {
-      url: "showAll",
-      table: this.table,
-      user: "admin",
-      csrftoken: this.csrftoken,
-      frm_name: this.frm_name,
-    };
-
-    Call_controller({ ...data, ...params }, (response) => {
-      if (response.result == "success") {
-        wrapper.find("#showAll").html(response.msg);
-        if (params.datatable) _loadDatatables();
-        plugin._money_format(wrapper);
-      } else {
-        wrapper.find("#globalErr").html(response.msg);
-      }
-    });
-
-    async function _loadDatatables() {
-      const DataTable = await import(
-        /* webpackChunkName: "datatables" */ "datatables.net-responsive-dt"
-      );
-      plugin.wrapper.find("#ecommerce-datatable").DataTable({
-        order: [0, "desc"],
-        pagingType: "full_numbers",
-        stateSave: true,
-        responsive: true,
-      });
-    }
+    new All({
+      wrapper: plugin.wrapper,
+      csrftoken: plugin.csrftoken,
+      frm_name: plugin.frm_name,
+      datatableEl: {},
+      alertEl: alertEl,
+    })._show();
   };
   _money_format = (wrapper) => {
     const operation = new OP();
@@ -63,147 +37,21 @@ export default class Cruds {
       fields: [".price"],
     });
   };
+  _add_update = () => {
+    new AddUpdate({})._init()._add_update({});
+  };
 
-  //get selected categories
-  _get_selected_categories = (selector) => {
-    if (selector) {
-      return selector
-        .map(function (i, cat) {
-          if ($(this).is(":checked")) {
-            return $(this).val();
-          }
-        })
-        .get();
-    } else {
-      return "";
-    }
-  };
-  _get_select2_data = (params) => {
-    let select_data = [];
-    $(params).each(function () {
-      if ($("." + this).length != 0) {
-        select_data[this] = Object.values($("." + this).select2("data"));
-      }
-    });
-    return select_data;
-  };
   /**
    * Open modal
    * =====================================================================
    */
-  __open_modal = async () => {
+  __open_modal = async (modalName) => {
     const bs = await import(
       /* webpackChunkName: "bsmodal" */ "corejs/bootstrap_modal"
     );
-    new bs.default(["modal-box"])._init().then((modal) => {
-      modal[0].show();
+    new bs.default([modalName])._init().then((modal) => {
+      modal[modalName].show();
     });
-  };
-  /**
-   * add or update
-   * @param {*} params
-   * =======================================================================
-   */
-  _add_update = (params) => {
-    let plugin = this;
-    var data = {
-      url: plugin.form.find("#operation").val() === "add" ? "Add" : "update",
-      frm: plugin.form,
-      frm_name: params.frm_name,
-      table: plugin.table,
-    };
-    params.hasOwnProperty("imageUrlsAry")
-      ? (data.imageUrlsAry = params.imageUrlsAry)
-      : "";
-    plugin.hasOwnProperty("select")
-      ? (data.select2 = plugin._get_select2_data(plugin.select))
-      : "";
-    params.hasOwnProperty("categorie")
-      ? (data.categories = plugin._get_selected_categories(params.categorie))
-      : "";
-    params.hasOwnProperty("folder") ? (data.folder = params.folder) : "";
-    params.hasOwnProperty("validator_rules")
-      ? (data.validator_rules = params.validator_rules)
-      : "";
-    switch (plugin.form.find("#operation").val()) {
-      case "add":
-      case "update":
-        if (params.hasOwnProperty("dropzone")) {
-          Call_controller(
-            { ...data, ...{ files: params.dropzone.files } },
-            manageR
-          );
-        } else {
-          Call_controller(data, manageR);
-        }
-        break;
-    }
-    function manageR(response) {
-      plugin.form.find("#submitBtn").val("Submit");
-      switch (response.result) {
-        case "error-field":
-          input.error(plugin.modal, response.msg);
-          break;
-        case "success":
-          plugin.form.trigger("reset");
-          if (plugin.modal) {
-            (async () => {
-              const bs = await import(
-                /* webpackChunkName: "bsmodal" */ "corejs/bootstrap_modal"
-              );
-              new bs.default([plugin.bsElement])._init().then((modal) => {
-                modal[0].hide();
-              });
-            })();
-            if (params.swal) {
-              Swal.fire("Success!", response.msg, "success").then(() => {
-                if (params.datatable == true) {
-                  const {
-                    frm_name,
-                    frm,
-                    categorie,
-                    dropzone,
-                    ...dysplayparams
-                  } = params;
-                  plugin._displayAll(dysplayparams);
-                }
-                if (plugin.table == "users") {
-                  if (plugin.hasOwnProperty("tag")) {
-                    plugin.tag
-                      .parents(".card-footer")
-                      .siblings(".card-body")
-                      .find(".img-wrapper img")
-                      .attr("src", response.url);
-                  }
-                }
-              });
-            }
-          }
-
-          if (params.prepend) {
-            params.nested.prepend(response.msg);
-          } else {
-            if (params.prepend === false) {
-              params.nested.before(response.msg);
-              params.nested.hide();
-            }
-          }
-          break;
-        case "error-file":
-          if (typeof params.dropzone != "undefined") {
-            params.dropzone._manageErrors(response.msg);
-            params.dropzone._removeErrMsg();
-          } else {
-            plugin.form.find(".alertErr").html(response.msg);
-            plugin.form.trigger("reset");
-          }
-          break;
-        default:
-          plugin.form.find(".alertErr").html(response.msg);
-          plugin.form.trigger("reset");
-          break;
-      }
-    }
   };
 
   //=======================================================================

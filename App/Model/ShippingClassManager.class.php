@@ -17,7 +17,16 @@ class ShippingClassManager extends Model
     {
         $this->table()
             ->return('object');
-
         return new Collection($this->getAll()->get_results());
+    }
+
+    public function getDefault() : ?int
+    {
+        $this->table()->where(['default_shipping_class|<>' => 0])->return('object');
+        $sh = $this->getAll();
+        if ($sh->count() > 0) {
+            return current($sh->get_results())->shc_id;
+        }
+        return null;
     }
 }

@@ -130,9 +130,8 @@ const optimConfig = {
           const path = require("path");
           return (
             module.resource &&
-            ((module.resource.includes(`${path.sep}node_modules${path.sep}`) &&
-              !module.resource.includes(`${path.sep}@ckeditor${path.sep}`)) ||
-              module.resource.includes(`${path.sep}core${path.sep}`))
+            module.resource.includes(`${path.sep}node_modules${path.sep}`) &&
+            !module.resource.includes(`${path.sep}@ckeditor${path.sep}`)
           );
         },
         name: "commons/admin/commonVendor",
@@ -141,6 +140,24 @@ const optimConfig = {
             chunk.name &&
             chunk.name.includes(`${path.sep}admin${path.sep}`) &&
             chunk.name !== "commons/admin/commonVendor"
+          );
+        },
+        minSize: 5000,
+      },
+      adminCustomModules: {
+        test: (module) => {
+          const path = require("path");
+          return (
+            module.resource &&
+            module.resource.includes(`${path.sep}core${path.sep}`)
+          );
+        },
+        name: "commons/admin/commonCustomModules",
+        chunks: (chunk) => {
+          return (
+            chunk.name &&
+            chunk.name.includes(`${path.sep}admin${path.sep}`) &&
+            chunk.name !== "commons/admin/commonCustomModules"
           );
         },
         minSize: 5000,

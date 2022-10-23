@@ -23,9 +23,13 @@ class VisitorsManager extends Model
                 default => $this->cleanVisitorsInfos($visitorInfos, $ipData)
             };
         } else {
-            $return_value = $this->add_new_visitor($ipData);
+            if (($visitorObject = $this->getVisitorByIp()) !== null) {
+                $this->cookie->set($visitorObject->cookies, VISITOR_COOKIE_NAME);
+                $return_value = $visitorObject;
+            } else {
+                $return_value = $this->add_new_visitor($ipData);
+            }
         }
-
         return $return_value ?? false;
     }
 
@@ -51,20 +55,29 @@ class VisitorsManager extends Model
     public function getAllVisitors() : CollectionInterface
     {
         $this->table()->return('object');
-
         return new Collection($this->getAll()->get_results());
+    }
+
+    public function getVisitorByIp() : ?self
+    {
+        $this->table()->where([
+            'ip_address|in' => [[H_visitors::getIP(), '2', '3'], 'tbl' => 'visitors'],
+        ])->return('class');
+        $v = $this->getAll();
+        if ($v->count() > 1) {
+            return current($v->get_results());
+        }
+        return null;
     }
 
     private function getVisitorInfos(string $ip) : self
     {
-        $query_data = $this->table()
-            ->where([
-                'cookies' => $this->cookie->get(VISITOR_COOKIE_NAME),
-                'ip_address|in' => [[$ip, '2', '3'], 'tbl' => 'visitors'],
-            ])
+        $query_data = $this->table()->where([
+            'cookies' => $this->cookie->get(VISITOR_COOKIE_NAME),
+            'ip_address|in' => [[$ip, '2', '3'], 'tbl' => 'visitors'],
+        ])
             ->return('class')
             ->build();
-
         return $this->getAll($query_data);
     }
 
@@ -76,7 +89,6 @@ class VisitorsManager extends Model
         if (!$update = $info->update()) {
             throw new BaseRuntimeException('Erreur lors de la mise à jour des données visiteur!');
         }
-
         return $update ?? null;
     }
 

@@ -33,7 +33,8 @@ export default class Upload {
         width: "100%",
         ajax: select2AjaxParams(data),
         theme: "bootstrap-5",
-        dropdownCssClass: "select2--small",
+        selectionCssClass: "select2--normal",
+        dropdownCssClass: "select2--normal",
         dropdownParent: params.element.parent(),
       })
       .on("select2:close", function () {

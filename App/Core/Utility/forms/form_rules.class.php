@@ -220,19 +220,19 @@ class Form_rules
     public static function products()
     {
         return [
-            'p_title' => [
+            'title' => [
                 'display' => 'Product title',
                 'required' => true,
                 'min' => 2,
                 'max' => 150,
             ],
-            'p_short_descr' => [
+            'short_descr' => [
                 'display' => 'Product short description',
                 'required' => true,
                 'min' => 2,
                 'max' => 255,
             ],
-            'p_regular_price' => [
+            'regular_price' => [
                 'display' => 'Price',
                 'is_numeric' => true,
             ],

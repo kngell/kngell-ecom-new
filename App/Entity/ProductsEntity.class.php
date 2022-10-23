@@ -84,8 +84,7 @@ class ProductsEntity extends Entity
      */
     public function setUserSalt(string $userSalt) : self
     {
-        $this->user_salt = $userSalt;
-
+        $this->userSalt = $userSalt;
         return $this;
     }
 
@@ -185,7 +184,6 @@ class ProductsEntity extends Entity
     public function setRegularPrice(string $regularPrice) : self
     {
         $this->regularPrice = $regularPrice;
-
         return $this;
     }
 
@@ -205,7 +203,6 @@ class ProductsEntity extends Entity
     public function setComparePrice(string $comparePrice) : self
     {
         $this->comparePrice = $comparePrice;
-
         return $this;
     }
 
@@ -225,7 +222,6 @@ class ProductsEntity extends Entity
     public function setCostPerItem(string $costPerItem) : self
     {
         $this->costPerItem = $costPerItem;
-
         return $this;
     }
 
@@ -265,7 +261,6 @@ class ProductsEntity extends Entity
     public function setMedia(string $media) : self
     {
         $this->media = $media;
-
         return $this;
     }
 
@@ -565,7 +560,6 @@ class ProductsEntity extends Entity
     public function setShippingClass(int $shippingClass) : self
     {
         $this->shippingClass = $shippingClass;
-
         return $this;
     }
 

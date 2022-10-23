@@ -43,7 +43,6 @@ abstract class AbstractAddressBookPage
                 $text .= $this->singleAddressText($address);
             }
         }
-
         return $text;
     }
 
@@ -67,8 +66,6 @@ abstract class AbstractAddressBookPage
     protected function addressBookHtml(string $htmlContent) : string
     {
         $template = $this->getTemplate('addressBookPath');
-        $template = str_replace('{{content}}', $htmlContent, $template);
-
-        return $template;
+        return str_replace('{{content}}', $htmlContent, $template);
     }
 }

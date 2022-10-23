@@ -24,8 +24,6 @@ class Modals extends AbstractModals implements DisplayPagesInterface
         ]);
         $template = str_replace('{{form_begin}}', $this->frm->begin(), $template);
         $template = str_replace('{{addAddressContent}}', $this->AddAdressContent(), $template);
-        $template = str_replace('{{form_end}}', $this->frm->end(), $template);
-
-        return $template;
+        return str_replace('{{form_end}}', $this->frm->end(), $template);
     }
 }

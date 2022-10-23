@@ -6,11 +6,11 @@ class NumericValidator extends CustomValidator
     public function runValidation()
     {
         $pass = true;
-        $value = $this->getModel()->{$this->getField()};
+        $getter = $this->getModel()->getEntity()->getGetters($this->getField());
+        $value = $this->getModel()->getEntity()->{$getter}();
         if (!empty($value)) {
             $pass = is_numeric($value);
         }
-
         return $pass;
     }
 }

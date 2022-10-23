@@ -5,12 +5,13 @@ declare(strict_types=1);
 abstract class AbstractModel
 {
     use ModelGetterAndSetterTrait;
+    use ModelTrait;
     protected string $_modelName;
     protected QueryParams $queryParams;
     protected RepositoryInterface|FileStorageRepositoryInterface $repository;
     protected ContainerInterface $container;
     protected MoneyManager $money;
-    protected Entity $entity;
+    protected Entity|CollectionInterface $entity;
     protected ModelHelper $helper;
     protected SessionInterface $session;
     protected CookieInterface $cookie;
@@ -23,6 +24,7 @@ abstract class AbstractModel
     protected array $validationErr = [];
     protected string $tableSchema;
     protected string $tableSchemaID;
+    protected bool $_flatDb;
 
     /*
      * Prevent Deleting Ids
@@ -31,19 +33,17 @@ abstract class AbstractModel
      */
     abstract public function guardedID() : array;
 
-    public function table(?string $tbl = null, mixed $columns = null) : QueryParams
+    public function table(?string $tbl = null, mixed $columns = null, bool $table_recursive = false) : QueryParams
     {
-        return $this->getQueryParams()->table($tbl, $columns);
+        return $this->queryParams = $this->container(QueryParamsInterface::class, [
+            'tableSchema' => $this->getTableSchema(),
+            'entity' => $this->getEntity(),
+        ])->table($tbl, $columns, $table_recursive ? 'table_recursive' : null);
     }
-
-    // public function recursiveTable(?string $tbl = null, mixed $columns = null, ?string $recursive = 'table_join') : QueryParams
-    // {
-    //     return (new QueryParams($this->tableShema))->table($tbl, $columns, $recursive);
-    // }
 
     public function tableRecursive(?string $tbl = null, mixed $columns = null) : QueryParams
     {
-        return $this->getQueryParams()->table($tbl, $columns, 'table_recursive');
+        return $this->table($tbl, $columns, true);
     }
 
     public function conditions() : self
@@ -56,7 +56,6 @@ abstract class AbstractModel
             throw new BaseException('unable to update row!');
         }
         $this->table()->where([$colID => $this->entity->{$this->entity->getGetters($colID)}()])->build();
-
         return $this;
     }
 
@@ -65,26 +64,19 @@ abstract class AbstractModel
      * ================================================================.
      * @return void
      */
-    public function beforeSave() : mixed
+    public function beforeSave(null|Entity|CollectionInterface $entity = null) : mixed
     {
-        if (isset(AuthManager::$currentLoggedInUser->userID) && property_exists($this, 'userID')) {
-            if (!isset($this->userID) || empty($this->userID) || $this->userID == null) {
-                $this->userID = AuthManager::$currentLoggedInUser->userID;
-            }
+        /** @var null|Entity|CollectionInterface */
+        $en = is_null($entity) ? $this->entity : $entity;
+        if ($en instanceof CollectionInterface) {
+            return $en->count() > 0 ? $en->all()[0] : null;
         }
-        if (isset($this->msg)) {
-            unset($this->msg);
-        }
-        if (isset($this->fileErr)) {
-            unset($this->fileErr);
-        }
-
-        return true;
+        return $en;
     }
 
     public function beforeSaveUpadate(Entity $entity) : Entity
     {
-        $f = $entity; //fields;
+        return $entity; //fields;
         // $current = new DateTime();
         // $key = current(array_filter(array_keys($fields), function ($field) {
         //     return str_starts_with($field, 'update');
@@ -95,7 +87,6 @@ abstract class AbstractModel
         // if (isset($f[$this->get_colID()])) {
         //     unset($f[$this->get_colID()]);
         // }
-        return $f;
     }
 
     public function beforeSaveInsert(Entity $entity)
@@ -165,7 +156,19 @@ abstract class AbstractModel
                 $columnsName[] = '$' . $column->Field;
             }
         }
-
         return $columnsName;
+    }
+
+    public function defaultShippingClass() : ?int
+    {
+        $en = $this->getEntity();
+        if (!$this->isInitialized('shipping_class')) {
+            return $this->container(ShippingClassManager::class)->getDefault();
+            // if ($defaultShClass->count() === 1) {
+            //     return current($defaultShClass->get_results());
+            // }
+        }
+        $getter = $en->getGetters('shipping_class');
+        return $en->$getter();
     }
 }

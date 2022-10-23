@@ -41,7 +41,11 @@ class ProductsManager extends Model
             ->leftJoin('product_categorie', ['pdt_id', 'cat_id'])
             ->leftJoin('categories', ['categorie'])
             ->leftJoin('brand', ['br_name'])
-            ->on(['pdt_id',  'pdt_id'], ['cat_id', 'cat_id'], ['br_id', 'br_id'])
+            ->on(
+                ['pdt_id',  'pdt_id'],
+                ['cat_id', 'cat_id'],
+                ['br_id', 'br_id'],
+            )
             ->where(['slug' => [$slug, 'products']])
             ->groupBy(['pdt_id DESC' => 'products'])
             ->return('object');
@@ -49,7 +53,71 @@ class ProductsManager extends Model
         if ($pdt->count() === 1) {
             return current($pdt->get_results());
         }
-
         return null;
+    }
+
+    public function getEditedProduct(null|int $id = null) : ?self
+    {
+        $id = $this->id($id);
+        $this->table()
+            ->leftJoin('product_categorie', ['pdt_id', 'cat_id'])
+            ->leftJoin('categories', ['categorie'])
+            ->leftJoin('brand', ['br_name'])
+            ->leftJoin('warehouse_product', ['product_id', 'wh_id'])
+            ->leftJoin('warehouse', ['wh_id', 'wh_name'])
+            ->leftJoin('company', ['comp_id', 'sigle'])
+            ->leftJoin('shipping_class', ['shc_id', 'sh_name'])
+            ->leftJoin('units', ['un_id', 'unit'])
+            ->on(
+                ['pdt_id',  'pdt_id'],
+                ['cat_id', 'cat_id'],
+                ['br_id', 'br_id'],
+                ['pdt_id|products', 'product_id|warehouse_product'],
+                ['wh_id|warehouse_product', 'wh_id|warehouse'],
+                ['company|products', 'comp_id|company'],
+                ['shipping_class|products', 'shc_id|shipping_class'],
+                ['unit_id|products', 'un_id|units']
+            )
+            ->where(['pdt_id' => [$id, 'products']])
+            ->return('object');
+        return $this->getAll();
+    }
+
+    public function beforeSave(null|Entity|CollectionInterface $entity = null) : mixed
+    {
+        /** @var ProductsEntity */
+        $en = parent::beforeSave($entity);
+        // Manage prices
+        $en->setRegularPrice($this->money->persistPrice($en->getRegularPrice()));
+        $en->setComparePrice($this->money->persistPrice($en->getComparePrice()));
+        $en->setCostPerItem($this->money->persistPrice($en->getCostPerItem()));
+        $en->setShippingClass($this->defaultShippingClass());
+        // User Salt
+        /** @var UsersEntity */
+        $user = AuthManager::currentUser()->getEntity();
+        $en->setUserSalt($user->getSalt());
+        // product slag
+        $en->setSlug($this->getSlug($en));
+        return $en;
+    }
+
+    private function id(null|int $id = null) : int
+    {
+        if($id === null) {
+            $en = $this->getEntity();
+            return $en->{$en->getGetters($en->getColId())}();
+        }
+        return $id;
+    }
+
+    private function getSlug(object $en) : string
+    {
+        $slug = StringUtil::strToUrl($en->getTitle());
+        if (!$en->isInitialized('slug')) {
+            while ((new self)->getDetails($slug, 'slug')->count() > 0) :
+                $slug = StringUtil::strToUrl($slug . '-' . rand(0, 99999));
+            endwhile;
+        }
+        return $slug;
     }
 }

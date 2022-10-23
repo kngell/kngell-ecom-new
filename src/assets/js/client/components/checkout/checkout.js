@@ -160,7 +160,6 @@ class Checkout {
                 ".radio-check__wrapper input[name=sh_name]:checked"
               )
             : "";
-        console.log("oui");
         const data = {
           url: "checkout_navigation/validate",
           page: idx,

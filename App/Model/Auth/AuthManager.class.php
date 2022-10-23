@@ -26,7 +26,6 @@ class AuthManager extends Model
         if ($session->exists(CURRENT_USER_SESSION_NAME)) {
             return $session->get(CURRENT_USER_SESSION_NAME)['first_name'];
         }
-
         return '';
     }
 
@@ -36,7 +35,6 @@ class AuthManager extends Model
         if ($session->exists(CURRENT_USER_SESSION_NAME)) {
             return $session->get(CURRENT_USER_SESSION_NAME)['acl'];
         }
-
         return [];
     }
 
@@ -47,7 +45,6 @@ class AuthManager extends Model
         if ($session->exists(CURRENT_USER_SESSION_NAME)) {
             return true;
         }
-
         return false;
     }
 
@@ -64,7 +61,6 @@ class AuthManager extends Model
                 self::$currentLoggedInUser = $user->assign((array) $user);
             }
         }
-
         return self::$currentLoggedInUser;
     }
 }

@@ -11,6 +11,8 @@ interface CollectionInterface extends Countable, IteratorAggregate, ArrayAccess
      */
     public function all(): array;
 
+    public function first(callable|null $callback = null, $default = null) : mixed;
+
     /**
      * Checks whether a given key exists within the collection.
      *

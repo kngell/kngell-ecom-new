@@ -28,8 +28,7 @@ trait CheckoutFromTrait
         $temp = str_replace('{{Button}}', $this->frm->input([
             ButtonType::class => ['type' => 'submit', 'class' => ['button']],
         ])->label('Submit')->id('submitBtnEmail')->content('Submit')->html(), $temp);
-        $temp = str_replace('{{form_end}}', $this->frm->end(), $temp);
-        return $temp;
+        return str_replace('{{form_end}}', $this->frm->end(), $temp);
     }
 
     protected function changeShippingFrom() : string
@@ -47,15 +46,12 @@ trait CheckoutFromTrait
             }
         }
         $temp = str_replace('{{select_shipping_mode}}', $this->frm->input([
-            SelectType::class => ['name' => 'shc_id', 'class' => []], ], $this->options($this->shippingClass, 'shc_id', 'sh_name'))->noLabel()->id('shipping_class_change')->attr(['style' => 'width: 100%;'])->html(), $temp);
+            SelectType::class => ['name' => 'shc_id', 'class' => []], ], $this->options($this->shippingClass, 'shc_id', 'sh_name', $this->frm))->noLabel()->id('shipping_class_change')->attr(['style' => 'width: 100%;'])->html(), $temp);
 
         $temp = str_replace('{{button}}', $this->frm->input([
             ButtonType::class => ['type' => 'submit', 'class' => ['button']],
         ])->label('Submit')->id('submitBtnShipping')->content('Submit')->html(), $temp);
-
-        $temp = str_replace('{{form_end}}', $this->frm->end(), $temp);
-
-        return $temp;
+        return str_replace('{{form_end}}', $this->frm->end(), $temp);
     }
 
     protected function contactInfosformElements(?object $obj = null) :  string
@@ -78,11 +74,9 @@ trait CheckoutFromTrait
             PhoneType::class => ['name' => 'phone'],
         ])->Label('Téléphone')->id('chk-phone')->placeholder(' ')->value($this->customerEntity->isInitialized('phone') ? $this->customerEntity->getPhone() : '')->html(), $uContactInfos);
 
-        $uContactInfos = str_replace('{{email}}', (string) $this->frm->input([
+        return str_replace('{{email}}', (string) $this->frm->input([
             EmailType::class => ['name' => 'email'],
         ])->Label('Email')->id('chk-email')->req()->placeholder(' ')->value($this->customerEntity->isInitialized('email') ? $this->customerEntity->getEmail() : '')->html(), $uContactInfos);
-
-        return $uContactInfos;
     }
 
     protected function discountCode() : string
@@ -93,11 +87,9 @@ trait CheckoutFromTrait
             TextType::class => ['name' => 'code_promotion', 'class' => ['input-box__input', 'me-2']],
         ])->Label('code promotion')->id('code_promotion__' . $this::class)->req()->placeholder(' ')->attr(['form' => 'discount-frm'])->labelClass(['input-box__label'])->html(), $template);
 
-        $template = str_replace('{{button}}', $this->frm->input([
+        return str_replace('{{button}}', $this->frm->input([
             ButtonType::class => ['type' => 'button', 'class' => ['btn', 'btn-highlight', 'waves-effect']],
         ])->content('Apply')->attr(['form' => 'discount-frm'])->html(), $template);
-
-        return $template;
     }
 
     protected function shippingform(?object $obj) : string

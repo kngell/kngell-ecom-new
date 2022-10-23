@@ -15,8 +15,7 @@ trait AddressBookTraits
             $addr .= $address->region . ', ';
             $addr .= $address->pays['name'];
         }
-
-        return $this->response->htmlDecode($addr);
+        return StringUtil::htmlDecode($addr);
     }
 
     protected function addressHtml(?string $el = null, string $frmID = '') : string
@@ -42,7 +41,6 @@ trait AddressBookTraits
                 $html .= $temp;
             }
         }
-
         return $html;
     }
 

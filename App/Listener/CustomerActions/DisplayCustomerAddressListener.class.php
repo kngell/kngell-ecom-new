@@ -27,7 +27,7 @@ class DisplayCustomerAddressListener implements ListenerInterface
         $data = $event->getParams()['data'];
         $object = $event->getObject();
         if (isset($data['addr'])) {
-            $addr = json_decode($object->getResponse()->htmlDecode($data['addr']), true);
+            $addr = json_decode(StringUtil::htmlDecode($data['addr']), true);
             if (is_array($addr)) {
                 foreach ($addr as $key => $selector) {
                     if ($selector == 'modal-address') {

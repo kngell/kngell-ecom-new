@@ -24,7 +24,6 @@ class ModalProductFormAttributes
                             'label' => 'Title:',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_product_title',
                             'helpBlock' => '',
                         ],
                         'short_descr' => [
@@ -32,7 +31,6 @@ class ModalProductFormAttributes
                             'label' => 'Description courte:',
                             'fieldClass' => ['ck-content'],
                             'labelClass' => [],
-                            'id' => 'modal_product_short_descr',
                             'helpBlock' => '',
                         ],
                     ],
@@ -42,7 +40,6 @@ class ModalProductFormAttributes
                             'label' => 'Description longue:',
                             'fieldClass' => ['ck-content'],
                             'labelClass' => [],
-                            'id' => 'modal_product_long_descr',
                             'helpBlock' => '',
                         ],
                     ],
@@ -54,9 +51,8 @@ class ModalProductFormAttributes
                         'regular_price' => [
                             'htmlPlace' => 'regular_price',
                             'label' => 'Prix:',
-                            'fieldClass' => ['modal_p_regular_price'],
+                            'fieldClass' => ['regular_price'],
                             'labelClass' => [],
-                            'id' => 'modal_p_regular_price',
                             'helpBlock' => '',
                         ],
                         'compare_price' => [
@@ -64,7 +60,6 @@ class ModalProductFormAttributes
                             'label' => 'Prix comparé:',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_compare_price',
                             'helpBlock' => '',
                         ],
                         'cost_per_item' => [
@@ -72,7 +67,6 @@ class ModalProductFormAttributes
                             'label' => 'Coût Par Produit:',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_cost_per_item',
                             'helpBlock' => '<span class="help-block">
                                     <small>Customers won’t see this</small>
                                 </span>',
@@ -85,7 +79,6 @@ class ModalProductFormAttributes
                             'fieldClass' => ['form-check-input'],
                             'labelClass' => ['custom-checkbox'],
                             'closestDivClass' => ['ps-0'],
-                            'id' => 'modal_p_charge_tax',
                             'helpBlock' => '',
                             'checked' => false,
                         ],
@@ -99,7 +92,6 @@ class ModalProductFormAttributes
                             'label' => 'Prix:',
                             'fieldClass' => ['modal_p_regular_price'],
                             'labelClass' => [],
-                            'id' => 'modal_p_regular_price',
                             'helpBlock' => '',
                         ],
                         'compare_price' => [
@@ -107,7 +99,6 @@ class ModalProductFormAttributes
                             'label' => 'Prix comparé:',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_compare_price',
                             'helpBlock' => '',
                         ],
                         'cost_per_item' => [
@@ -115,7 +106,6 @@ class ModalProductFormAttributes
                             'label' => 'Coût Par Produit:',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_cost_per_item',
                             'helpBlock' => ' <span class="help-block">
                             <small>Customers won’t see this</small>
                          </span>',
@@ -128,7 +118,6 @@ class ModalProductFormAttributes
                             'fieldClass' => ['form-check-input'],
                             'labelClass' => ['custom-checkbox'],
                             'closestDivClass' => ['ps-0'],
-                            'id' => 'modal_p_charge_tax',
                             'helpBlock' => '',
                             'checked' => false,
                         ],
@@ -142,7 +131,6 @@ class ModalProductFormAttributes
                             'label' => 'SKU (Stock Keeping Unit):',
                             'fieldClass' => ['modal_p_regular_price'],
                             'labelClass' => [],
-                            'id' => 'modal_p_sku',
                             'helpBlock' => '',
                         ],
                         'qty' => [
@@ -150,7 +138,6 @@ class ModalProductFormAttributes
                             'label' => 'Stock quantity:',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_qty',
                             'helpBlock' => '',
                         ],
                         'stock_threshold' => [
@@ -158,7 +145,6 @@ class ModalProductFormAttributes
                             'label' => 'Low stock threshold:',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_stock_threshold',
                             'helpBlock' => '',
                         ],
                     ],
@@ -169,7 +155,6 @@ class ModalProductFormAttributes
                             'fieldClass' => ['form-check-input'],
                             'labelClass' => ['custom-checkbox'],
                             'closestDivClass' => ['ps-0'],
-                            'id' => 'modal_p_track_qty',
                             'helpBlock' => '',
                             'checked' => true,
                         ],
@@ -179,7 +164,6 @@ class ModalProductFormAttributes
                             'fieldClass' => ['form-check-input'],
                             'labelClass' => ['custom-checkbox'],
                             'closestDivClass' => ['ps-0'],
-                            'id' => 'modal_p_continious_sell',
                             'helpBlock' => '',
                             'checked' => true,
                         ],
@@ -190,7 +174,7 @@ class ModalProductFormAttributes
                             'label' => 'Barcode (ISBN, UPC, GTIN, etc.):',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_barre_code',
+
                             'helpBlock' => '',
                         ],
                     ],
@@ -200,7 +184,6 @@ class ModalProductFormAttributes
                             'label' => 'Allow backorder:',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_back_border',
                             'helpBlock' => '',
                             'options' => [
                                 'object' => new Collection([
@@ -217,7 +200,6 @@ class ModalProductFormAttributes
                             'label' => 'Product Unit:',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_unitID',
                             'helpBlock' => '',
                             'options' => [
                                 'object' => $this->productUnits,
@@ -235,7 +217,6 @@ class ModalProductFormAttributes
                             'label' => 'Weight (kg):',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_weight',
                             'helpBlock' => '',
                         ],
                     ],
@@ -247,7 +228,6 @@ class ModalProductFormAttributes
                             'label' => '',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_lenght',
                             'helpBlock' => '',
                         ],
                         'width' => [
@@ -257,7 +237,6 @@ class ModalProductFormAttributes
                             'formAttr' => [],
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_width',
                             'helpBlock' => '',
                         ],
                         'height' => [
@@ -267,7 +246,6 @@ class ModalProductFormAttributes
                             'formAttr' => [],
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_height',
                             'helpBlock' => '',
                         ],
                     ],
@@ -277,7 +255,6 @@ class ModalProductFormAttributes
                             'label' => 'Shipping Class:',
                             'fieldClass' => [],
                             'labelClass' => [],
-                            'id' => 'modal_p_shipping_class',
                             'helpBlock' => '',
                             'options' => [
                                 'object' => $this->shippingClass,
@@ -297,7 +274,6 @@ class ModalProductFormAttributes
                             'labelClass' => [],
                             'wrapperClass' => ['form-group'],
                             'placeholder' => ' ',
-                            'id' => 'modal_p_company',
                             'helpBlock' => '',
                             'options' => [
                                 'object' => $this->company,
@@ -313,7 +289,6 @@ class ModalProductFormAttributes
                             'wrapperClass' => ['form-group'],
                             'formAttr' => ['aria-label' => '.form-select Default'],
                             'placeholder' => ' ',
-                            'id' => 'modal_p_warehouse',
                             'helpBlock' => '',
                             'options' => [
                                 'object' => $this->warehouse,
@@ -348,7 +323,6 @@ class ModalProductFormAttributes
                             'wrapperClass' => ['form-group', 'me-1', 'flex-grow-1'],
                             'removeWrapperClass' => ['mb-3'],
                             'formAttr' => ['form' => 'product_tag_frm'],
-                            'id' => 'modal_p_tags',
                         ],
                     ],
                 ],

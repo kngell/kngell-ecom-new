@@ -131,24 +131,13 @@ class ResponseHandler
         return $this;
     }
 
-    /**
-     * Get Html Decode texte
-     * ========================================================.
-     * @param string $str
-     * @return string
-     */
-    public function htmlDecode(string $str) : string
-    {
-        return !empty($str) ? htmlspecialchars_decode(html_entity_decode($str), ENT_QUOTES) : '';
-    }
-
     public function htmlDecodeArray(array $array = []) : array
     {
         $r = [];
         if (!empty($array)) {
             foreach ($array as $key => $value) {
                 if (is_string($value)) {
-                    $value = $this->htmlDecode($value);
+                    $value = StringUtil::htmlDecode($value);
                 }
                 $r[$key] = $value;
             }

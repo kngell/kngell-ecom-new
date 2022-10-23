@@ -69,6 +69,8 @@ class Login_And_Register {
           phpLR.loginfrm
             .find("#remember_me")
             .attr("checked", response.msg.remember);
+        } else if (response.msg == "redirect") {
+          window.location.href = window.location.href;
         } else {
           phpLR.loginfrm.find("#email").val("");
           phpLR.loginfrm.find("#password").val("");
@@ -150,19 +152,13 @@ class Login_And_Register {
           } else {
             if (response.msg == "chk_navigation") {
             } else {
-              // phpLR.login_modal.then((mod) => {
-              //   mod[0].hide();
-              //   $(".connect").load(location.href + " .connect");
-              // });
               window.location.reload();
             }
           }
+        } else if (response.result == "error-field") {
+          input.error(phpLR.loginfrm, response.msg, 30);
         } else {
-          if (response.result == "error-field") {
-            input.error(phpLR.loginfrm, response.msg, 30);
-          } else {
-            phpLR.loginfrm.find(".alertErr").html(response.msg);
-          }
+          phpLR.loginfrm.find(".alertErr").html(response.msg);
         }
       });
     });
@@ -205,6 +201,7 @@ class Login_And_Register {
       Call_controller(data, (response) => {
         if (response.result == "success") {
           phpLR.logout.closest("div").load(location.href + " .connect");
+          window.location.reload();
           if (response.msg == "redirect") {
             window.location.href = window.location.href;
           }

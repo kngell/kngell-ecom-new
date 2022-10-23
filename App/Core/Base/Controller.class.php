@@ -18,7 +18,7 @@ abstract class Controller extends AbstractController
     public function __call($name, $argument) : void
     {
         if (is_string($name) && $name !== '') {
-            $method = $name . 'Page';
+            $method = $this->request->isAjax() ? $name : $name . 'Page';
             if (method_exists($this, $method)) {
                 if ($this->before() !== false) {
                     call_user_func_array([$this, $method], $argument);

@@ -7,6 +7,7 @@ class ShippingClassEntity extends Entity
     /** @id */
     private int $shcId;
     private int $shCompId;
+    /** @title */
     private string $shName;
     private string $shDescr;
     private string $status;

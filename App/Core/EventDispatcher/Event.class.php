@@ -6,6 +6,7 @@ class Event implements StoppableEventInterface, EventsInterface
 {
     private bool $propagationStopped = false;
     private ?object $object = null;
+    private ?object $relatedObject = null;
     private string $name = '';
     private array $params = [];
     private ?object $results = null;
@@ -128,7 +129,23 @@ class Event implements StoppableEventInterface, EventsInterface
     public function setResults(object $results) : self
     {
         $this->results = $results;
+        return $this;
+    }
 
+    /**
+     * Get the value of relatedObject.
+     */
+    public function getRelatedObject(): ?object
+    {
+        return $this->relatedObject;
+    }
+
+    /**
+     * Set the value of relatedObject.
+     */
+    public function setRelatedObject(?object $relatedObject): self
+    {
+        $this->relatedObject = $relatedObject;
         return $this;
     }
 

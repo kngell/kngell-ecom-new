@@ -18,4 +18,8 @@ interface EventsInterface
     public function setParams($params) : self;
 
     public function getParams() : array;
+
+    public function setRelatedObject(?object $relatedObject): self;
+
+    public function getRelatedObject(): ?object;
 }

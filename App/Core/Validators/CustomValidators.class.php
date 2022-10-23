@@ -23,7 +23,7 @@ abstract class CustomValidator
         try {
             return $this->runValidation();
         } catch (Exception $e) {
-            throw new BaseException("Validation Exception on ' . get_class() . ' : ' . $e->getMessage()", 1);
+            throw new BaseException('Validation Exception on ' . get_class() . ' : ' . $e->getMessage(), 1);
         }
     }
 

@@ -77,24 +77,36 @@ class Uploader extends SplFileInfo implements UploaderInterface
         }
     }
 
-    public function saveFile(string $directory, string|null $newName = null) : string
+    public function saveFile(string $directory, string|null $newName = null) : bool
     {
         if (!$this->isValid()) {
             throw new FilesException($this->getErrorMessage());
         }
+        $directory = $this->fileSyst->checkWritable($directory, true);
         $this->fileSyst->createDirectory($directory);
         $target = rtrim($directory, DS) . DS . ($newName ?? $this->originalName);
         $error = '';
-        set_error_handler(function ($type, $msg) use (&$error) {
-            $error = $msg;
-        });
-        $fileMoved = move_uploaded_file($this->getPathname(), $target);
-        restore_error_handler();
-        if (!$fileMoved) {
-            throw new FilesException(sprintf('Could not move file "%s " to "%s "-->"%s".', $this->getPathname(), $target, strip_tags($error)));
+        if (!file_exists($target)) {
+            set_error_handler(function ($type, $msg) use (&$error) {
+                $error = $msg;
+            });
+            $fileMoved = move_uploaded_file($this->getPathname(), $target);
+            restore_error_handler();
+            if (!$fileMoved) {
+                throw new FilesException(sprintf('Could not move file "%s " to "%s "-->"%s".', $this->getPathname(), $target, strip_tags($error)));
+            }
+            @chmod($target, 0666 & ~umask());
         }
-        @chmod($target, 0666 & ~umask());
-        return $target;
+        $this->syncSrcLocation($target);
+        return true;
+    }
+
+    public function syncSrcLocation(string $file) : void
+    {
+        $targetFilePath = basename(dirname($file)) . DS . basename($file);
+        if (!file_exists(IMAGE_ROOT_SRC . $targetFilePath)) {
+            copy($file, IMAGE_ROOT_SRC . $targetFilePath);
+        }
     }
 
     public function getErrorMessage() : ?string

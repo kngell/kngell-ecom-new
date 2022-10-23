@@ -42,7 +42,6 @@ final class DatabaseConnexion implements DatabaseConnexionInterface
                 throw new DatabaseConnexionExceptions($e->getMessage(), (int) $e->getCode());
             }
         }
-
         return $this->con;
     }
 

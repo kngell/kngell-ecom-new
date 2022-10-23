@@ -3,16 +3,13 @@
 declare(strict_types=1);
 class Model extends AbstractModel
 {
-    use ModelTrait;
     protected string $defaultMedia;
-
     private $_results;
     private int $_count;
     private bool $_softDelete = false;
     private bool $_deleted_item = false;
     private string $_current_ctrl_method = 'update';
     private int $_lasID;
-    private bool $_flatDb;
 
     /**
      * Main Constructor
@@ -30,9 +27,11 @@ class Model extends AbstractModel
         $this->_modelName = $this::class;
     }
 
-    public function assign(array $data) : self
+    public function assign(array|bool $data) : self
     {
-        $this->entity->assign($data);
+        if($data) {
+            $this->entity->assign($data);
+        }
         return $this;
     }
 
@@ -47,21 +46,38 @@ class Model extends AbstractModel
             $this->set($mediakey, serialize([$this->tableSchema . DS . $this->defaultMedia]));
             return $this;
         }
+        $newAry = [];
         foreach ($files->all() as $uploader) {
             $incommingPath = $this->tableSchema . DS . $uploader->getOriginalName();
-            if (file_exists($dir . $incommingPath)) {
-                if ($incommingPath == $this->entity->{$$mediakey}) {
-                    return $this;
-                } else {
-                    $setter = $this->entity->getSetter($mediakey);
-                    $this->entity->{$setter}(serialize([$incommingPath]));
-                    return $this;
+            if ($uploader->saveFile($dir . $this->tableSchema, $newName)) {
+                $newAry[] = $incommingPath;
+            }
+        }
+        list($ToDelete, $ToSave) = $this->filterUpload($newAry, $mediakey);
+        $this->set($mediakey, serialize($ToSave));
+        $this->deleteFiles($ToDelete);
+        return $this;
+    }
+
+    public function deleteFiles(array $files = []) : void
+    {
+    }
+
+    public function filterUpload(array $new, string $mediakey) : array
+    {
+        $existingAry = [];
+        if($this->isInitialized($mediakey)) {
+            $getter = $this->entity->getGetters($mediakey);
+            $existingAry = unserialize($this->entity->$getter());
+        }
+        if(count($new) > count($existingAry)) {
+            foreach ($existingAry as $mediapth) {
+                if(!in_array($mediapth, $new)) {
+                    $new[] = $mediapth;
                 }
             }
-            $path[] = $uploader->saveFile($dir . $this->tableSchema, $newName);
         }
-        $this->set($mediakey, serialize($paths));
-        return $this;
+        return [array_diff($existingAry, $new), $new];
     }
 
     public function guardedID(): array
@@ -132,27 +148,28 @@ class Model extends AbstractModel
      * Save Data insert or update
      * ============================================================.
      * @param array $params
-     * @return ?object
+     * @return ?self
      */
-    public function save(?Entity $entity = null) : ?Object
+    public function save(null|Entity|CollectionInterface $entity = null): ?self
     {
-        $en = is_null($entity) ? $this->entity : $entity;
-        if ($this->beforeSave($entity)) {
-            if ($en->isInitialized($en->getColId())) {
-                $en = $this->beforeSaveUpadate($en);
-                $save = $this->update();
-            } else {
-                $en = $this->beforeSaveInsert($en);
-                $save = $this->insert();
-            }
-            if ($save->count() > 0) {
-                $params['saveID'] = $save ?? '';
-
-                return $this->afterSave($params);
-            }
+        $en = $this->beforeSave($entity);
+        if ($en->isInitialized($en->getColId())) {
+            $en = $this->beforeSaveUpadate($en);
+            $save = $this->update();
+        } else {
+            $en = $this->beforeSaveInsert($en);
+            $save = $this->insert();
         }
-
+        if ($save->count() > 0) {
+            $params['saveID'] = $save ?? '';
+            return $this->afterSave($params);
+        }
         return null;
+    }
+
+    public function existsLastId() : bool
+    {
+        return isset($this->_lasID);
     }
 
     public function validator(array $items = []) : void

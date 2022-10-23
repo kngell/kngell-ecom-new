@@ -21,7 +21,7 @@ class Input_Manager {
       }
     }
   };
-  error = (form, InputErr, valeur = null) => {
+  error = (form, InputErr, labelTopValue = null) => {
     let arrErr = [];
     for (const [key, value] of Object.entries(InputErr)) {
       if (key == "terms") {
@@ -41,7 +41,7 @@ class Input_Manager {
         if (input.val().length > 0) {
           label.css("top", "");
         } else {
-          label.css("top", valeur + "%");
+          label.css("top", labelTopValue + "%");
         }
       }
       arrErr.push(key);

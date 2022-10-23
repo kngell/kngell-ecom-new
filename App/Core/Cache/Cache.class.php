@@ -71,7 +71,6 @@ class Cache extends AbstractCache
         } catch (Throwable $throwable) {
             throw new CacheException('An exception was thrown in retrieving the key from the cache backend.', 0, $throwable);
         }
-
         return true;
     }
 
@@ -83,7 +82,6 @@ class Cache extends AbstractCache
     public function clear(): bool
     {
         $this->storage->flush();
-
         return true;
     }
 
@@ -147,7 +145,6 @@ class Cache extends AbstractCache
     public function exists(string $key): bool
     {
         $this->ensureCacheEntryIdentifierIsvalid($key);
-
         return $this->storage->hasCache($key);
     }
 }

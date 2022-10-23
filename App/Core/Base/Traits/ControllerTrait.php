@@ -26,7 +26,7 @@ trait ControllerTrait
     {
         /** @var CollectionInterface */
         $shopping_cart = $this->getUserCart();
-        $shopping_cart = $shopping_cart->filter(function ($sc) use ($m) {
+        return $shopping_cart->filter(function ($sc) use ($m) {
             if (is_int($m)) {
                 return $sc->item_id === $m;
             }
@@ -35,8 +35,6 @@ trait ControllerTrait
 
             return $sc->item_id === $en->getItemId();
         });
-
-        return $shopping_cart;
     }
 
     public function saveViewPage() : void
@@ -51,11 +49,17 @@ trait ControllerTrait
         }
     }
 
-    protected function isIncommingDataValid(object $m, string $ruleMethod, array $newKeys = []) : void
+    protected function isIncommingDataValid(object $m, string $ruleMethod, array $newKeys = [], ?string $script = null) : void
     {
         method_exists('Form_rules', $ruleMethod) ? $m->validator(Form_rules::$ruleMethod()) : '';
         if (!$m->validationPasses()) {
-            $this->jsonResponse(['result' => 'error-field', 'msg' => $m->getErrorMessages($newKeys)]);
+            $response = ['result' => 'error-field', 'msg' => $m->getErrorMessages($newKeys)];
+            if (!$this->request->isAjax() && $script != null) {
+                $script = str_replace('{{response}}', $response, $script);
+                echo $script;
+            } else {
+                $this->jsonResponse($response);
+            }
         }
     }
 
@@ -75,13 +79,19 @@ trait ControllerTrait
         return $m;
     }
 
-    protected function isValidRequest(?string $csrfName = null) : array
+    protected function isValidRequest(?string $csrfName = null) : bool|array
     {
         $data = $this->request->get();
         if ($data['csrftoken'] && $this->token->validate($data['csrftoken'], $csrfName == null ? $data['frm_name'] : $csrfName)) {
             return $data;
         }
-        throw new BaseException('Veuillez rafraichir la page svp!');
+        if ($this->request->isAjax()) {
+            $this->jsonResponse(['result' => 'error', 'msg' => 'redirect']);
+        } else {
+            header('location :' . $this->request->pageUrl());
+        }
+        return false;
+        //throw new BaseException('Veuillez rafraichir la page svp!');
     }
 
     /**

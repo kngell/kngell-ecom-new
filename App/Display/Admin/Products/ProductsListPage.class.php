@@ -19,10 +19,6 @@ class ProductsListPage extends AbstractProductsListPage implements DisplayPagesI
         ];
     }
 
-public function xxx()
-{
-}
-
     protected function additionnalForms(array $frms = []): string
     {
         $frmHtml = '';
@@ -73,7 +69,7 @@ public function xxx()
     protected function frm(): FormBuilder
     {
         return $this->frm->form([
-            'action' => DS . 'admin' . DS . 'admin_products' . DS . 'add',
+            'action' => '#', //DS . 'admin' . DS . 'admin_products' . DS . 'add',
             'class' => ['new-product-frm', 'needs-validation'],
             'id' => 'new-product-frm',
             'enctype' => 'multipart/form-data',

@@ -13,7 +13,6 @@ trait ModelTrait
         $this->setResults($results->count() > 0 ? $results->get_results() : null);
         $this->setCount($results->count() > 0 ? $results->count() : 0);
         $results = null;
-
         return $this;
     }
 
@@ -65,7 +64,6 @@ trait ModelTrait
         $result = $this->getRepository()->entity($this->getEntity())->create();
         $this->setCount($result->count());
         $this->setLastID($result->getLasID() ?? 0);
-
         return $this;
     }
 
@@ -75,7 +73,6 @@ trait ModelTrait
         $this->getEntity()->delete($this->getEntity()->regenerateField($this->getEntity()->getColID()));
         $result = $this->getRepository()->entity($this->getEntity())->update($conditions);
         $this->setCount($result->count());
-
         return $this;
     }
 
@@ -84,7 +81,6 @@ trait ModelTrait
         list($conditions) = $this->conditions()->getQueryParams()->params('delete');
         $result = $this->getRepository()->entity($this->getEntity())->delete($conditions);
         $this->setCount($result->count());
-
         return $this;
     }
 
@@ -115,7 +111,6 @@ trait ModelTrait
             }
             $m->set_results($array ? (array) $model : $model);
         }
-
         return $m;
     }
 
@@ -139,42 +134,57 @@ trait ModelTrait
 
     public function set(string $field, mixed $value) : void
     {
-        if ($this->isInitialized($field)) {
+        if ($this->entity->exists($field) && isset($value)) {
             $method = $this->entity->getSetter($field);
             $this->entity->$method($value);
         }
     }
 
-    private function getModelProperties()
+    public function getModelProperties()
     {
         $props = YamlFile::get('model_properties');
         if ($this->_flatDb === true) {
             $props['repository'] = FileStorageRepositoryFactory::class;
         }
-
         return $props;
     }
 
-    private function properties() : void
+    public function select2Data()
     {
-        $this->container = property_exists($this, 'container') ? Container::getInstance() : '';
+        $title = $this->entity->getColId('title');
+        $this->table()->return('object');
+        $data = $this->getAll()->get_results();
+        $search = strtolower($this->request->get('search_term'));
+        if ($search !== 'undefined') {
+            $data = array_filter($data, function ($item) use ($search, $title) {
+                return str_starts_with(strtolower($item->$title), $search);
+            });
+        }
+        return array_map(function ($item) use ($title) {
+            $colID = $this->entity->getColId();
+            return ['id' => $item->$colID, 'text' => StringUtil::htmlDecode($item->$title)];
+        }, $data);
+    }
+
+    protected function properties() : void
+    {
         $props = array_merge(['entity' => str_replace(' ', '', ucwords(str_replace('_', ' ', $this->tableSchema))) . 'Entity'], $this->getModelProperties());
         foreach ($props as $prop => $class) {
             if (property_exists($this, $prop)) {
                 $this->{$prop} = match ($prop) {
-                    'queryParams' => $this->container->make($class, [
+                    'queryParams' => $this->container($class, [
                         'tableSchema' => $this->tableSchema,
                     ]),
-                    'repository' => $this->container->make($class, [
+                    'repository' => $this->container($class, [
                         'crudIdentifier' => 'crudIdentifier',
                         'tableSchema' => $this->tableSchema,
                         'tableSchemaID' => $this->tableSchemaID,
                         'entity' => $this->entity,
                     ])->create(),
-                    'validator' => $this->container->make($class, [
+                    'validator' => $this->container($class, [
                         'validator' => YamlFile::get('validator'),
                     ]),
-                    default => $this->container->make($class)
+                    default => $this->container($class)
                 };
             }
         }

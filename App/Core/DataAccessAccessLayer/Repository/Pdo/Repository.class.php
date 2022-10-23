@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 class Repository extends AbstractRepository implements RepositoryInterface
 {
-    protected EntityManagerInterface $em;
-
     /**
      * Main constructor
      * ====================================================================.
@@ -13,13 +11,12 @@ class Repository extends AbstractRepository implements RepositoryInterface
      */
     public function __construct(EntityManagerInterface $em)
     {
-        $this->em = $em;
+        parent::__construct($em);
     }
 
-    public function entity(Entity $entity) : self
+    public function entity(Entity|CollectionInterface $entity) : self
     {
         $this->entity = $entity;
-
         return $this;
     }
 

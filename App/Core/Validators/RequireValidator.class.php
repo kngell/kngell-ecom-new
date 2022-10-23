@@ -16,7 +16,6 @@ class RequireValidator extends CustomValidator
             $getter = $en->getGetters($this->getField());
             $value = $this->getModel()->getEntity()->{$getter}();
         }
-
         return !(empty($value) || $value == '[]');
     }
 }

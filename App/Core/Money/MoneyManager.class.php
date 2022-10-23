@@ -31,13 +31,12 @@ class MoneyManager
         return Money::ofMinor($price, $currencyCode);
     }
 
-    public function setPrice(mixed $price) : string
+    public function persistPrice(mixed $price) : string
     {
-        if (!empty($price) && isset($price)) {
-            return (string) $this->getAmount($price);
+        if (empty($price) || !isset($price)) {
+            $price = '0';
         }
-
-        return '0';
+        return (string) $this->getAmount($price)->getAmount();
     }
 
     public function setCurrency(Money $price) : string
@@ -48,7 +47,6 @@ class MoneyManager
     public function getAmount(string $p = '')
     {
         $this->isEmpty($p);
-
         return Money::of($p, 'EUR', new AutoContext());
     }
 

@@ -259,7 +259,6 @@ class CustomerEntity extends Entity
     public function setShipTo(string $shipTo) : self
     {
         $this->shipTo = $shipTo;
-
         return $this;
     }
 
@@ -279,7 +278,6 @@ class CustomerEntity extends Entity
     public function setBillTo(string $billTo) : self
     {
         $this->billTo = $billTo;
-
         return $this;
     }
 

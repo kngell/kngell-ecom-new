@@ -21,7 +21,6 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
     public function prepare(string $sql):self
     {
         $this->_query = $this->_con->open()->prepare($sql);
-
         return $this;
     }
 
@@ -70,7 +69,6 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
         if ($type) {
             return $this;
         }
-
         return false;
     }
 
@@ -82,22 +80,31 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
      */
     public function bindValues(array $fields = []) : PDOStatement
     {
-        if (!empty($fields)) {
-            if (isset($fields['bind_array'])) {
-                unset($fields['bind_array']);
-            }
-            foreach ($fields as $key => $val) {
-                if (in_array($key, ['and', 'or'])) {
-                    $val = current($val);
+        if (array_key_exists('values', $fields) && array_key_exists('fields', $fields)) {
+            $i = 0;
+            foreach ($fields['values'] as $values) {
+                foreach ($values as $index => $v) {
+                    $this->bind(':value' . $i . $index, $v);
                 }
-                if (is_array($val)) {
-                    $this->bindVal($key, $val);
-                } else {
-                    $val != 'IS NULL' ? $this->bind(":$key", $val) : '';
+                $i++;
+            }
+        } else {
+            if (!empty($fields)) {
+                if (isset($fields['bind_array'])) {
+                    unset($fields['bind_array']);
+                }
+                foreach ($fields as $key => $val) {
+                    if (in_array($key, ['and', 'or'])) {
+                        $val = current($val);
+                    }
+                    if (is_array($val)) {
+                        $this->bindVal($key, $val);
+                    } else {
+                        $val != 'IS NULL' ? $this->bind(":$key", $val) : '';
+                    }
                 }
             }
         }
-
         return $this->_query;
     }
 
@@ -150,7 +157,6 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
                 'read','showColumns' => $this->select_result($options),
                 'create','update','delete' => $this->c_u_d_result(),
             };
-
             return $this;
         }
     }
@@ -165,7 +171,6 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
     {
         try {
             $sql = $this->cleanSql($sql);
-
             return isset($parameters[0]) && $parameters[0] == 'all' ? $this->prepare($sql)->execute() : $this->prepare($sql)->bindParameters($parameters)->execute();
         } catch (Throwable $th) {
             throw $th;
@@ -200,7 +205,6 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
         if (isset($sqlArr) & count($sqlArr) > 1) {
             $this->bind_arr = unserialize($sqlArr[1]);
         }
-
         return $sqlArr[0];
     }
 

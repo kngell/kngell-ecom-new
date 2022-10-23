@@ -162,7 +162,6 @@ abstract class AbstractQueryBuilder
 
             return [$q, $sql];
         }
-
         return [$q, ''];
     }
 
@@ -203,7 +202,6 @@ abstract class AbstractQueryBuilder
                 }
             }
         }
-
         return $where;
     }
 
@@ -243,6 +241,33 @@ abstract class AbstractQueryBuilder
         }
 
         return $sql;
+    }
+
+    protected function insertKeys(array $aryFields) : string
+    {
+        if (!array_key_exists('fields', $aryFields) && !array_key_exists('values', $aryFields)) {
+            return implode(', ', array_keys($aryFields));
+        }
+        return implode(', ', $aryFields['fields']);
+    }
+
+    protected function insertValues(array $aryFields) : string
+    {
+        if (!array_key_exists('fields', $aryFields) && !array_key_exists('values', $aryFields)) {
+            return '(:' . implode(', :', array_keys($this->key['fields'])) . ')';
+        }
+        $i = 0;
+        $all_prefix = '';
+        foreach ($aryFields['values'] as $key => $values) {
+            $arr = [];
+            $prefixer = '(';
+            $prefixer .= $this->arrayPrefixer('value' . $i, $values, $arr);
+            $prefixer .= ')' . ($key == array_key_last($aryFields['values']) ? '' : ', ');
+            $all_prefix .= $prefixer;
+            $this->key['fields']['bind_array'][] = $arr;
+            $i++;
+        }
+        return $all_prefix;
     }
 
     protected function isQueryTypeValid(string $type) : bool
@@ -322,7 +347,6 @@ abstract class AbstractQueryBuilder
             $str .= ':' . $prefix . $index . ',';
             $bindArray[$prefix . $index] = $value;
         }
-
         return rtrim($str, ',');
     }
 }

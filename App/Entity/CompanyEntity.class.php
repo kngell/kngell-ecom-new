@@ -6,6 +6,7 @@ class CompanyEntity extends Entity
 {
     /** @id */
     private int $compId;
+    /** @title */
     private string $sigle;
     private string $denomination;
     private string $siret;

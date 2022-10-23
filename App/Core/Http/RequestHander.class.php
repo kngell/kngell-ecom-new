@@ -140,7 +140,6 @@ class RequestHandler extends GlobalVariables
             }
             return $data;
         }
-
         return isset($postData[$input]) ? $this->sanitizer::clean($postData[$input]) : false;
     }
 

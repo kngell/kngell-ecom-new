@@ -44,17 +44,14 @@ abstract class AbstractFormSteps
         } else {
             list($html, $text) = $this->addressBook->all();
         }
-
-        return $addreMode == 'text' ? $this->response->htmlDecode($text) : $html;
+        return $addreMode == 'text' ? StringUtil::htmlDecode($text) : $html;
     }
 
     protected function buttons(?string $nextText = null) : string
     {
         $btnGroup = $this->getTemplate('buttonGroupPath');
         $btnGroup = str_replace('{{buttonsLeft}}', $this->btns->buttonsGroup('prev'), $btnGroup);
-        $btnGroup = str_replace('{{buttonsRight}}', $this->btns->buttonsGroup('next', $nextText), $btnGroup);
-
-        return $btnGroup;
+        return str_replace('{{buttonsRight}}', $this->btns->buttonsGroup('next', $nextText), $btnGroup);
     }
 
     protected function titleTemplate(string $title = '') : string

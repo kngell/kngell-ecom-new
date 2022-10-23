@@ -27,7 +27,6 @@ class TreeBuilder implements TreeBuilderInterface
                 $branch[] = $item;
             }
         }
-
         return $branch;
     }
 
@@ -39,7 +38,6 @@ class TreeBuilder implements TreeBuilderInterface
             $this->buildBranch($item, $items);
             $tree[] = $item;
         }
-
         return $tree;
     }
 

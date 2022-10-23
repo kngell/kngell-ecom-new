@@ -1,4 +1,4 @@
-import AppConfig from "corejs/app_config.js";
+// import AppConfig from "corejs/app_config.js";
 class SideBarMenu {
   constructor() {
     this.body = $("body");

@@ -6,6 +6,7 @@ class UnitsEntity extends Entity
 {
     /** @id */
     private int $unId;
+    /** @title */
     private string $unit;
     private string $descr;
     private DateTimeInterface $createdAt;

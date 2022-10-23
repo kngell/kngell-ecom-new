@@ -11,10 +11,9 @@ class PaymentModeManager extends Model
         parent::__construct($this->_table, $this->_colID);
     }
 
-    public function all()
+    public function all() : CollectionInterface
     {
         $this->table()->return('object');
-
         return new Collection($this->getAll()->get_results());
     }
 }

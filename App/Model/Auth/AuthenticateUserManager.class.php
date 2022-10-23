@@ -11,7 +11,7 @@ class AuthenticateUserManager extends Model
     public function __construct()
     {
         parent::__construct($this->_table, $this->_colID);
-        $this->userSession = $this->container->make(UserSessionsManager::class);
+        $this->userSession = $this->container(UserSessionsManager::class);
     }
 
     public function authenticate() : bool|array
@@ -23,7 +23,6 @@ class AuthenticateUserManager extends Model
             $u->_count = $user->count();
             $u->setEntity($this->entity);
             $user = null;
-
             return [$u, (int) $u->number];
         }
 
@@ -35,7 +34,7 @@ class AuthenticateUserManager extends Model
         if (!AuthManager::isUserLoggedIn()) {
             $this->assign((array) $this);
             /** @var VisitorsManager */
-            $visitor = $this->container->make(VisitorsManager::class)->manageVisitors([
+            $visitor = $this->container(VisitorsManager::class)->manageVisitors([
                 'ip' => H_visitors::getIP(),
             ]);
             $this->session->set(CURRENT_USER_SESSION_NAME, [
@@ -46,7 +45,6 @@ class AuthenticateUserManager extends Model
                 'verified' => (int) $this->verified ?? 0,
                 'customer_id' => (string) $this->customer_id ?? '',
             ]);
-
             return $this->userSession->assign(array_merge($data, $this->manageSession($visitor, $remember_me)))->save();
         }
 
@@ -55,20 +53,21 @@ class AuthenticateUserManager extends Model
 
     public function rememberMeCheck() : array
     {
-        if ($this->cookie->exists(REMEMBER_ME_COOKIE_NAME)) {
-            $rem = $this->cookie->get(REMEMBER_ME_COOKIE_NAME);
-            $this->userSession->getDetails($rem, 'remember_me_cookie');
-            if ($this->userSession->count() === 1) {
-                $userSession = $this->userSession->get_results();
-
-                return [
-                    'remember' => true,
-                    'email' => $userSession->email,
-                    'password' => $userSession->password,
-                ];
-            }
+        if (!$this->cookie->exists(REMEMBER_ME_COOKIE_NAME)) {
+            $visitor = $this->container(VisitorsManager::class)->manageVisitors();
+            $en = $visitor->getEntity();
+            $cookies = $en->{$en->getGetters('cookies')}();
         }
-
+        $rem = $cookies ?? $this->cookie->get(REMEMBER_ME_COOKIE_NAME);
+        $this->userSession->getDetails($rem, 'remember_me_cookie');
+        if ($this->userSession->count() === 1) {
+            $userSession = $this->userSession->get_results();
+            return [
+                'remember' => true,
+                'email' => $userSession->email,
+                'password' => $userSession->password,
+            ];
+        }
         return [];
     }
 
@@ -80,12 +79,16 @@ class AuthenticateUserManager extends Model
                 if (!$session->getEntity()->isInitialized('remember_me_cookie')) {
                     return $this->rememberCookie();
                 }
-
-                return $session->getEntity()->{'getRememberMeCookie'}();
+                $cookieSession = $session->getEntity()->{'getRememberMeCookie'}();
+                if ($this->cookie->exists(REMEMBER_ME_COOKIE_NAME) && $cookieSession != $this->cookie->get(REMEMBER_ME_COOKIE_NAME)) {
+                    $cookieSession = $this->cookie->get(REMEMBER_ME_COOKIE_NAME);
+                    $session->set('remember_me_cookie', $cookieSession);
+                    $session->save();
+                }
+                return $cookieSession;
             }
             $rem_cookie = $this->rememberCookie();
         }
-
         return $rem_cookie;
     }
 
@@ -148,7 +151,6 @@ class AuthenticateUserManager extends Model
     {
         $sessionDb = $this->userSession->getDetails($this->getEntity()->{'getUserId'}(), 'user_id');
         $sessionDb->count() == 1 ? $sessionDb = $sessionDb->assign((array) $sessionDb->get_results()) : '';
-
         return [
             'remember_me_cookie' => $this->rememberMe($remember_me, $sessionDb),
             'session_token' => $this->sessionToken($sessionDb),
@@ -174,6 +176,6 @@ class AuthenticateUserManager extends Model
 
     private function acls() : array
     {
-        return $this->container->make(UsersManager::class)->get_selectedOptions($this) ?? [];
+        return $this->container(UsersManager::class)->get_selectedOptions($this) ?? [];
     }
 }

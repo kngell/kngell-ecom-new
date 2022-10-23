@@ -20,10 +20,22 @@ class AdminPagesController extends Controller
     {
         $this->pageTitle('Admin - All Products');
         $this->view()->addProperties(['name' => 'All Products']);
-        $this->render('products' . DS . 'allProducts', $this->showAdminProducts(
+        $this->render('products' . DS . 'allProducts', $this->showProductsList(
             brand:null,
             cache: $this->cachedFiles['products_list']
         ));
+    }
+
+    protected function editProduct(array $args = []) : void
+    {
+        /** @var ProductsManager */
+        $model = $this->model(ProductsManager::class)->assign($this->isValidRequest())->getEditedProduct();
+        if ($model->count() > 0) {
+            $this->jsonResponse([
+                'result' => 'success',
+                'msg' => $this->showEditProduct($model),
+            ]);
+        }
     }
 
     protected function allBrandsPage(array $params = [])

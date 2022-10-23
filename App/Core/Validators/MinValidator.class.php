@@ -7,8 +7,6 @@ class MinValidator extends CustomValidator
     {
         $getter = $this->getModel()->getEntity()->getGetters($this->getField());
         $value = $this->getModel()->getEntity()->{$getter}();
-        $pass = (strlen($value) >= $this->getRule());
-
-        return $pass;
+        return (strlen($value) >= $this->getRule());
     }
 }

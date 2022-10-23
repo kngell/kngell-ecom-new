@@ -65,9 +65,7 @@ abstract class AbstractAuthSystem
         $loginTemplate = str_replace('{{submit}}', $form->input($print->submit(name: 'sigin'))
             ->label('Login')->id('sigin')
             ->html(), $loginTemplate);
-        $loginTemplate = str_replace('{{form_end}}', $form->end(), $loginTemplate);
-
-        return $loginTemplate;
+        return str_replace('{{form_end}}', $form->end(), $loginTemplate);
     }
 
     protected function registerForm() : string
@@ -106,9 +104,7 @@ abstract class AbstractAuthSystem
         $registerTemplate = str_replace('{{submit}}', (string) $form->input([
             SubmitType::class => ['name' => 'reg_singin'], ], null, ['show_label' => false,
             ])->label('Register')->id('reg_singin'), $registerTemplate);
-        $registerTemplate = str_replace('{{form_end}}', $form->end(), $registerTemplate);
-
-        return $registerTemplate;
+        return str_replace('{{form_end}}', $form->end(), $registerTemplate);
     }
 
     protected function forgotForm() : string
@@ -128,8 +124,6 @@ abstract class AbstractAuthSystem
         $template = str_replace('{{submit}}', (string) $form->input([
             SubmitType::class => ['name' => 'forgot'],
         ])->label('Reset Password'), $template);
-        $template = str_replace('{{form_end}}', $form->end(), $template);
-
-        return $template;
+        return str_replace('{{form_end}}', $form->end(), $template);
     }
 }

@@ -13,7 +13,6 @@ class UpdateCustomerSessionAddressListener implements ListenerInterface
         $newAddresses = $this->updateCustomerAddress($customerEntity, $address);
         $customerEntity->setAddress($newAddresses);
         $controller->getSession()->set(CHECKOUT_PROCESS_NAME, serialize($customerEntity));
-
         return [];
     }
 

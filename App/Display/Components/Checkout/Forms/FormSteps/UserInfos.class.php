@@ -46,7 +46,6 @@ class UserInfos extends AbstractFormSteps implements CheckoutFormStepInterface
             $temp = str_replace('{{deliveryAddress}}', $this->deliveryAdress(), $temp);
             $temp = str_replace('{{buttons_group}}', $this->buttons(), $temp);
         }
-
         return $temp;
     }
 
@@ -57,7 +56,6 @@ class UserInfos extends AbstractFormSteps implements CheckoutFormStepInterface
 
             return $htmlChk;
         }
-
         return '';
     }
 

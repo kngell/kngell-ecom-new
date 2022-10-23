@@ -10,4 +10,6 @@ interface FilesSystemInterface
     public function createDirectory(string $directory) : void;
 
     public function search_file(string $folder, ?string $file_to_search = null, ?string $subFolder = '', array &$results = []) : array;
+
+    public function checkWritable(string $directory, bool $autoupload = false) : string;
 }

@@ -1,12 +1,10 @@
 import { isEmpty } from "lodash";
-import { plugin } from "postcss";
 
 export default class Upload {
   constructor(dz) {
     this.files = [];
     this.element = dz;
   }
-
   /**
    * Upload Files
    * ================================================================
@@ -27,9 +25,8 @@ export default class Upload {
       inactive();
       return false;
     });
-    plugin.element.on("click", (e) => {
-      let inputEl = plugin._createInputFile();
-      plugin._manageInputFile(inputEl);
+    plugin.element.on("click", () => {
+      plugin._manageInputFile();
     });
     plugin.element.on("drop", (e) => {
       plugin.element.find(".button").prop("disabled", true).addClass("disable");
@@ -59,8 +56,9 @@ export default class Upload {
    * Manage Input
    * =======================================================================
    */
-  _manageInputFile = (inputEl) => {
-    let plugin = this;
+  _manageInputFile = () => {
+    const plugin = this;
+    let inputEl = plugin._createInputFile();
     inputEl.click();
     inputEl.on("change", function (e) {
       let files = e.originalEvent.path[0].files;
@@ -96,14 +94,13 @@ export default class Upload {
           plugin._createExtraDiv(files[i], gallery_item);
           plugin.element.find(".gallery").append(gallery_item);
           plugin.files.push(files[i]);
-          // files.add(files[i]);
-          // inputEl !== null ? inputEl[0].files.push(files[i]) : "";
         }
-        inputEl.prop("files", plugin._makeFileList(plugin.files));
+        plugin._update_inputFiles(inputEl, plugin.files);
         plugin.element.on("click", ".gallery_item", function (e) {
           e.stopPropagation();
         });
         plugin._removeFiles();
+        plugin.element.parent().append(inputEl);
       }
     }
     if (plugin.files.length == 0) {
@@ -111,7 +108,14 @@ export default class Upload {
     } else {
       plugin.element.find(".message").hide();
     }
-    plugin.element.append(inputEl);
+  };
+  _update_inputFiles = (inputEl, files) => {
+    const plugin = this;
+    const input = plugin.element.parent().find("input[type='file']");
+    if (input.length > 0) {
+      input.remove();
+    }
+    inputEl.prop("files", plugin._makeFileList(files));
   };
   /**
    * Filter Files (no duplicate)
@@ -201,16 +205,17 @@ export default class Upload {
   //Remove File
   //=======================================================================
   _removeFiles = () => {
-    let plugin = this;
+    const plugin = this;
     plugin.element.find(".remove_item").on("click", function (e) {
       e.stopPropagation();
       let gallery_item = $(this).parents(".gallery_item");
       gallery_item.remove();
       if (plugin.element.find(".gallery").children().length == 0) {
         plugin.element.find(".message").show();
+        plugin.element.parent().find("input[type='file']").remove();
         plugin.element.removeClass("drag-enter");
         plugin.element
-          .find(".button")
+          .find(".button.btn-highlight")
           .prop("disabled", false)
           .removeClass("disable");
       }
@@ -235,5 +240,9 @@ export default class Upload {
       e.stopPropagation();
       $(this).remove();
     });
+  };
+  _clear = () => {
+    const plugin = this;
+    plugin.files = [];
   };
 }

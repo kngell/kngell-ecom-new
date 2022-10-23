@@ -10,6 +10,7 @@
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no, minimal-ui">
    <link rel="stylesheet" type="image/ico" href="<?='favicon.ico'?>">
    <meta name="csrftoken" content="<?=$this->token->create(8, $this->getPageTitle())?>" />
+   <meta name="frm_name" content="<?=$this->getPageTitle()?>" />
    <title><?=$this->getSiteTitle()?>
    </title>
    <!-- Librairies -->

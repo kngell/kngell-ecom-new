@@ -4,15 +4,22 @@ declare(strict_types=1);
 abstract class AbstractQueryParams implements QueryParamsInterface
 {
     protected const SEPARATOR = ['OR', 'XOR'];
-    protected const OPERATOR = ['!=', '=', '<=', '>=', 'IN', 'NOT IN'];
+    protected const OPERATOR = ['!=', '=', '<=', '>=', '<>', 'IN', 'NOT IN'];
     protected string $current_table = '';
     protected string $tableSchema;
+    protected null|Entity|CollectionInterface $entity;
     protected string $tableSuffix = '';
     /** @var array */
     protected array $query_params = [];
     /** @var array */
     protected array $conditionBreak = [];
     private string $braceOpen = '';
+
+    public function __construct(string $tableSchema, ?object $entity)
+    {
+        $this->tableSchema = $tableSchema;
+        $this->entity = $entity;
+    }
 
     public function hasConditions() : bool
     {
@@ -24,7 +31,6 @@ abstract class AbstractQueryParams implements QueryParamsInterface
         $this->query_params = [];
         $this->conditionBreak = [];
         $this->braceOpen = '';
-
         return $this;
     }
 
@@ -33,7 +39,6 @@ abstract class AbstractQueryParams implements QueryParamsInterface
         if (is_string($separator) && is_numeric($key) && in_array(strtoupper($separator), self::SEPARATOR)) {
             return strtoupper($separator);
         }
-
         return 'AND';
     }
 
@@ -51,10 +56,8 @@ abstract class AbstractQueryParams implements QueryParamsInterface
             if (!count($parts) === 1) {
                 throw new BaseInvalidArgumentException('Argument ou condition mal renseignée');
             }
-
             return [current($parts), $operator];
         }
-
         return [$field, '='];
     }
 
@@ -76,7 +79,18 @@ abstract class AbstractQueryParams implements QueryParamsInterface
                 return [$val, $tbl];
             }
         }
-
+        if (is_string($value) && str_contains($value, '|')) {
+            $parts = explode('|', $value);
+            if ($parts[0] && $parts[0] === 'collection' && $this->entity->count() > 0) {
+                $val = [];
+                foreach ($this->entity as $entity) {
+                    $getter = $entity->getGetters($parts[1]);
+                    $val[] = $entity->$getter();
+                }
+                $tbl = isset($parts[2]) ? $parts[2] : $this->tableSchema;
+                return [$val, $tbl];
+            }
+        }
         return [$value, $tbl];
     }
 
@@ -99,7 +113,6 @@ abstract class AbstractQueryParams implements QueryParamsInterface
         if ($params['braceEnd'] != '') {
             $where[$params['field']]['braceEnd'] = $params['braceEnd'];
         }
-
         return $where;
     }
 
@@ -107,7 +120,6 @@ abstract class AbstractQueryParams implements QueryParamsInterface
     {
         if (str_contains($field, '|')) {
             $parts = explode('|', $field);
-
             return count($parts) > 1 ? [$parts[0], $parts[1]] : [$parts[0], ''];
         }
     }
@@ -136,7 +148,6 @@ abstract class AbstractQueryParams implements QueryParamsInterface
         if (count($conditions) > 2 || (isset($prevCondition['separator']) && in_array($prevCondition['separator'], self::SEPARATOR))) {
             return $this->braceOpen = '(';
         }
-
         return '';
     }
 
@@ -147,7 +158,6 @@ abstract class AbstractQueryParams implements QueryParamsInterface
 
             return ')';
         }
-
         return '';
     }
 
@@ -160,7 +170,6 @@ abstract class AbstractQueryParams implements QueryParamsInterface
         $whereParams['braceOpen'] = ($key == $firstKey) || (is_numeric($key) && in_array($value, ['or', 'and']) || !empty($this->conditionBreak)) ? $this->braceOpen($conditions) : '';
         $whereParams['braceEnd'] = $this->braceClose($whereParams['separator'], $key);
         $whereParams['value'] = $value;
-
         return $whereParams;
     }
 
@@ -220,28 +229,37 @@ abstract class AbstractQueryParams implements QueryParamsInterface
     protected function getSelectors() : array
     {
         $selectors = [];
+        $tbl_columns = $this->tableColumns();
         $this->key('selectors');
-        if (array_key_exists('table_join', $this->query_params)) {
-            foreach ($this->query_params['table_join'] as $tbl => $columns) {
-                if (!is_array($columns)) {
-                    throw new Exception('Columns must be in array!');
-                }
-                foreach ($columns as $column) {
-                    if (str_contains($column, '|')) {
-                        $parts = explode('|', $column);
-                        if (is_array($parts) && count($parts) < 3) {
-                            array_push($selectors, $parts[0] . '(' . $tbl . '.' . $parts[1] . ')');
-                        } else {
-                            array_push($selectors, $parts[0] . '(' . $tbl . '.' . $parts[1] . ') AS ' . $parts[2]);
-                        }
+        foreach ($tbl_columns as $tbl => $columns) {
+            if (!is_array($columns)) {
+                throw new Exception('Columns must be in array!');
+            }
+            foreach ($columns as $column) {
+                if (str_contains($column, '|')) {
+                    $parts = explode('|', $column);
+                    if (is_array($parts) && count($parts) < 3) {
+                        array_push($selectors, $parts[0] . '(' . $tbl . '.' . $parts[1] . ')');
                     } else {
-                        array_push($selectors, $tbl . '.' . $column);
+                        array_push($selectors, $parts[0] . '(' . $tbl . '.' . $parts[1] . ') AS ' . $parts[2]);
                     }
+                } else {
+                    array_push($selectors, $tbl . '.' . $column);
                 }
             }
         }
-
         return $this->query_params['selectors'] = $selectors;
+    }
+
+    protected function tableColumns() : array
+    {
+        if ($this->entity !== null && $this->entity instanceof CollectionInterface && $this->entity->count() > 0) {
+            $entity = $this->entity->all()[0];
+            $attrs = $entity->getInitializedAttributes();
+            $tbl = StringUtil::separate(substr($entity::class, 0, strpos($entity::class, 'Entity')));
+            return [$tbl => array_keys($attrs)];
+        }
+        return array_key_exists('table_join', $this->query_params) ? $this->query_params['table_join'] : [];
     }
 
     protected function recursiveCount() : void

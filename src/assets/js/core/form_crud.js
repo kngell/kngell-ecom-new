@@ -82,6 +82,7 @@ export function Call_controller(data, gestion) {
     },
     error: function (request, status, error) {
       $(".alertErr").html(request.responseText);
+      window.location.reload;
       console.log(request.responseText, error);
     },
   });

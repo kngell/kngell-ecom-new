@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 class QueryParams extends AbstractQueryParams
 {
-    public function __construct(string $tableSchema)
+    public function __construct(string $tableSchema, ?object $entity = null)
     {
-        $this->tableSchema = $tableSchema;
+        parent::__construct($tableSchema, $entity);
     }
 
     public function table(?string $tbl = null, mixed $columns = null) : self
@@ -15,14 +15,12 @@ class QueryParams extends AbstractQueryParams
         $tbl = $this->parseTable($tbl);
         $this->query_params['table_join'] = [$tbl != null ? $tbl : $this->tableSchema => $columns != null ? $columns : ['*']];
         $this->addTableToOptions($tbl);
-
         return $this;
     }
 
     public function params(?string $repositoryMethod = null) : array
     {
         $this->getSelectors();
-
         return match ($repositoryMethod) {
             'findOneBy' => [$this->query_params['conditions'] ?? [],  $this->query_params['options'] ?? []],
             'findBy','findBySearch' => [$this->query_params['selectors'] ?? [], $this->query_params['conditions'] ?? [], $this->query_params['parameters'] ?? [], $this->query_params['options'] ?? []],
@@ -72,7 +70,6 @@ class QueryParams extends AbstractQueryParams
                 $tableIndex++;
             }
         }
-
         return $this;
     }
 
@@ -96,7 +93,6 @@ class QueryParams extends AbstractQueryParams
                     $this->conditionBreak = $whereParams;
                 }
             }
-
             return $this;
         }
     }
@@ -176,7 +172,6 @@ class QueryParams extends AbstractQueryParams
     {
         $this->key('options');
         $this->query_params['options']['return_mode'] = $str;
-
         return $this;
     }
 

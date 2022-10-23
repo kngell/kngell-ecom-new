@@ -64,7 +64,6 @@ abstract class AbstractDataMapper
         $type = $this->returnMode($data);
         $q = $this->fetchMode($type, $this->_query, $data);
         $check = array_key_exists('return_type', $data) ? $data['return_type'] : 'all';
-
         return match ($check) {
             'count' => $q->rowCount(),
             'single' => $q->fetch(),
@@ -76,7 +75,6 @@ abstract class AbstractDataMapper
     protected function c_u_d_result() : mixed
     {
         $this->setLastID();
-
         return $this->numrow();
     }
 
@@ -113,7 +111,6 @@ abstract class AbstractDataMapper
                 default => PDO::FETCH_ASSOC
             };
         }
-
         return $returnMode;
     }
 }

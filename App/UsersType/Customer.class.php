@@ -30,7 +30,6 @@ class Customer extends UsersManager
                 ]);
             }
         }
-
         return $this;
     }
 
@@ -47,9 +46,7 @@ class Customer extends UsersManager
             $pmg = $this->container(PaymentGatewayInterface::class, [
                 'params' => ['customer_id' => $customer_id],
             ])->create();
-            $cards = $pmg->retriveCustomer($customer_id)->getCards();
-
-            return $cards;
+            return $pmg->retriveCustomer($customer_id)->getCards();
         }
 
         return new stdClass();

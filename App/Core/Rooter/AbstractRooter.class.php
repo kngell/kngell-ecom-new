@@ -75,8 +75,7 @@ abstract class AbstractRooter
     protected function createController(): string
     {
         $controllerName = $this->params['controller'] . $this->controllerSuffix;
-        $controllerName = StringUtil::studlyCaps($controllerName);
-        return $controllerName;
+        return StringUtil::studlyCaps($controllerName);
     }
 
     protected function createMethod(): string
@@ -92,7 +91,7 @@ abstract class AbstractRooter
         if ($url != null) {
             if ($url == 'favicon.ico') {
                 $this->arguments = [$url];
-                $route = 'assets' . DS . 'getAsset';
+                return 'assets' . DS . 'getAsset';
             }
             $urlroute = explode(DS, filter_var(rtrim($url, DS)));
             if (isset($urlroute[0])) {

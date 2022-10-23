@@ -26,7 +26,6 @@ class EventDispatcher extends AbstractEventDispatcher implements EventDispatcher
             }
         }
         $event->setResults($eventResults);
-
         return $event;
     }
 

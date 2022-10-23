@@ -30,16 +30,30 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
         return false;
     }
 
+    public function checkWritable(string $directory, bool $autoupload = false) : string
+    {
+        if (is_dir($directory) && is_writable($directory)) {
+            return $directory;
+        }
+        if (is_dir($directory) && !is_writable($directory)) {
+            if ($autoupload) {
+                chmod($directory, 0777);
+            } else {
+                throw new FilesException(sprintf('The Directory"%s" exists but is not writable. you can create a directory when it doesn\'t exist', $directory));
+            }
+        }
+        return $directory;
+    }
+
     public function createDirectory(string $directory): void
     {
-        if (is_dir($directory) && !is_writable($directory)) {
-            return;
+        if (!is_dir($directory)) {
+            throw new FilesException(sprintf('Directory %s doest not exist', $directory));
         }
-        if (is_dir($directory) && !is_writable($directory)) {
-            throw new FilesException(sprintf('The Directory"%s" exists but is not writable. you can create a directory when it doesn\'t exist', $directory));
-        }
-        if (!@mkdir($directory, 0777, true)) {
-            throw new FilesException(sprintf('Unable to create directory %s', $directory));
+        if (!file_exists($directory)) {
+            if (!@mkdir($directory, 0777, true)) {
+                throw new FilesException(sprintf('Unable to create directory %s', $directory));
+            }
         }
     }
 

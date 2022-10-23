@@ -23,7 +23,6 @@ class CustomReflector implements CustomReflectorInterface
         if ($this->reflect->getName() !== $obj) {
             return $this->reflect = new ReflectionClass($obj);
         }
-
         return $this->reflect;
     }
 

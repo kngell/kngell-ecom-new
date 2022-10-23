@@ -42,7 +42,7 @@ class Crud extends AbstractCrud implements CrudInterface
             $arg = ['table' => $this->getSchema(), 'type' => 'insert', 'fields' => $fields];
             $query = $this->queryBuilder->buildQuery($arg)->insert();
             $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($fields));
-            if ($this->dataMapper->numrow() == 1) {
+            if ($this->dataMapper->numrow() > 0) {
                 return $this->dataMapper->results([], __FUNCTION__);
             }
         } catch (Throwable $th) {
@@ -73,7 +73,6 @@ class Crud extends AbstractCrud implements CrudInterface
             if ($this->dataMapper->numrow() > 0) {
                 return $this->dataMapper->results($options, __FUNCTION__);
             }
-
             return $this->dataMapper;
         } catch (\Throwable $th) {
             throw new DataAccessLayerException($th->getMessage());
@@ -113,11 +112,7 @@ class Crud extends AbstractCrud implements CrudInterface
             ];
             $query = $this->queryBuilder->buildQuery($arg)->update();
             $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($conditions, $fields));
-            if ($this->dataMapper->numrow() == 1) {
-                return $this->dataMapper->results([], __FUNCTION__);
-            }
-
-            return 0;
+            return $this->dataMapper->results([], __FUNCTION__);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -138,7 +133,6 @@ class Crud extends AbstractCrud implements CrudInterface
             ];
             $query = $this->queryBuilder->buildQuery($arg)->delete();
             $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($conditions));
-
             return $this->dataMapper->results([], __FUNCTION__);
         } catch (\Throwable $th) {
             throw $th;

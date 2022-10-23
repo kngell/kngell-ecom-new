@@ -12,12 +12,12 @@ class UserSessionsManager extends Model
         parent::__construct($this->_table, $this->_colID);
     }
 
-    public function save(?Entity $entity = null): ?object
-    {
-        $entity != null ? $this->entity = $entity : '';
-        // if (( new ReflectionProperty($this->entity, $this->entity->getColId()))->isInitialized($this->entity)) {
-        //     $this->update();
-        // }
-        return parent::save();
-    }
+    // public function beforeSave(null|Entity|CollectionInterface $entity = null) : mixed
+    // {
+    //     $entity != null ? $this->entity = $entity : '';
+    //     // if (( new ReflectionProperty($this->entity, $this->entity->getColId()))->isInitialized($this->entity)) {
+    //     //     $this->update();
+    //     // }
+    //     return parent::save();
+    // }
 }
