@@ -13,8 +13,14 @@ export default class ModalManager {
   };
   _open = (modalName) => {
     const plugin = this;
-    plugin.promise.then((modal) => {
+    plugin.promise().then((modal) => {
       modal[modalName].show();
+    });
+  };
+  _close = (modalName) => {
+    const plugin = this;
+    plugin.promise().then((modal) => {
+      modal[modalName].hide();
     });
   };
 }

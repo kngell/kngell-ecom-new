@@ -166,7 +166,7 @@ class AuthenticateUserManager extends Model
         $this->table()
             ->leftJoin('login_attempts', ['COUNT|la_id|number'])
             ->on(['user_id', 'user_id|login_attempts'], ['timestamp|>=|' => [time() - 60 * 60, 'login_attempts']])
-            ->where(['email' => [$email, 'users']])
+            ->where(['email' => $email . '|users'])
             ->groupBy(['user_id' => 'users'])
             ->return('class')
             ->build();

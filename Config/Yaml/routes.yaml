@@ -2,51 +2,39 @@ get: # Http Get ===========================================
   "/":
     controller: home
     method: index
-    namespace: Client/brand
   home:
     controller: home
     method: index
-    namespace: Client/brand
   clothes:
     controller: home
     method: vetements
-    namespace: Client/brand
   shop:
     controller: home
     method: boutique_vetements
-    namespace: Client/brand
   account:
     controller: user_account
     method: my_account_show
-    namespace: Client/components
   error:
     controller: errors
     method: index
-    namespace: Client
   card:
     controller: learning
     method: index
-    namespace: Client/components/checkout
   todo:
     controller: home
     method: todo
-    namespace: Client/components
   checkout:
     controller: home
     method: index
-    namespace: Client
   lib:
     controller: home
     method: lib
-    namespace: Client/brand/clothes
   learn:
     controller: learning
     method: index
-    namespace: Client
   cart:
     controller: shopping_cart
     method: index
-    namespace: Client/components
   proceed_to_checkout:
     controller: checkout
     method: index
@@ -60,7 +48,6 @@ get: # Http Get ===========================================
   admin:
     controller: admin_pages
     method: index
-    namespace: Admin
 post: # Http Post method =========================================================
   visitors:
     controller: visitors
@@ -95,17 +82,12 @@ post: # Http Post method =======================================================
   proceed_to_checkout:
     controller: checkout
     method: index
-    namespace: Client/components
   cart:
     controller: shopping_cart
     method: index
-    namespace: Client/components
   activation/activate/{token:[\da-f]+}:
     controller: activate_user_with_ajax
     method: activate
   /{controller}/{method}/{id:[\da-f]+}:
-    namespace: Ajax
   /{controller}/{method}:
-    namespace: Ajax
   client/{controller}/{method}:
-    namespace: Client

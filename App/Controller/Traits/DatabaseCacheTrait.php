@@ -6,14 +6,23 @@ trait DatabaseCacheTrait
 {
     public function getCachedData(?string $fileName = null, array $cm = [], array $params = [], int $time = 20) : Object
     {
+        $cacheFile = $this->cachedFiles[$fileName] ?? $fileName;
         if ((!is_array($cm) || !is_array($params)) || empty($cm)) {
             throw new BaseInvalidArgumentException('Paramètres collecte des données invalides', 1);
         }
-        if (!$this->cache->exists($this->cachedFiles[$fileName] ?? $fileName)) {
-            $this->cache->set($this->cachedFiles[$fileName] ?? $fileName, call_user_func_array($cm, !empty($params) ? $params : []), $time);
+        if (!$this->cache->exists($cacheFile)) {
+            $this->cache->set($cacheFile, call_user_func_array($cm, !empty($params) ? $params : []), $time);
         }
-
-        return $this->cache->get($this->cachedFiles[$fileName] ?? $fileName);
+        if ($this->session->exists(ACTIVE_CACHE_FILES)) {
+            if (!in_array($cacheFile, $this->session->get(ACTIVE_CACHE_FILES))) {
+                $activeCacheFile = $this->session->get(ACTIVE_CACHE_FILES);
+                $activeCacheFile[] = $cacheFile;
+                $this->session->set(ACTIVE_CACHE_FILES, $activeCacheFile);
+            }
+        } else {
+            $this->session->set(ACTIVE_CACHE_FILES, [$cacheFile]);
+        }
+        return $this->cache->get($cacheFile);
     }
 
     public function getUserCart() : CollectionInterface
@@ -34,6 +43,11 @@ trait DatabaseCacheTrait
     protected function getUnits(int|string $brand = null, ?string $cache = null) : CollectionInterface
     {
         return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(UnitsManager::class), 'all'], [$brand]);
+    }
+
+    protected function getBackBorder(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    {
+        return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(BackBorderManager::class), 'all'], [$brand]);
     }
 
     protected function getCompany(int|string $brand = null, ?string $cache = null) : CollectionInterface

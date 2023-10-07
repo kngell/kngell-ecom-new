@@ -27,6 +27,7 @@ exports.alias = {
   js: path.resolve(__dirname, "src", "assets", "js"),
   css: path.resolve(__dirname, "src", "assets", "css"),
   module: path.resolve(__dirname, "node_modules"),
+  root: path.resolve(__dirname),
 };
 
 /**
@@ -72,7 +73,7 @@ const serverOpt = {
   proxy: {
     context: () => true,
     "/**": {
-      target: "https://localhost",
+      target: "https://kngell-ecom.da",
       secure: false,
       changeOrigin: true,
       pathRewrite: { "^/kngell-ecom": "" },

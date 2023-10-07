@@ -8,7 +8,7 @@ trait DisplayFormElementTrait
     {
         $options = [];
         if (!is_null($obj) && $obj->count() > 0) {
-            $options[] = (new Option(['value' => '', 'content' => '']))->selected(true)->disable(true);
+            $options[] = (new Option(['value' => '-1', 'content' => '']))->selected(true)->disable(true);
             foreach ($obj as $item) {
                 $options[] = new Option([
                     'value' => $item->$valueName,
@@ -197,10 +197,11 @@ trait DisplayFormElementTrait
         return str_replace('{{' . $attr['htmlPlace'] . '}}', $html, $template);
     }
 
-    protected function inputSelect(string $template, string $input, FormBuilder $frm, array $attr, ?object $product = null)
+    protected function inputSelect(string $template, string $input, FormBuilder $frm, array $attr)
     {
+        $name = array_key_exists('formAttr', $attr) && in_array('multiple', $attr['formAttr']) ? $input . '[]' : $input;
         $frm->input(
-            [SelectType::class => ['name' => $input]],
+            [SelectType::class => ['name' => $name]],
             $this->options($attr['options']['object'], $attr['options']['id'], $attr['options']['content'], $frm)
         );
         $attr['label'] == false ? $frm->noLabel() : $frm->labelUp($attr['label']);

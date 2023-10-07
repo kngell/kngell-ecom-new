@@ -10,8 +10,12 @@ class ClearCacheListener implements ListenerInterface
         /** @var Controller */
         $object = $event->getObject();
         if (isset($params['cache'])) {
-            $cache = $params['cache'];
-            $object->getCache()->delete($cache);
+            foreach ($params['cache'] as $cache) {
+                if ($object->getCache()->exists($cache)) {
+                    $object->getCache()->delete($cache);
+                }
+            }
+            $object->getSession()->delete(ACTIVE_CACHE_FILES);
         }
         return [];
     }

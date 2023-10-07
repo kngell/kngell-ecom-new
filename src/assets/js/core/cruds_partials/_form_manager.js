@@ -4,6 +4,7 @@ export default class FormManager {
     this.frm = app.frm;
     this.appConfig = app.appConfig;
     this.dropzone = app.dropzone;
+    this.select = app.select;
   }
   _init = () => {
     return this;
@@ -56,13 +57,14 @@ export default class FormManager {
           : "";
         if (plugin.hasOwnProperty("select")) {
           if (Array.isArray(plugin.select)) {
-            $(plugin.select).each(function (i, tag) {
-              plugin.frm.find("#" + tag).empty();
-              plugin.frm.find("#" + tag).trigger("input");
-            });
+            for (const [key, value] of Object.entries(plugin.select)) {
+              plugin.frm
+                .find("#" + key)
+                .empty()
+                .trigger("input");
+            }
           } else {
-            plugin.frm.find(plugin.select).empty();
-            plugin.frm.find(plugin.select).trigger("input");
+            plugin.frm.find(plugin.select).empty().trigger("input");
           }
         }
       });

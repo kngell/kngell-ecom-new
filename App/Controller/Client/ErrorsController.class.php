@@ -8,12 +8,12 @@ class ErrorsController extends Controller
         parent::__construct($params);
     }
 
-    public function indexPage($data)
+    public function indexPage($data) : ResponseHandler
     {
         $this->setLayout('default');
         $this->pageTitle('Errors');
         $this->view()->addProperties(['name' => 'Errors']);
-        $this->render('errors' . DS . '_errors', $data);
+        return $this->render('errors' . DS . '_errors', $data);
     }
 
     public function userPage($data)

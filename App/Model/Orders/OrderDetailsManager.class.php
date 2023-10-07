@@ -18,7 +18,7 @@ class OrderDetailsManager extends Model
         $this->table()
             ->leftJoin('products', ['title', 'short_descr', 'media'])
             ->on(['od_product_id|order_details', 'pdt_id|products'])
-            ->whereIn(['od_order_id|order_details' => $keys])
+            ->where(['od_order_id|in' => [$keys, 'order_details']])
             ->return('object');
 
         return new Collection($this->getAll()->get_results());

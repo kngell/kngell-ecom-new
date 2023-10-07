@@ -1,0 +1,27 @@
+admin:
+  product_list:
+    warehouse:
+      type: multiple
+      attrs:
+        id: wh_id
+        name: wh_name
+    shipping_class:
+      type: normal
+      attrs:
+        id: shc_id
+        name: sh_name
+    unit_id:
+      type: normal
+      attrs:
+        id: un_id
+        name: unit
+    company:
+      type: normal
+      attrs:
+        id: comp_id
+        name: sigle
+    back_border:
+      type: normal
+      attrs:
+        id: bb_id
+        name: name

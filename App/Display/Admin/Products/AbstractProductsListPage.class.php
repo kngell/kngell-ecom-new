@@ -10,9 +10,11 @@ abstract class AbstractProductsListPage
     protected string $frmTemplate;
     protected string $productFrmtemplate;
     protected string $categorieItemTemplate;
+    // protected array $select2Fields = [];
     protected ?CollectionInterface $paths;
     protected ?CollectionInterface $products;
     protected ?CollectionInterface $productUnits;
+    protected ?CollectionInterface $backborder;
     protected ?CollectionInterface $shippingClass;
     protected ?CollectionInterface $company;
     protected ?CollectionInterface $warehouse;
@@ -21,28 +23,22 @@ abstract class AbstractProductsListPage
     protected ?FormBuilder $frm;
     protected ?CollectionInterface $arrInputs;
 
-    public function __construct(?ProductsListPaths $paths, ?CollectionInterface $products, ?CollectionInterface $productUnits, ?CollectionInterface $shippingClass, ?CollectionInterface $company, ?CollectionInterface $warehouse, ?CollectionInterface $categories, ?MoneyManager $money = null, ?FormBuilder $frm = null)
+    public function __construct(array $params)
     {
-        $this->paths = $paths->Paths();
-        $this->products = $products;
-        $this->productUnits = $productUnits;
-        $this->shippingClass = $shippingClass;
-        $this->company = $company;
-        $this->warehouse = $warehouse;
-        $this->categories = $categories;
+        $this->properties($params);
         $this->template = $this->getTemplate('productsListPaths');
         $this->frmTemplate = $this->getTemplate('productsfrmPaths');
         $this->productFrmtemplate = $this->getTemplate('productformPath');
         $this->categorieItemTemplate = $this->getTemplate('categorieItemPath');
-        $this->money = $money;
-        $this->frm = $frm;
         $this->arrInputs = (new ModalProductFormAttributes(
-            $productUnits,
-            $shippingClass,
-            $company,
-            $warehouse,
-            $categories
+            $this->productUnits,
+            $this->backborder,
+            $this->shippingClass,
+            $this->company,
+            $this->warehouse,
+            $this->categories
         ))->merge();
+        // $this->select2Fields = $this->select2Fields;
     }
 
     protected function form(?string $type = null, int|string $id = null) : string
@@ -64,8 +60,7 @@ abstract class AbstractProductsListPage
         $template = str_replace('{{button}}', $this->frm->input([
             ButtonType::class => ['type' => $btnType, 'class' => ['editBtn']],
         ])->content($btnContent)->attr($btnAttr)->html(), $template);
-        $template = str_replace('{{form_end}}', $frm->end(), $template);
-        return $template;
+        return str_replace('{{form_end}}', $frm->end(), $template);
     }
 
     protected function productInfos(FormBuilder $frm, ?object $product = null) : string

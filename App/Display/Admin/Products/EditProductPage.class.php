@@ -15,7 +15,7 @@ class EditProductPage extends AbstractEditProductPage implements DisplayPagesInt
          if (isset($product_branch->media) && empty(unserialize($product_branch->media))) {
              unset($product_branch->media);
          } else {
-             $product_branch->media = [$this->media($product_branch)];
+             $product_branch->media = $this->media($product_branch, null, false);
          }
          return [
              'items' => $product_branch,
@@ -28,6 +28,7 @@ class EditProductPage extends AbstractEditProductPage implements DisplayPagesInt
      {
          return [
              'categorie' => $this->categories(),
+             'select_field' => $this->selectFields(),
          ];
      }
 }

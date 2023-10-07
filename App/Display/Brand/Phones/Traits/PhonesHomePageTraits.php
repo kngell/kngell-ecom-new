@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 trait PhonesHomePageTraits
 {
-    protected function outputProduct(string $template, ?stdClass $product = null) : string
+    protected function outputProduct(string $template, ?object $product = null) : string
     {
-        $product->userCart = $this->userCart->getUserCart();
-        $template = str_replace('{{route}}', 'details' . DS . 'single' . DS . $product->slug, $template);
-        $template = str_replace('{{image}}', $product->media != '' ? ImageManager::asset_img(unserialize($product->media)[0]) : ImageManager::asset_img('products/1.png'), $template);
-        $template = str_replace('{{title}}', $product->title ?? 'Unknown', $template);
-        $template = str_replace('{{price}}', $this->money->getFormatedAmount(strval($product->regular_price)), $template);
-        $template = str_replace('{{ProductForm}}', $this->productForm($product), $template);
-        $template = str_replace('{{brandClass}}', $product->categorie ?? 'Brand', $template);
-
-        return $template;
+        if (($media = $this->media($product, null, true)) !== '') {
+            $product->userCart = $this->userCart->getUserCart();
+            $template = str_replace('{{route}}', $this->detailsRoute($product), $template);
+            $template = str_replace('{{image}}', $media, $template);
+            $template = str_replace('{{title}}', $product->title ?? 'Unknown', $template);
+            $template = str_replace('{{price}}', $this->money->getFormatedAmount(strval($product->regular_price)), $template);
+            $template = str_replace('{{ProductForm}}', $this->productForm($product), $template);
+            return str_replace('{{brandClass}}', $product->categorie ?? 'Brand', $template);
+        }
+        return '';
     }
 
     protected function productForm(object $product, ?string $title = null) : string
@@ -40,9 +41,15 @@ trait PhonesHomePageTraits
         $template = str_replace('{{button}}', $form->input([
             ButtonType::class => ['type' => 'submit', 'class' => $class],
         ])->content($title)->noWrapper()->html(), $template);
-        $template = str_replace('{{form_end}}', $form->end(), $template);
+        return str_replace('{{form_end}}', $form->end(), $template);
+    }
 
-        return $template;
+    private function detailsRoute(object $product) : string
+    {
+        if (isset($product->slug)) {
+            return 'details' . DS . 'single' . DS . $product->slug;
+        }
+        return '';
     }
 
     private function producttitleAndClass(?object $dataRepository = null, ?string $title = null) : array

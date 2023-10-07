@@ -144,6 +144,15 @@ exports.assetsRules = {
           },
         ],
       },
+      {
+        test: /\.ya?ml$/i,
+        // options: { asJSON: true },
+        loader: "yaml-loader",
+      },
+      {
+        test: /\.json$/i,
+        type: "json",
+      },
       // {
       //   test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
       //   use: [

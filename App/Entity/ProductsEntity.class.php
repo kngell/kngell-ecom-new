@@ -22,7 +22,7 @@ class ProductsEntity extends Entity
     private string $trackQty;
     private string $continiousSell;
     private int $qty;
-    private string $backBorder;
+    private int $backBorder;
     private int $stockThreshold;
     private string $weight;
     private string $lenght;
@@ -367,7 +367,7 @@ class ProductsEntity extends Entity
     /**
      * Get the value of backBorder.
      */
-    public function getBackBorder() : string
+    public function getBackBorder() : int
     {
         return $this->backBorder;
     }
@@ -377,7 +377,7 @@ class ProductsEntity extends Entity
      *
      * @return  self
      */
-    public function setBackBorder(string $backBorder) : self
+    public function setBackBorder(int $backBorder) : self
     {
         $this->backBorder = $backBorder;
 

@@ -98,6 +98,7 @@ class Home {
               new Isotope(elem, {
                 itemSelector: ".grid-item",
                 layoutMode: "masonry",
+                filter: ".transition",
                 masonry: {
                   columnWidth: 0,
                   isFitWidth: true,

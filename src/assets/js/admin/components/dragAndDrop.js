@@ -9,7 +9,15 @@ class DragAndDrop {
   };
   _handle = () => {
     const plugin = this;
-    return plugin.up._upload();
+    plugin.up = plugin.up._upload();
+    return plugin;
+  };
+  _get_existing_files = () => {
+    const plugin = this;
+    const inputEl = plugin.element.parent().find("input[type='file']");
+    console.log(inputEl.prop("files"), plugin.up.files);
+    plugin.up.files = inputEl.prop("files");
+    return plugin;
   };
   _clear = () => {
     const plugin = this;

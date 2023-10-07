@@ -1,5 +1,3 @@
-import { Call_controller } from "corejs/form_crud";
-
 export default class Edit {
   constructor(parameters) {
     this.wrapper = parameters.wrapper;
@@ -12,6 +10,7 @@ export default class Edit {
     this.mainfrm = parameters.mainfrm;
     this.appConfig = parameters.appConfig;
     this.categorieSelector = parameters.categorieSelector;
+    this.Call_controller = parameters.Call_controller;
   }
   _init = () => {
     return this;
@@ -24,14 +23,13 @@ export default class Edit {
       frm_name: plugin.frm_name,
     };
     const ajax_params = plugin._clean_params(params);
-    Call_controller({ ...data, ...ajax_params }, manageR);
+    plugin.Call_controller({ ...data, ...ajax_params }, manageR);
     function manageR(response, fields) {
       plugin._manageResponse(response, fields);
     }
   };
   _manageResponse = (response) => {
     const plugin = this;
-    console.log(response);
     if (response.result === "success") {
       $.map(response.msg.items, function (value, field) {
         switch (true) {
@@ -67,8 +65,8 @@ export default class Edit {
       });
       plugin._fetch_categories(response, plugin.categorieSelector);
     } else {
-      if (plugin.form.find(".alertErr").length != 0) {
-        plugin.form.find(".alertErr").html(response.msg);
+      if (plugin.frm.find(".alertErr").length != 0) {
+        plugin.frm.find(".alertErr").html(response.msg);
       }
     }
     if (response.msg.input_hidden !== "undefined") {
@@ -89,44 +87,49 @@ export default class Edit {
   };
   _fetch_select2_field = (response, field) => {
     const plugin = this;
-    if (response.msg.selectedOptions.hasOwnProperty(select_field)) {
-      if (response.msg.selectedOptions[field].length != 0) {
-        $(response.msg.selectedOptions[field][0]).each(function () {
-          let select = plugin.frm.find("." + field);
-          if (!select.find("option[value='" + field.id + "']").length) {
-            select.append(new Option(this.text, field.id, false, true));
-            select.val(response.msg.selectedOptions[field][1]);
-            select.trigger("change");
-          }
-        });
+    if (response.msg.selectedOptions.hasOwnProperty("select_field")) {
+      const value = response.msg.selectedOptions.select_field[field];
+      if (Object.keys(value).length !== 0) {
+        let select = plugin.mainfrm.find("#" + field);
+        if (select.prop("multiple")) {
+          let selected = Array();
+          let options = Array();
+          value.forEach(function (item, i) {
+            selected.push(item.id);
+            options.push(new Option(item.text, item.id, false, true));
+            if (!select.find("option[value='" + item.id + "']").length) {
+              select
+                .append(new Option(item.text, item.id, false, true))
+                .trigger("change");
+            }
+          });
+          select.val(selected).trigger("change");
+        } else {
+          plugin._fill_select_options(select, value);
+        }
       }
     }
   };
-  _fetch_media_field = (response, field) => {
+  _fill_select_options = (select, value) => {
+    if (!select.find("option[value='" + value.id + "']").length) {
+      select
+        .append(new Option(value.text, value.id, false, true))
+        .trigger("change");
+    }
+    select.val(value.id).trigger("change");
+  };
+  _fetch_media_field = async (response, field) => {
     const plugin = this;
-    let dz = plugin.dropzone; //.up._upload();
+    let dz = plugin.dropzone.up;
     if (response.msg.items[field] && dz != null) {
-      $(dz.element).find(".message").hide();
       dz.files = [];
       $.each(response.msg.items[field], (key, value) => {
-        let gallery_item = dz._createGallery(value);
-        dz._showFile(value)
-          .then((file) => {
-            dz.files.push(file);
-            dz._createExtraDiv(file, gallery_item);
-          })
-          .catch(function (error) {
-            console.log(
-              "Il y a eu un problème avec l'opération fetch: " + error.message
-            );
-          });
-        dz.element.find(".gallery").append(gallery_item);
-        dz.element.on("click", ".gallery_item", (e) => {
-          e.stopPropagation();
+        dz._urlToObject(value).then((file) => {
+          dz._handleDrop([file], dz._createInputFile());
         });
       });
-      dz._removeFiles();
     }
+    return dz;
   };
   _fetch_all_field = (response, field) => {
     if ($("#" + field).is("input")) {

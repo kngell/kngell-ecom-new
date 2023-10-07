@@ -5,8 +5,13 @@ User-agent: *
 Disallow: /vendor/
 Disallow: /Storage/
 Disallow: /bin/
-Disallow: /Core/
+Disallow: /App/
 Disallow: /test/
+Disallow: /Services/
+Disallow: /Files/
+Disallow: /session_dir/
+Disallow: /Config/
+Disallow: /Temp/
 Allow: /Public/
 Allow: /Public/themes/
 Allow: /

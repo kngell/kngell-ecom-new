@@ -83,7 +83,7 @@ export default class Upload {
    * @param {*} files
    */
   _handleDrop = (files, inputEl = null) => {
-    let plugin = this;
+    const plugin = this;
     if (files.length != 0) {
       files = plugin._filter_files(files);
       plugin.element.addClass("drag-enter");
@@ -95,12 +95,15 @@ export default class Upload {
           plugin.element.find(".gallery").append(gallery_item);
           plugin.files.push(files[i]);
         }
-        plugin._update_inputFiles(inputEl, plugin.files);
+
         plugin.element.on("click", ".gallery_item", function (e) {
           e.stopPropagation();
         });
         plugin._removeFiles();
-        plugin.element.parent().append(inputEl);
+        if (inputEl !== null) {
+          plugin._update_inputFiles(inputEl, plugin.files);
+          plugin.element.parent().append(inputEl);
+        }
       }
     }
     if (plugin.files.length == 0) {
@@ -244,5 +247,27 @@ export default class Upload {
   _clear = () => {
     const plugin = this;
     plugin.files = [];
+  };
+
+  _urlToObject = async (url) => {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return new File([blob], url.split(/[\\/]/).pop(), {
+      type: blob.type,
+    }); //url.match(/\.([^\./\?]+)($|\?)/)[1]
+  };
+  _isValidURL = (input) => {
+    const pattern =
+      "^(https?:\\/\\/)?" + // protocol
+      "((([a-zA-Z\\d]([a-zA-Z\\d-]{0,61}[a-zA-Z\\d])*\\.)+" + // sub-domain + domain name
+      "[a-zA-Z]{2,13})" + // extension
+      "|((\\d{1,3}\\.){3}\\d{1,3})" + // OR ip (v4) address
+      "|localhost)" + // OR localhost
+      "(\\:\\d{1,5})?" + // port
+      "(\\/[a-zA-Z\\&\\d%_.~+-:@]*)*" + // path
+      "(\\?[a-zA-Z\\&\\d%_.,~+-:@=;&]*)?" + // query string
+      "(\\#[-a-zA-Z&\\d_]*)?$"; // fragment locator
+    const regex = new RegExp(pattern);
+    return regex.test(input);
   };
 }

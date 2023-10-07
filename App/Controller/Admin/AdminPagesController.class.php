@@ -26,7 +26,7 @@ class AdminPagesController extends Controller
         ));
     }
 
-    protected function editProduct(array $args = []) : void
+    protected function editProductPage(array $args = []) : void
     {
         /** @var ProductsManager */
         $model = $this->model(ProductsManager::class)->assign($this->isValidRequest())->getEditedProduct();

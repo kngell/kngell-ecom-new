@@ -28,7 +28,7 @@ class ProductsManager extends Model
                 ->leftJoin('categories', ['categorie'])
                 ->leftJoin('brand', ['br_name'])
                 ->on(['pdt_id',  'pdt_id'], ['cat_id', 'cat_id'], ['br_id', 'br_id'])
-                ->where(['br_id' => [$brand, 'categories']])
+                ->where(['br_id' => $brand . '|categories'])
                 ->groupBy(['pdt_id DESC' => 'product_categorie'])
                 ->return('object');
         }
@@ -46,7 +46,7 @@ class ProductsManager extends Model
                 ['cat_id', 'cat_id'],
                 ['br_id', 'br_id'],
             )
-            ->where(['slug' => [$slug, 'products']])
+            ->where(['slug' => $slug . '|products'])
             ->groupBy(['pdt_id DESC' => 'products'])
             ->return('object');
         $pdt = $this->getAll();
@@ -68,6 +68,7 @@ class ProductsManager extends Model
             ->leftJoin('company', ['comp_id', 'sigle'])
             ->leftJoin('shipping_class', ['shc_id', 'sh_name'])
             ->leftJoin('units', ['un_id', 'unit'])
+            ->leftJoin('back_border', ['bb_id', 'name'])
             ->on(
                 ['pdt_id',  'pdt_id'],
                 ['cat_id', 'cat_id'],
@@ -76,9 +77,10 @@ class ProductsManager extends Model
                 ['wh_id|warehouse_product', 'wh_id|warehouse'],
                 ['company|products', 'comp_id|company'],
                 ['shipping_class|products', 'shc_id|shipping_class'],
-                ['unit_id|products', 'un_id|units']
+                ['unit_id|products', 'un_id|units'],
+                ['back_border|products', 'bb_id|back_border']
             )
-            ->where(['pdt_id' => [$id, 'products']])
+            ->where(['pdt_id' => $id . '|products'])
             ->return('object');
         return $this->getAll();
     }

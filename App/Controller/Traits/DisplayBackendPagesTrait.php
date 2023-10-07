@@ -6,12 +6,16 @@ trait DisplayBackendPagesTrait
     protected function showProductsList(int|string $brand = null, ?string $cache = null) : array
     {
         return $this->container(ProductsListPage::class, [
-            'products' => $this->getProducts(brand: $brand, cache: $cache),
-            'productUnits' => $this->getUnits(),
-            'shippingClass' => $this->getShippingClass(),
-            'company' => $this->getCompany(),
-            'warehouse' => $this->getWarehouse(),
-            'categories' => $this->getCategories(),
+            'params' => [
+                'products' => $this->getProducts(brand: $brand, cache: $cache),
+                'productUnits' => $this->getUnits(),
+                'backborder' => $this->getBackBorder(),
+                'shippingClass' => $this->getShippingClass(),
+                'company' => $this->getCompany(),
+                'warehouse' => $this->getWarehouse(),
+                'categories' => $this->getCategories(),
+                // 'select2Fields' => $this->getSelect2Field()['product_list'],
+            ],
         ])->displayAll();
     }
 

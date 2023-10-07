@@ -61,7 +61,7 @@ class VisitorsManager extends Model
     public function getVisitorByIp() : ?self
     {
         $this->table()->where([
-            'ip_address|in' => [[H_visitors::getIP(), '2', '3'], 'tbl' => 'visitors'],
+            'ip_address|in' => [[H_visitors::getIP(), '2', '3'], 'visitors'],
         ])->return('class');
         $v = $this->getAll();
         if ($v->count() > 1) {
@@ -74,7 +74,7 @@ class VisitorsManager extends Model
     {
         $query_data = $this->table()->where([
             'cookies' => $this->cookie->get(VISITOR_COOKIE_NAME),
-            'ip_address|in' => [[$ip, '2', '3'], 'tbl' => 'visitors'],
+            'ip_address|in' => [[$ip, '2', '3'], 'visitors'],
         ])
             ->return('class')
             ->build();

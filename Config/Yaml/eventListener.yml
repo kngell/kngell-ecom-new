@@ -72,13 +72,15 @@ PaymentEvent:
     priority: 0
 AddNewProductEvent:
   - callback: ClearCacheListener
-    priority: 5
-  - callback: SaveProductsCategoriesListener
-    priority: 4
-  - callback: SaveProductsVariantsListener
-    priority: 3
-  - callback: SaveProductsTagsListener
     priority: 1
+  - callback: SaveWarehouseProductsListener
+    priority: 3
+  - callback: SaveProductsCategoriesListener
+    priority: 6
+  - callback: SaveProductsVariantsListener
+    priority: 5
+  - callback: SaveProductsTagsListener
+    priority: 4
   - callback: ClearUploadedFilesListener
     priority: 2
   - callback: RefreshPageListener

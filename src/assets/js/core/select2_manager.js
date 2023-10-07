@@ -26,7 +26,11 @@ export default class Upload {
     let select = params.element
       .select2({
         placeholder: params.placeholder + " ---",
-        maximumSelectionLength: 2,
+        // minimumInputLength: 3,
+        // maximumSelectionLength: 2,
+        maximumInputLength: 20,
+        // minimumResultsForSearch: Infinity,
+        language: "fr",
         tags: true,
         // tokenSeparators: [";", "\n", "\t"],
         allowClear: true,
@@ -36,6 +40,7 @@ export default class Upload {
         selectionCssClass: "select2--normal",
         dropdownCssClass: "select2--normal",
         dropdownParent: params.element.parent(),
+        multiple: !params.hasOwnProperty("multiple") ? false : params.multiple,
       })
       .on("select2:close", function () {
         $(this)

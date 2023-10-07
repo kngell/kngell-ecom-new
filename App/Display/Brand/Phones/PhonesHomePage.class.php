@@ -47,9 +47,7 @@ class PhonesHomePage extends AbstractBrandPage implements DisplayPagesInterface
         $blogTemplate = $this->getTemplate('blogAreaPath');
         $blogTemplate = str_replace('{{blog1}}', ImageManager::asset_img('blog' . DS . 'blog1.jpg'), $blogTemplate);
         $blogTemplate = str_replace('{{blog2}}', ImageManager::asset_img('blog' . DS . 'blog2.jpg'), $blogTemplate);
-        $blogTemplate = str_replace('{{blog3}}', ImageManager::asset_img('blog' . DS . 'blog3.jpg'), $blogTemplate);
-
-        return $blogTemplate;
+        return str_replace('{{blog3}}', ImageManager::asset_img('blog' . DS . 'blog3.jpg'), $blogTemplate);
     }
 
     private function displayBannerAreaSection() : string
@@ -83,9 +81,7 @@ class PhonesHomePage extends AbstractBrandPage implements DisplayPagesInterface
     {
         $bannerAddTemplate = $this->getTemplate('bannerAddPath');
         $bannerAddTemplate = str_replace('{{banner1}}', ImageManager::asset_img('banner1-cr-500x150.jpg'), $bannerAddTemplate);
-        $bannerAddTemplate = str_replace('{{banner2}}', ImageManager::asset_img('banner2-cr-500x150.jpg'), $bannerAddTemplate);
-
-        return $bannerAddTemplate;
+        return str_replace('{{banner2}}', ImageManager::asset_img('banner2-cr-500x150.jpg'), $bannerAddTemplate);
     }
 
     private function displaySpecialPriceSection() : string
@@ -126,7 +122,6 @@ class PhonesHomePage extends AbstractBrandPage implements DisplayPagesInterface
                 $html .= $this->outputProduct($productTemplate, $product);
             }
         }
-
         return str_replace('{{productsTemplate}}', $html, $template);
     }
 }

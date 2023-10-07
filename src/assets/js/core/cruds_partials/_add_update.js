@@ -1,6 +1,5 @@
 import Swal from "sweetalert2";
 import All from "./_display_items";
-import { Call_controller } from "corejs/form_crud";
 export default class AddUpdate {
   constructor(parameters) {
     this.frm = parameters.frm;
@@ -12,6 +11,9 @@ export default class AddUpdate {
     this.datatable = parameters.datatable ?? false;
     this.table = parameters.table ?? "";
     this.dropzone = parameters.dropzone ?? null;
+    this.modalName = parameters.modalName ?? false;
+    this.select = parameters.select ?? false;
+    this.Call_controller = parameters.Call_controller;
   }
   _init = () => {
     return this;
@@ -22,28 +24,27 @@ export default class AddUpdate {
       url: params.url,
       frm: plugin.frm,
       frm_name: plugin.frm_name,
-      params: params,
     };
     params.hasOwnProperty("imageUrlsAry")
       ? (data.imageUrlsAry = params.imageUrlsAry)
       : "";
-    plugin.hasOwnProperty("select")
+    plugin.hasOwnProperty("select") && plugin.select
       ? (data.select2 = plugin._get_select2_data(plugin.select))
       : "";
-    params.hasOwnProperty("categorie")
-      ? (data.categories = plugin._get_selected_categories(params.categorie))
-      : "";
+    // params.hasOwnProperty("categorie")
+    //   ? (data.categories = plugin._get_selected_categories(params.categorie))
+    //   : "";
     params.hasOwnProperty("folder") ? (data.folder = params.folder) : "";
     params.hasOwnProperty("validator_rules")
       ? (data.validator_rules = params.validator_rules)
       : "";
     if (plugin.hasOwnProperty("dropzone")) {
-      Call_controller(
+      plugin.Call_controller(
         { ...data, ...{ files: plugin.dropzone.up.files } },
         manageR
       );
     } else {
-      Call_controller(data, manageR);
+      plugin.Call_controller(data, manageR);
     }
     function manageR(response, params) {
       plugin._manageResponse(response, params);
@@ -58,14 +59,10 @@ export default class AddUpdate {
         plugin.formManager._show_errors(response.msg);
         break;
       case "success":
-        plugin.frm.trigger("reset");
-        if (plugin.modal) {
-          plugin.modal.then((m) => {
-            m._open();
-          });
-          if (params.swal) {
-            plugin._swal(response, params);
-          }
+        // plugin.frm.trigger("reset");
+        if (plugin.swal) {
+          plugin.modalManager._close(plugin.modalName);
+          plugin._swal(response, params);
         }
         if (params.prepend) {
           params.nested.prepend(response.msg);
@@ -110,12 +107,14 @@ export default class AddUpdate {
     });
   };
   _get_select2_data = (params) => {
+    const plugin = this;
     let select_data = [];
-    $(params).each(function () {
-      if ($("." + this).length != 0) {
-        select_data[this] = Object.values($("." + this).select2("data"));
+    for (const [key, value] of Object.entries(params)) {
+      let select = plugin.frm.find("#" + key);
+      if (select.length != 0) {
+        select_data[key] = Object.values($("#" + key).select2("data"));
       }
-    });
+    }
     return select_data;
   };
   _get_selected_categories = (selector) => {

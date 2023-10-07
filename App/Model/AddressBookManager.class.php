@@ -15,7 +15,7 @@ class AddressBookManager extends Model
     public function getUserAddress() : CollectionInterface
     {
         if (AuthManager::isUserLoggedIn()) {
-            $this->table()->where(['tbl' => 'users', 'rel_id' => $this->session->get(CURRENT_USER_SESSION_NAME)['id']])->return('object');
+            $this->table()->where(['rel_id' => $this->session->get(CURRENT_USER_SESSION_NAME)['id'] . '|' . $this->_table])->return('object');
             $add = $this->getAll()->get_results();
             foreach ($add as $address) {
                 $address->pays = $this->container(CountriesManager::class)->country($address->pays);
@@ -63,7 +63,7 @@ class AddressBookManager extends Model
 
     protected function updateAddressPrincipale(int $id) : self
     {
-        $this->table()->where(['tbl' => 'users', 'rel_id' => $id, 'principale' => 'Y'])->return('class');
+        $this->table()->where(['rel_id' => $id . '|users', 'principale' => 'Y'])->return('class');
         $addrPrincipale = $this->getAll();
         if ($addrPrincipale->count() === 1) {
             $addrPrincipale = $addrPrincipale->assign((array) current($addrPrincipale->get_results()));

@@ -16,17 +16,19 @@ class HomeController extends Controller
      * @param array $data
      * @return void
      */
-    protected function indexPage(array $data = []) : void
+    protected function indexPage(array $data = []) : ResponseHandler
     {
+        if (!empty($data)) {
+            throw new InvalidArgumentException('url inexistant', 404);
+        }
         // $this->setLayout('clothes');
         // echo $this->route_params;
         // /** @var SlidersManager */
         // $model = $this->container(OrdersManager::class);
         // dd(StringUtil::camelCase(implode(',', $model->getTableColumn())));
-
         $this->pageTitle('Modile Phones - Best Aparels Online Store');
         $this->view()->addProperties(['name' => 'Home Page']);
-        $this->render('phones' . DS . 'index', $this->displayPhones(
+        return $this->render('phones' . DS . 'index', $this->displayPhones(
             brand:2,
             cache: 'phones_products'
         ));

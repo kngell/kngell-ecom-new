@@ -46,16 +46,20 @@ trait DisplayTraits
         return file_get_contents($this->paths->offsetGet($path));
     }
 
-    protected function media(object $obj, ?string $stdMedia = null) : string
+    protected function media(object $obj, ?string $defaultMadia = null, bool $string = true) : string|array
     {
         if (isset($obj->media) && !is_null($obj->media)) {
             $media = !is_array($obj->media) ? unserialize($obj->media) : $obj->media;
             if (is_array($media) && count($media) > 0) {
-                return str_starts_with($media[0], IMG) ? $media[0] : ImageManager::asset_img($media[0]);
+                $all_media = [];
+                foreach ($media as $med) {
+                    $all_media[] = str_starts_with($med, IMG) ? $med : ImageManager::asset_img($med);
+                }
+                return $string ? $all_media[0] : $all_media;
             }
         }
-        if ($stdMedia !== null) {
-            return ImageManager::asset_img($stdMedia);
+        if ($defaultMadia !== null) {
+            return ImageManager::asset_img($defaultMadia);
         }
         return '';
     }

@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 class ProductsListPage extends AbstractProductsListPage implements DisplayPagesInterface
 {
-    public function __construct(?ProductsListPaths $paths, ?CollectionInterface $products, ?CollectionInterface $productUnits, ?CollectionInterface $shippingClass, ?CollectionInterface $company, ?CollectionInterface $warehouse, ?CollectionInterface $categories, ?MoneyManager $money = null, ?FormBuilder $frm = null)
+    public function __construct(array $params, ?MoneyManager $money = null, ?FormBuilder $frm = null, ?ProductsListPaths $paths = null)
     {
-        parent::__construct($paths, $products, $productUnits, $shippingClass, $company, $warehouse, $categories, $money, $frm);
+        parent::__construct(array_merge($params, [
+            'frm' => $frm,
+            'paths' => $paths->paths(),
+            'money' => $money,
+        ]));
     }
 
     public function displayAll(): mixed

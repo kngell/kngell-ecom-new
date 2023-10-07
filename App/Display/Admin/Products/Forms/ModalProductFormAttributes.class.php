@@ -6,6 +6,7 @@ class ModalProductFormAttributes
 {
     public function __construct(
         private ?CollectionInterface $productUnits,
+        private ?CollectionInterface $backborder,
         private ?CollectionInterface $shippingClass,
         private ?CollectionInterface $company,
         private ?CollectionInterface $warehouse,
@@ -186,13 +187,9 @@ class ModalProductFormAttributes
                             'labelClass' => [],
                             'helpBlock' => '',
                             'options' => [
-                                'object' => new Collection([
-                                    (object) ['back_border' => '1', 'content' => 'No not allow'],
-                                    (object) ['back_border' => '2', 'content' => 'Allow, but notify customer'],
-                                    (object) ['back_border' => '3', 'content' => 'Allow'],
-                                ]),
-                                'id' => 'back_border',
-                                'content' => 'content',
+                                'object' => $this->backborder,
+                                'id' => 'bb_id',
+                                'content' => 'name',
                             ],
                         ],
                         'unit_id' => [
@@ -287,7 +284,7 @@ class ModalProductFormAttributes
                             'fieldClass' => ['warehouse'],
                             'labelClass' => [],
                             'wrapperClass' => ['form-group'],
-                            'formAttr' => ['aria-label' => '.form-select Default'],
+                            'formAttr' => ['aria-label' => '.form-select Default', 'multiple' => 'multiple'],
                             'placeholder' => ' ',
                             'helpBlock' => '',
                             'options' => [

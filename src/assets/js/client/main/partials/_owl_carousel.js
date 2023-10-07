@@ -100,10 +100,13 @@ class Home {
                 new Isotope(elem, {
                   itemSelector: ".grid-item",
                   layoutMode: "masonry",
+                  // sortBy: "name",
+                  // filter: ".alkali, .alkaline-earth",
                   masonry: {
                     columnWidth: 0,
                     isFitWidth: true,
                     rowHeight: 150,
+                    gap: 10,
                   },
                 })
               );
