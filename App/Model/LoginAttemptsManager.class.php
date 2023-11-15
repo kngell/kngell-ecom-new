@@ -3,9 +3,9 @@
 declare(strict_types=1);
 class LoginAttemptsManager extends Model
 {
-    protected $_colID = 'la_id';
-    protected $_table = 'login_attempts';
-    protected $_colIndex = 'user_id';
+    protected string $_colID = 'laId';
+    protected string $_table = 'login_attempts';
+    protected string $_colIndex = 'userId';
 
     public function __construct()
     {

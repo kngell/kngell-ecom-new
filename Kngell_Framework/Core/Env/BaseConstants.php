@@ -68,8 +68,8 @@ final class BaseConstants
         // -----------------------------------------------------------------------
         // URL ROOT
         // -----------------------------------------------------------------------
-        defined('HOST') or define('HOST', 'https://localhost:8001');
-        defined('URLROOT') or define('URLROOT', HOST . US . 'kngell' . US);
+        defined('HOST') or define('HOST', '');
+        defined('URLROOT') or define('URLROOT', HOST . US . 'kngell-ecom' . US);
         // -----------------------------------------------------------------------
         // SITE NAME
         // -----------------------------------------------------------------------
@@ -86,7 +86,7 @@ final class BaseConstants
         // -----------------------------------------------------------------------
         // SCRIPT/CSS/IMG ACCESS
         // -----------------------------------------------------------------------
-        defined('PROOT') or define('PROOT', DS . 'kngell' . DS);
+        defined('PROOT') or define('PROOT', DS . 'kngell-ecom' . DS);
         defined('SCRIPT') or define('SCRIPT', dirname($_SERVER['SCRIPT_NAME']));
         defined('CSS') or define('CSS', SCRIPT . DS . 'assets' . DS . 'css' . DS);
         defined('JS') or define('JS', SCRIPT . DS . 'assets' . DS . 'js' . DS);
@@ -141,7 +141,7 @@ final class BaseConstants
         // -----------------------------------------------------------------------
         defined('FB_APP_ID') or define('FB_APP_ID', '297739978156061');
         defined('FB_APP_SECRET') or define('FB_APP_SECRET', 'a4ff4070fc4261a36d9ff551ec7cd07f');
-        defined('FB_LOGIN_URL') or define('FB_LOGIN_URL', 'https://localhost/kngell/guests/fblogin');
+        defined('FB_LOGIN_URL') or define('FB_LOGIN_URL', 'https://localhost/kngell-ecom/guests/fblogin');
         defined('FB_GRAPH_VERSION') or define('FB_GRAPH_VERSION', 'v6.0');
         defined('FB_GRAPH_DOMAIN') or define('FB_GRAPH_DOMAIN', 'https://graph.facebook.com/');
         defined('FB_GRAPH_STATE') or define('FB_GRAPH_STATE', 'eciphp');
@@ -172,7 +172,7 @@ final class BaseConstants
         // -----------------------------------------------------------------------
         // Time zone cookies
         // -----------------------------------------------------------------------
-        date_default_timezone_set('UTC');
+        // date_default_timezone_set('Europ/Paris');
         // session_set_cookie_params(['samesite' => 'Strict']);
         // -----------------------------------------------------------------------
         // Form

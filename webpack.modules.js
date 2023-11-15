@@ -9,12 +9,13 @@ exports.viewRules = {
   mode: "development",
   module: {
     rules: [
+      // {
+      //   test: /\.php$/i,
+      //   type: "asset/resource",
+      // },
       {
         test: /\.php$/i,
         type: "asset/resource",
-      },
-      {
-        test: /\.php$/i,
         use: [
           "extract-loader",
           {
@@ -31,7 +32,7 @@ exports.viewRules = {
           /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
           /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/,
         ],
-        type: "javascript/auto",
+        // type: "javascript/auto",
         use: [
           {
             loader: "file-loader",
@@ -53,7 +54,7 @@ exports.assetsRules = {
   module: {
     generator: {
       "asset/resource": {
-        publicPath: "https://localhost/public/assets/",
+        publicPath: "/", //"https://localhost/public/assets/",
       },
     },
     rules: [

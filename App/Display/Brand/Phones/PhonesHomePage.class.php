@@ -5,8 +5,9 @@ declare(strict_types=1);
 class PhonesHomePage extends AbstractBrandPage implements DisplayPagesInterface
 {
     use PhonesHomePageTraits;
+    private string $simpleProductRoute = 'single_product' . DS . 'details' . DS;
 
-    public function __construct(CollectionInterface|closure $products, ?FormBuilder $frm = null, ?object $userCart = null, CollectionInterface|Closure $slider = null, ?PhonesHomePagePaths $paths = null, ?MoneyManager $money = null)
+    public function __construct(CollectionInterface|closure $products, ?FormBuilder $frm = null, ?object $userCart = null, CollectionInterface|Closure|null $slider = null, ?PhonesHomePageTemplatePaths $paths = null, ?MoneyManager $money = null)
     {
         parent::__construct([
             'products' => $products,

@@ -35,32 +35,32 @@ trait DatabaseCacheTrait
         return $this->getCachedData('settings', [$this->model(SettingsManager::class), 'getSettings']);
     }
 
-    protected function getProducts(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    protected function getProducts(int|string|null $brand = null, ?string $cache = null) : CollectionInterface
     {
         return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(ProductsManager::class), 'getProducts'], [$brand]);
     }
 
-    protected function getUnits(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    protected function getUnits(int|string|null $brand = null, ?string $cache = null) : CollectionInterface
     {
         return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(UnitsManager::class), 'all'], [$brand]);
     }
 
-    protected function getBackBorder(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    protected function getBackBorder(int|string|null $brand = null, ?string $cache = null) : CollectionInterface
     {
         return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(BackBorderManager::class), 'all'], [$brand]);
     }
 
-    protected function getCompany(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    protected function getCompany(int|string|null $brand = null, ?string $cache = null) : CollectionInterface
     {
         return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(CompanyManager::class), 'all'], [$brand]);
     }
 
-    protected function getWarehouse(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    protected function getWarehouse(int|string|null $brand = null, ?string $cache = null) : CollectionInterface
     {
         return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(WarehouseManager::class), 'all'], [$brand]);
     }
 
-    protected function getCategories(int|string $brand = null, ?string $cache = null) : CollectionInterface
+    protected function getCategories(int|string|null $brand = null, ?string $cache = null) : CollectionInterface
     {
         return $this->getCachedData($cache ?? __FUNCTION__, [$this->model(CategoriesManager::class), 'all'], [$brand]);
     }
@@ -86,7 +86,7 @@ trait DatabaseCacheTrait
     {
         if (AuthManager::isUserLoggedIn()) {
             return $this->container(OrdersManager::class)->assign([
-                'ord_user_id' => $this->session->get(CURRENT_USER_SESSION_NAME)['id'],
+                'ord_userId' => $this->session->get(CURRENT_USER_SESSION_NAME)['id'],
             ])->AllWithSearchAndPagin($params);
         }
 

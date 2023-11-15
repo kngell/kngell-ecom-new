@@ -95,7 +95,7 @@ $this->start('head'); ?>
    <footer class="k-bg-gray-light-7 k-pt-3 k-pb-3 k-mt-3">
       <div class="k-container">CopyRight 2021 K'nGELL design</div>
    </footer>
-   <input type="hidden" id="ip_address" style="display:none" value="<?=H_visitors::getIP()?>">
+   <input type="hidden" id="ipAddress" style="display:none" value="<?=H_visitors::getIP()?>">
 </main>
 <?php $this->end(); ?>
 <?php $this->start('footer') ?>

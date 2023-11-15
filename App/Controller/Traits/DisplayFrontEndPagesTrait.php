@@ -6,12 +6,8 @@ trait DisplayFrontEndPagesTrait
 {
     public function displayUerAccount(array $params = [], string $accountItem = '') : array
     {
-        // $user_account_data = $this->getUserAccount($params);
-        // if (AuthManager::isUserLoggedIn()) {
         $params = $this->userAccountOptions($params, $accountItem);
         return $this->container(UserAccountHomePage::class, ['params' => $params])->displayAll();
-        // }
-        // return [];
     }
 
     public function userAccountOptions(array $params = [], string $accountItem = '') : array

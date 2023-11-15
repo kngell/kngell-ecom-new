@@ -75,6 +75,9 @@ export function Call_controller(data, gestion) {
     method: "POST",
     processData: false,
     contentType: false,
+    xhrFields: {
+      withCredentials: true,
+    },
     dataType: "json",
     data: formData,
     success: function (response) {

@@ -3,15 +3,18 @@
 declare(strict_types=1);
 class ClearLoginAttempsListener implements ListenerInterface
 {
+    public function __construct(private LoginAttemptsManager $loginAttemps)
+    {
+    }
+
     public function handle(EventsInterface $event): iterable
     {
         /** @var UserSessionsManager */
         $object = $event->getObject();
         if ($object instanceof UserSessionsEntity) {
             /** @var LoginAttemptsManager */
-            $loginAttemps = Container::getInstance()->make(LoginAttemptsManager::class);
-            $conditions = $loginAttemps->table()->where(['user_id' => $object->getUserId()])->build();
-            $delete = $loginAttemps->delete($conditions);
+            $conditions = $this->loginAttemps->table()->where(['userId' => $object->getUserId()])->build();
+            $delete = $this->loginAttemps->delete($conditions);
 
             return [$delete];
         }

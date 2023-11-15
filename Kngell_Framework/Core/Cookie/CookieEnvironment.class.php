@@ -98,7 +98,7 @@ class CookieEnvironment
      */
     public function isHttpOnly(): bool
     {
-        return $this->getConfig()['httpOnly'] ?? true;
+        return $this->getConfig()['cookie_httponly'] ?? true;
     }
 
     /**

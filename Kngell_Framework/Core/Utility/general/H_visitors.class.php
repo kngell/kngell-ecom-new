@@ -24,11 +24,9 @@ class H_visitors
     public static function getIpData($ip = '')
     {
         $query = @unserialize(file_get_contents('http://ip-api.com/php/' . $ip));
-
         if ($query && $query['status'] == 'success') {
             return $query;
         }
-
         return $query['query'];
     }
 
@@ -41,6 +39,33 @@ class H_visitors
     //Key format for IpAPI
     public static function new_IpAPI_keys() : array
     {
-        return ['query' => 'ipAddress', 'status' => 'statusCode', 'city' => 'cityName', 'region' => 'regionCode', 'country' => 'countryName',  'lat' => 'latitude', 'lon' => 'longitude',    'timezone' => 'timeZone', 'zip' => 'zipCode'];
+        return [
+            'asn' => 'asn',
+            'city' => 'cityName',
+            'continent_code' => 'continentCode',
+            'country' => 'country',
+            'country_area' => 'countryArea',
+            'country_calling_code' => 'countryCallingCode',
+            'country_capital' => 'countryCapital',
+            'country_code' => 'countryCode',
+            'country_code_iso3' => 'countryCodeIso3',
+            'country_name' => 'countryName',
+            'country_population' => 'countryPopulation',
+            'currency' => 'currency',
+            'currency_name' => 'currencyName',
+            'in_eu' => 'inEu',
+            'ip' => 'ipAddress',
+            'languages' => 'languages',
+            'latitude' => 'latitude',
+            'longitude' => 'longitude',
+            'network' => 'network',
+            'org' => 'org',
+            'postal' => 'postalCode',
+            'region' => 'region',
+            'region_code' => 'regionCode',
+            'timezone' => 'timezone',
+            'utc_offset' => 'utcOffset',
+            'version' => 'version',
+        ];
     }
 }

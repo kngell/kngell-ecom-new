@@ -20,8 +20,8 @@ class CommentsController extends Controller
         }
         if ($resp = $model->saveComment()) {
             $commentObject = $model->getEntity()->getObject();
-            $commentObject->last_name = $this->session->get(CURRENT_USER_SESSION_NAME)['last_name'];
-            $commentObject->first_name = $this->session->get(CURRENT_USER_SESSION_NAME)['first_name'];
+            $commentObject->lastName = $this->session->get(CURRENT_USER_SESSION_NAME)['lastName'];
+            $commentObject->firstName = $this->session->get(CURRENT_USER_SESSION_NAME)['firstName'];
             $commentObject->created_at = (new DateTimeImmutable())->format('Y-m-d H:i:s');
             $commentObject->cmt_id = $resp->getLastID();
             $comment = $this->comment->showComment($commentObject);

@@ -53,9 +53,7 @@ class CartSummary extends AbstractFormSteps implements CheckoutFormStepInterface
         $uCartSummaryTotal = str_replace('{{taxes}}', $taxeHtml ?? '', $uCartSummaryTotal);
         $uCartSummaryTotal = $this->totalShipping($uCartSummaryTotal);
         $this->TTC = $this->HT->plus($totalTaxes)->plus($this->shippingAmount);
-        $uCartSummaryTotal = str_replace('{{totalTTC}}', $this->TTC->formatTo('fr_FR') ?? '', $uCartSummaryTotal);
-
-        return $uCartSummaryTotal;
+        return str_replace('{{totalTTC}}', $this->TTC->formatTo('fr_FR') ?? '', $uCartSummaryTotal);
     }
 
     private function cartSummaryButton(?object $step = null) : string
@@ -73,11 +71,11 @@ class CartSummary extends AbstractFormSteps implements CheckoutFormStepInterface
         $temp = $this->getTemplate('cartSummaryContentPath');
         $this->taxesProducts = [];
         foreach ($this->obj as $product) {
-            if ($product->cart_type == 'cart') {
-                $HT = $product->regular_price * $product->item_qty;
-                $this->taxesProducts[] = $this->filterTaxe($HT, $product, $this->getAllTaxes($this->obj), $product->item_qty);
+            if ($product->cartType == 'cart') {
+                $HT = $product->regular_price * $product->itemQty;
+                $this->taxesProducts[] = $this->filterTaxe($HT, $product, $this->getAllTaxes($this->obj), $product->itemQty);
                 $uCartSummaryContent = str_replace('{{image}}', $this->media($product), $temp);
-                $uCartSummaryContent = str_replace('{{Quantity}}', strval($product->item_qty), $uCartSummaryContent);
+                $uCartSummaryContent = str_replace('{{Quantity}}', strval($product->itemQty), $uCartSummaryContent);
                 $uCartSummaryContent = str_replace('{{title}}', $product->title ?? '', $uCartSummaryContent);
                 $uCartSummaryContent = str_replace('{{color}}', $product->color ?? '', $uCartSummaryContent);
                 $sep = isset($product->p_color) && isset($product->p_size);

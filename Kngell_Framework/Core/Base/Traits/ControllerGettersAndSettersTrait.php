@@ -236,6 +236,26 @@ trait ControllerGettersAndSettersTrait
         return $this;
     }
 
+    /**
+     * Get the value of arguments.
+     */
+    public function getArguments()
+    {
+        return $this->arguments;
+    }
+
+    /**
+     * Set the value of arguments.
+     *
+     * @return  self
+     */
+    public function setArguments($arguments)
+    {
+        $this->arguments = $arguments;
+
+        return $this;
+    }
+
     protected function reflectionInstance() : ReflectionClass
     {
         return CustomReflector::getInstance()->reflectionInstance($this::class);

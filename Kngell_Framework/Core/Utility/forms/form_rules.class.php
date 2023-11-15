@@ -64,14 +64,14 @@ class Form_rules
                 'required' => true,
                 'display' => '',
             ],
-            'first_name' => [
+            'firstName' => [
                 'required' => true,
                 'min' => 2,
                 'max' => 64,
                 'display' => 'Firstname',
                 'Valid_string' => true,
             ],
-            'last_name' => [
+            'lastName' => [
                 'required' => true,
                 'min' => 2,
                 'max' => 64,

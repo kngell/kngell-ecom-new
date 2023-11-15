@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ShoppingCartPaths implements PathsInterface
+class ShoppingCartPaths implements TemplatePathsInterface
 {
     private string $viewPath = VIEW . 'client' . DS . 'components' . DS . 'shoppingCart' . DS . 'partials' . DS;
     private string $templatePath = APP . 'Display' . DS . 'Components' . DS . 'ShoppingCart' . DS . 'Templates' . DS;

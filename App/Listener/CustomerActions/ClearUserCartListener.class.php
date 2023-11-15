@@ -35,7 +35,7 @@ class ClearUserCartListener implements ListenerInterface
             if ($item->count() === 1) {
                 $item = $item->pop();
                 $this->cart->getQueryParams()->reset();
-                $delete[] = $this->cart->assign(['cart_id' => $item->cart_id])->delete();
+                $delete[] = $this->cart->assign(['cartId' => $item->cartId])->delete();
             }
         }
     }

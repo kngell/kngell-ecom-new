@@ -23,7 +23,7 @@ class ShowOrders extends AbstractShowOrders implements DisplayPagesInterface
             foreach ($orderList as $order) {
                 $temp = str_replace('{{ord_date}}', $order->created_at, $template);
                 $temp = str_replace('{{ord_ttc}}', $order->ord_amount_ttc, $temp);
-                $temp = str_replace('{{ord_userFullName}}', $order->first_name . '&nbsp;' . $order->last_name, $temp);
+                $temp = str_replace('{{ord_userFullName}}', $order->firstName . '&nbsp;' . $order->lastName, $temp);
                 $temp = str_replace('{{ord_number}}', $order->ord_number, $temp);
                 $temp = str_replace('{{ord_deliveryDate}}', $order->ord_delivery_date, $temp);
                 $temp = str_replace('{{ord_status}}', (string) $order->status, $temp);

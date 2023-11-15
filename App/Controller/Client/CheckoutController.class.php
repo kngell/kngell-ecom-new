@@ -15,9 +15,9 @@ class CheckoutController extends Controller
      * @param array $data
      * @return void
      */
-    protected function indexPage(array $data = []) : void
+    protected function indexPage(array $data = []) : ResponseHandler
     {
         $this->pageTitle('Checkout Page');
-        $this->render('checkout' . DS . 'checkout', $this->displayCheckoutPage());
+        return $this->render('checkout' . DS . 'checkout', array_merge($this->displayCheckoutPage(), ['jv_script_from_php' => $data[0] ?? '']));
     }
 }

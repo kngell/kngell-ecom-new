@@ -212,4 +212,39 @@ trait ModelGetterAndSetterTrait
     {
         return $this->queryParams;
     }
+
+    /**
+     * Get the value of _statement.
+     */
+    public function getStatement(): PDOStatement
+    {
+        return $this->_statement;
+    }
+
+    /**
+     * Set the value of _statement.
+     */
+    public function setStatement(PDOStatement $_statement): self
+    {
+        $this->_statement = $_statement;
+        return $this;
+    }
+
+    /**
+     * Get the value of _con.
+     */
+    public function getCon(): DatabaseConnexionInterface
+    {
+        return $this->_con;
+    }
+
+    /**
+     * Set the value of _con.
+     */
+    public function setCon(DatabaseConnexionInterface $_con): self
+    {
+        $this->_con = $_con;
+
+        return $this;
+    }
 }

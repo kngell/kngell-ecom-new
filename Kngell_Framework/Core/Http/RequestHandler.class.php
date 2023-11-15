@@ -19,9 +19,8 @@ class RequestHandler extends GlobalVariables
     private CollectionInterface $server;
     private CollectionInterface $headers;
     private CollectionInterface $httpFiles;
-    private Sanitizer $sanitizer;
 
-    public function __construct()
+    public function __construct(private Sanitizer $sanitizer)
     {
         parent::__construct();
         $this->requestStartTime = $this->getServerVar('request_time_float');
@@ -36,10 +35,10 @@ class RequestHandler extends GlobalVariables
         $this->emptyGlobals();
     }
 
-    public static function createFromGlobals() : static
-    {
-        return new static();
-    }
+    // public static function createFromGlobals() : static
+    // {
+    //     return new static();
+    // }
 
     public function getPathInfo() : string
     {
@@ -183,13 +182,15 @@ class RequestHandler extends GlobalVariables
     public function get(string $input = '') : mixed
     {
         $method = $this->getHttpMethod();
-        $data = $this->{'get' . ucfirst($method)}();
+        /** @var CollectionInterface */
+        $data = $this->{'get' . ucfirst($method) }();
         if ($data) {
-            return match ($method) {
-                'post' => $this->postData($input, $data),
-                'get' => $this->getData($input, $data)
+            return match (strtolower($method)) {
+                'post' => $this->postData($input, $data->all()),
+                'get' => $this->getData($input, $data->all())
             };
         }
+        return $data;
     }
 
     /**

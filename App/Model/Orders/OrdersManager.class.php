@@ -6,7 +6,7 @@ class OrdersManager extends Model
 {
     protected $_colID = 'ord_id';
     protected $_table = 'orders';
-    protected $_colIndex = 'ord_user_id';
+    protected $_colIndex = 'ord_userId';
 
     public function __construct()
     {
@@ -17,13 +17,13 @@ class OrdersManager extends Model
     {
         /** @var OrdersEntity */
         $en = $this->getEntity();
-        if ($en->isInitialized('ord_user_id')) {
+        if ($en->isInitialized('ord_userId')) {
             $this->table()
-                ->leftJoin('users', ['first_name', 'last_name'])
+                ->leftJoin('users', ['firstName', 'lastName'])
                 ->join('order_details')
                 ->leftJoin('products', ['title', 'short_descr', 'media'])
                 ->leftJoin('order_status', ['status'])
-                ->on(['ord_user_id|orders', 'user_id|users'], ['ord_id|orders', 'od_order_id|order_details'], ['od_product_id|order_details', 'pdt_id|products'], ['ord_status|orders', 'os_id|order_status'])
+                ->on(['ord_userId|orders', 'userId|users'], ['ord_id|orders', 'od_order_id|order_details'], ['od_product_id|order_details', 'pdt_id|products'], ['ord_status|orders', 'os_id|order_status'])
                 ->where([$this->_colIndex => $en->getOrdUserId()])
                 ->return('object');
 
@@ -37,11 +37,11 @@ class OrdersManager extends Model
     {
         /** @var OrdersEntity */
         $en = $this->getEntity();
-        if ($en->isInitialized('ord_user_id')) {
+        if ($en->isInitialized('ord_userId')) {
             $this->table()
-                ->leftJoin('users', ['first_name', 'last_name'])
+                ->leftJoin('users', ['firstName', 'lastName'])
                 ->leftJoin('order_status', ['status'])
-                ->on(['ord_user_id|orders', 'user_id|users'], ['ord_status|orders', 'os_id|order_status'])
+                ->on(['ord_userId|orders', 'userId|users'], ['ord_status|orders', 'os_id|order_status'])
                 ->where([$this->_colIndex => $en->getOrdUserId()])
                 ->parameters(['limit' => 3, 'offset' => 0])
                 ->return('object');

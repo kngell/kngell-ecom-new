@@ -35,7 +35,7 @@ $this->start('head'); ?>
                         <h5 class="card-title mb-0">Profile Details</h5>
                      </div>
                      <div class="card-body text-center">
-                        <img src="https://localhost:8001/public/assets/img/avatar.png" alt="Christina Mason"
+                        <img src="/public/assets/img/avatar.png" alt="Christina Mason"
                            class="img-fluid rounded-circle mb-2 p-image" />
                         <h5 class="card-title mb-0">Christina Mason</h5>
                         <div class="text-muted mb-2">Lead Developer</div>

@@ -4,7 +4,52 @@ declare(strict_types=1);
 
 final class ContainerAliasses
 {
-    public static function singleton()
+    public static function get() : array
+    {
+        return[
+            'singleton' => self::singleton(),
+            'bind' => array_merge(self::dataAccessLayerClass(), self::bindedClass()),
+        ];
+    }
+
+    private static function bindedClass()
+    {
+        return [
+            'QueryParamsInterface' => QueryParams::class,
+            'View' => View::class,
+            'CommentsInterface' => Comments::class,
+            'ClientFormBuilder' => ClientFormBuilder::class,
+            'DisplayPhonesInterface' => PhonesHomePage::class,
+            'FilesManagerInterface' => ImageManager::class,
+            'MoneyManager' => MoneyManager::class,
+            'FilesSystemInterface' => FileSystem::class,
+            'UploaderInterface' => Uploader::class,
+            'EventDispatcherInterface' => EventDispatcher::class,
+            'ListenerProviderInterface' => ListenerProvider::class,
+            'TreeBuilderInterface' => TreeBuilder::class,
+            'CollectionInterface' => Collection::class,
+            'ContainerInterface' => Container::class,
+            'CustomReflectorInterface' => CustomReflector::class,
+            'FormBuilder' => FormBuilder::class,
+            'PaymentGatewayInterface' => PaymentServicesFactory::class,
+        ];
+    }
+
+    private static function dataAccessLayerClass()
+    {
+        return[
+            'EntityManagerInterface' => EntityManager::class,
+            'RepositoryInterface' => Repository::class,
+            'DataAccessLayerManager' => DataAccessLayerManager::class,
+            'CrudInterface' => Crud::class,
+            'MailerInterface' => Mailer::class,
+            'DataMapperEnvironmentConfig' => DataMapperEnvironmentConfig::class,
+            'DataMapperInterface' => DataMapper::class,
+            'QueryBuilderInterface' => QueryBuilder::class,
+        ];
+    }
+
+    private static function singleton() : array
     {
         return [
             'RooterInterface' => Rooter::class,
@@ -29,43 +74,6 @@ final class ContainerAliasses
             'RegisterForm' => RegisterForm::class,
             'DispatcherInterface' => Dispatcher::class,
             'DatabaseConnexionInterface' => DatabaseConnexion::class,
-        ];
-    }
-
-    public static function dataAccessLayerClass()
-    {
-        return[
-            'EntityManagerInterface' => EntityManager::class,
-            'RepositoryInterface' => Repository::class,
-            'DataAccessLayerManager' => DataAccessLayerManager::class,
-            'CrudInterface' => Crud::class,
-            'MailerInterface' => Mailer::class,
-            'DataMapperEnvironmentConfig' => DataMapperEnvironmentConfig::class,
-            'DataMapperInterface' => DataMapper::class,
-            'QueryBuilderInterface' => QueryBuilder::class,
-        ];
-    }
-
-    public static function bindedClass()
-    {
-        return [
-            'QueryParamsInterface' => QueryParams::class,
-            'View' => View::class,
-            'CommentsInterface' => Comments::class,
-            'ClientFormBuilder' => ClientFormBuilder::class,
-            'DisplayPhonesInterface' => PhonesHomePage::class,
-            'FilesManagerInterface' => ImageManager::class,
-            'MoneyManager' => MoneyManager::class,
-            'FilesSystemInterface' => FileSystem::class,
-            'UploaderInterface' => Uploader::class,
-            'EventDispatcherInterface' => EventDispatcher::class,
-            'ListenerProviderInterface' => ListenerProvider::class,
-            'TreeBuilderInterface' => TreeBuilder::class,
-            'CollectionInterface' => Collection::class,
-            'ContainerInterface' => Container::class,
-            'CustomReflectorInterface' => CustomReflector::class,
-            'FormBuilder' => FormBuilder::class,
-            'PaymentGatewayInterface' => PaymentServicesFactory::class,
         ];
     }
 }

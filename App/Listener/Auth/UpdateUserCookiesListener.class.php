@@ -13,8 +13,8 @@ class UpdateUserCokkiesListener implements ListenerInterface
         if ($object instanceof UserSessionsEntity) {
             /** @var UsersManager */
             $user = Container::getInstance()->make(UsersManager::class)->assign([
-                'user_id' => (int) $object->getUserID(),
-                'user_cookie' => $object->getUserCookie(),
+                'userId' => (int) $object->getUserID(),
+                'userCookie' => $object->getUserCookie(),
             ])->save();
 
             return [$user];

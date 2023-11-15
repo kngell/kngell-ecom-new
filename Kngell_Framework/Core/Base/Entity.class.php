@@ -9,7 +9,7 @@ class Entity extends AbstractEntity
      * =========================================================.
      * @param array $dirtyData
      */
-    public function sanitize(array $dirtyData)
+    public function sanitize(array $dirtyData) : void
     {
         if (empty($dirtyData)) {
             throw new BaseInvalidArgumentException('No data was submitted');
@@ -24,7 +24,6 @@ class Entity extends AbstractEntity
     public function getFieldValue(string $field) : mixed
     {
         $method = $this->getGetters($this->regenerateField($field));
-
         return $this->reflectionclass()->getMethod($method, $this)->invoke($this, $method);
     }
 
@@ -38,13 +37,13 @@ class Entity extends AbstractEntity
         return $this->reflectionClass()->isInitialized($this->regenerateField($field), $this);
     }
 
-    public function getColId(string $withDocComment = 'id', bool $entityProp = false) :  string
+    public function getColId(string $withDocComment = 'id') :  string
     {
         $props = $this->getAllAttributes();
         foreach ($props as $field) {
             $docs = $this->getPropertyComment($field);
             if ($docs == $withDocComment) {
-                return $entityProp == false ? $this->getOriginalField($field) : $field;
+                return $field;
                 exit;
             }
         }
@@ -63,16 +62,16 @@ class Entity extends AbstractEntity
             $rp = $this->reflectionInstance()->getProperty($field);
             if ($rp->isInitialized($this)) {
                 if ($rp->getType()->getName() === 'DateTimeInterface') {
-                    $properties[$this->getOriginalField($field)] = $rp->getValue($this)->format('Y-m-d H:i:s');
+                    $properties[$field] = $rp->getValue($this)->format('Y-m-d H:i:s');
                 } else {
                     if ($output) {
                         if ($rp->getType()->getName() === 'string') {
-                            $properties[$this->getOriginalField($field)] = $this->htmlDecode($rp->getValue($this));
+                            $properties[$field] = $this->htmlDecode($rp->getValue($this));
                         } else {
-                            $properties[$this->getOriginalField($field)] = $rp->getValue($this);
+                            $properties[$field] = $rp->getValue($this);
                         }
                     } else {
-                        $properties[$this->getOriginalField($field)] = $rp->getValue($this);
+                        $properties[$field] = $rp->getValue($this);
                     }
                 }
             }

@@ -190,7 +190,7 @@ PhpLR.prototype.setupEvents = function () {
   // // Fetch the user profile data from facebook
   function getFbUserData() {
     FB.api("/me", "get", {
-      fields: "id,first_name,last_name,email,link,gender,locale,picture",
+      fields: "id,firstName,lastName,email,link,gender,locale,picture",
     }).then((response) => {
       var data = {
         frm: phpLR.loginfrm,

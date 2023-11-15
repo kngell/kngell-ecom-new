@@ -26,6 +26,8 @@ class ButtonType extends AbstractAttr implements FormBuilderTypeInterface
     protected array $defaults = [];
     /** @var array - returns the combined attr options from extensions and constructor fields */
     protected mixed $fields;
+    protected mixed $options;
+    protected array $settings;
     /** @var array returns an array of default options set */
     protected array $baseOptions = [];
     /** @var string - this is the standard Path */
@@ -58,9 +60,7 @@ class ButtonType extends AbstractAttr implements FormBuilderTypeInterface
 
     public function htmlAttr() : array
     {
-        $htmlArg = self::HTML_ELEMENT_PARTS !== null ? self::HTML_ELEMENT_PARTS : [];
-
-        return $htmlArg;
+        return self::HTML_ELEMENT_PARTS !== null ? self::HTML_ELEMENT_PARTS : [];
     }
 
     /**

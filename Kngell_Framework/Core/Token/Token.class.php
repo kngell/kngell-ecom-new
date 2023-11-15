@@ -17,18 +17,8 @@ class Token extends RandomStringGenerator
         }
         $time = time();
         $separator = !empty($frm) ? $frm : '|';
-        $hash = hash_hmac('sha256', session_id() . $identifiant . $time . $frm ?? '', CSRF_TOKEN_SECRET, true);
+        $hash = hash_hmac('sha256', session_id() . $identifiant . $time . $frm, CSRF_TOKEN_SECRET, true);
         return $this->urlSafeEncode($hash . $separator . $identifiant . $separator . $time);
-    }
-
-    public function urlSafeEncode(string $str) : string
-    {
-        return rtrim(strtr(base64_encode($str), '+/', '-_'), '=');
-    }
-
-    public function urlSafeDecode(string $str) : string
-    {
-        return base64_decode(strtr($str, '-_', '+/'));
     }
 
     public function validate(string $token = '', string $frm = '') : bool
@@ -36,7 +26,7 @@ class Token extends RandomStringGenerator
         $separator = !empty($frm) ? $frm : '|';
         $part = explode($separator, $this->urlSafeDecode($token));
         if (count($part) === 3) {
-            $hash = hash_hmac('sha256', session_id() . $part[1] . $part[2] . $frm ?? '', CSRF_TOKEN_SECRET, true);
+            $hash = hash_hmac('sha256', session_id() . $part[1] . $part[2] . $frm, CSRF_TOKEN_SECRET, true);
             if (hash_equals($hash, $part[0])) {
                 return true;
             }
@@ -70,11 +60,22 @@ class Token extends RandomStringGenerator
 
     public function getHash() : string
     {
-        return hash_hmac('sha256', $this->token, YamlFile::get('app')['settings']['secret_key']);
+        return hash_hmac('sha256', '$this->token', YamlFile::get('app')['settings']['secret_key']);
     }
 
     public function csrfInput(string $name, string $tokenString) : string
     {
         return '<input type="hidden" name="' . $name . '" value="' . $this->create(8, $tokenString) . '" />';
+    }
+
+    private function urlSafeEncode(string $str) : string
+    {
+        return rtrim(strtr(base64_encode($str), '+/', '-_'), '=');
+    }
+
+    private function urlSafeDecode(string $str) : string
+    {
+        // $st = base64_decode(strtr($str, '-_', '+/'));
+        return base64_decode(strtr($str, '-_', '+/'));
     }
 }

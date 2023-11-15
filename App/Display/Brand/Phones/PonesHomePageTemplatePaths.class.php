@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class PhonesHomePagePaths implements PathsInterface
+class PhonesHomePageTemplatePaths implements TemplatePathsInterface
 {
     private string $templatePath = APP . 'Display' . DS . 'Brand' . DS . 'Phones' . DS . 'Templates' . DS;
     private string $partialsPath = VIEW . 'client' . DS . 'brand' . DS . 'phones' . DS . 'partials' . DS;

@@ -147,6 +147,7 @@ class Login_And_Register {
       Call_controller(data, (response) => {
         phpLR.loginfrm.find("#login-btn").val("Login");
         if (response.result == "success") {
+          // $("#logWindowsScript").empty();
           if (response.msg == "checkout") {
             window.location.href = "checkout";
           } else {

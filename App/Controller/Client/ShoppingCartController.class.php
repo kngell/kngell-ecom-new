@@ -15,11 +15,11 @@ class ShoppingCartController extends Controller
      * @param array $data
      * @return void
      */
-    protected function indexPage(array $data = []) : void
+    protected function indexPage(array $data = []) : ResponseHandler
     {
         // $this->setLayout('clothes');
         // echo $this->route_params;
         $this->pageTitle('Shopping Cart');
-        $this->render('shoppingCart' . DS . 'shoppingCart', $this->displayShoppingCart());
+        return $this->render('shoppingCart' . DS . 'shoppingCart', $this->displayShoppingCart());
     }
 }

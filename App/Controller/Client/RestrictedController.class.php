@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 class RestrictedController extends Controller
 {
-    public function loginPage(array $args = []) : void
+    public function loginPage(array $args = []) : ResponseHandler
     {
-        $this->render('restricted' . DS . 'index', $this->displayLayout());
+        return $this->render('restricted' . DS . 'index', $this->displayLayout());
     }
 }

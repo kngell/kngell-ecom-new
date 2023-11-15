@@ -21,8 +21,7 @@ abstract class AbstractView
         // $this->_head = '';
         // $this->_body = '';
         // $this->_footer = '';
-        $this->_html = '';
-
+        // $this->_html = '';
         return $this;
     }
 

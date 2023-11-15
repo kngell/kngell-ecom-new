@@ -24,7 +24,7 @@
             <div class="qty-group">
                 <form class="form_qty">
                     {{qty_token}}
-                    <input type="hidden" name="item_id" value="{{product_id}}">
+                    <input type="hidden" name="itemId" value="{{product_id}}">
                     <button class="qty-up border bg-light"><i class="fas fa-angle-up"></i></button>
                     <input type="text" class="qty_input px-2 bg-light" name="qty" value="{{qty}}" placeholder="1"
                         min="1">
@@ -33,8 +33,8 @@
             </div>
             <form action="#" class="delete-cart-item-frm{{product_id}}">
                 {{del_save_token}}
-                <input type="hidden" name="item_id" value="{{product_id}}">
-                <input type="hidden" name="user_id" value="1">
+                <input type="hidden" name="itemId" value="{{product_id}}">
+                <input type="hidden" name="userId" value="1">
                 <button type="submit" class="btn font-baloo px-3 border-right deleteBtn">Supprimer</button>
                 <button type="button" class="button save-add">Sauvegarder</button>
             </form>

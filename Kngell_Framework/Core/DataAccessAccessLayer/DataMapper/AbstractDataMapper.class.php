@@ -13,6 +13,11 @@ abstract class AbstractDataMapper
     protected int $_count = 0;
     protected $_results;
 
+    public function __construct(DatabaseConnexionInterface $_con)
+    {
+        $this->_con = $_con;
+    }
+
     public function isEmpty(mixed $value, ?string $errorMsg = null) : bool
     {
         if (empty($value)) {
@@ -24,7 +29,7 @@ abstract class AbstractDataMapper
 
     public function isArray(array $value) : bool
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             throw new DataMapperExceptions('Your argument need to be an array!');
         }
 

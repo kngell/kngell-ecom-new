@@ -17,4 +17,14 @@ interface DatabaseConnexionInterface
      * @return void
      */
     public function close():void;
+
+    public function beginTransaction() : bool;
+
+    public function exec(string $sql) : int|false;
+
+    public function inTransaction() : bool;
+
+    public function rollBack() : bool;
+
+    public function commit() : bool;
 }

@@ -138,7 +138,6 @@ trait HttpTraits
     public function setQuery(CollectionInterface $query): self
     {
         $this->query = $query;
-
         return $this;
     }
 
@@ -148,8 +147,15 @@ trait HttpTraits
     public function setPost(CollectionInterface $post): self
     {
         $this->post = $post;
-
         return $this;
+    }
+
+    /**
+     * Get the value of post.
+     */
+    public function getPost()
+    {
+        return $this->post;
     }
 
     /**
@@ -201,7 +207,6 @@ trait HttpTraits
     public function setContent(string $content): self
     {
         $this->content = $content;
-
         return $this;
     }
 

@@ -10,7 +10,7 @@ const FileManagerPlugin = require("filemanager-webpack-plugin");
 const config = require("./config");
 const { alias, assetConfig, viewsConfig } = require("./webpack.partials");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-const ASSET_PATH = config.PATH;
+const ASSET_PATH = config.ROOT + config.PATH;
 const Files = require("./src/entries/assets/frontend/copyFilesEntries");
 
 const commonConfig = merge(plugins, {

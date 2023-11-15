@@ -28,12 +28,12 @@ trait ControllerTrait
         $shopping_cart = $this->getUserCart();
         return $shopping_cart->filter(function ($sc) use ($m) {
             if (is_int($m)) {
-                return $sc->item_id === $m;
+                return $sc->itemId === $m;
             }
             /** @var CartEntity */
             $en = $m->getEntity();
 
-            return $sc->item_id === $en->getItemId();
+            return $sc->itemId === $en->getItemId();
         });
     }
 
@@ -44,7 +44,7 @@ trait ControllerTrait
         }
         $newPage = $this->request->getQuery()->get('url');
 
-        if (!in_array($newPage, ['account'])) {
+        if (! in_array($newPage, ['account'])) {
             $this->session->set(PREVIOUS_PAGE, $newPage);
         }
     }
@@ -52,9 +52,9 @@ trait ControllerTrait
     protected function isIncommingDataValid(object $m, string $ruleMethod, array $newKeys = [], ?string $script = null) : void
     {
         method_exists('Form_rules', $ruleMethod) ? $m->validator(Form_rules::$ruleMethod()) : '';
-        if (!$m->validationPasses()) {
+        if (! $m->validationPasses()) {
             $response = ['result' => 'error-field', 'msg' => $m->getErrorMessages($newKeys)];
-            if (!$this->request->isAjax() && $script != null) {
+            if (! $this->request->isAjax() && $script != null) {
                 $script = str_replace('{{response}}', $response, $script);
                 echo $script;
             } else {
@@ -68,7 +68,7 @@ trait ControllerTrait
         list($uploaders, $paths) = $this->container(UploaderFactory::class, [
             'filesAry' => $this->request->getFiles(),
         ])->create($m);
-        if (is_array($uploaders) && !empty($uploaders)) {
+        if (is_array($uploaders) && ! empty($uploaders)) {
             foreach ($uploaders as $uploader) {
                 $paths[] = $uploader->upload($m);
             }
@@ -82,7 +82,7 @@ trait ControllerTrait
     protected function isValidRequest(?string $csrfName = null) : bool|array
     {
         $data = $this->request->get();
-        if ($data['csrftoken'] && $this->token->validate($data['csrftoken'], $csrfName == null ? $data['frm_name'] : $csrfName)) {
+        if ($data['csrftoken'] && $this->token->validate($data['csrftoken'], $csrfName ?? $data['frm_name'])) {
             return $data;
         }
         if ($this->request->isAjax()) {
@@ -102,7 +102,7 @@ trait ControllerTrait
      */
     protected function properties(array $params = []) : void
     {
-        if (!empty($params)) {
+        if (! empty($params)) {
             foreach ($params as $prop => $value) {
                 if ($prop != '' && property_exists($this, $prop)) {
                     if (is_string($value) && (class_exists($value) || interface_exists($value))) {

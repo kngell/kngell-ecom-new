@@ -3,8 +3,8 @@
 declare(strict_types=1);
 class SlidersManager extends Model
 {
-    protected $_colID = 'sl_id';
-    protected $_table = 'sliders';
+    protected string $_colID = 'sl_id';
+    protected string $_table = 'sliders';
 
     public function __construct()
     {

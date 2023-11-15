@@ -14,7 +14,7 @@ abstract class AbstractSinglePage
     protected CookieInterface $cookie;
     protected CollectionInterface $paths;
 
-    public function __construct(?object $product, CollectionInterface|Closure $products, ?object $userCart, FormBuilder $frm, MoneyManager $money, CookieInterface $cookie, ?PhonesHomePagePaths $paths)
+    public function __construct(?object $product, CollectionInterface|Closure $products, ?object $userCart, FormBuilder $frm, MoneyManager $money, CookieInterface $cookie, ?PhonesHomePageTemplatePaths $paths)
     {
         $this->product = $product;
         $this->products = $products;
@@ -48,8 +48,6 @@ abstract class AbstractSinglePage
         $template = str_replace('{{regularPrice}}', $this->money->getFormatedAmount($p->regular_price), $template);
         $template = str_replace('{{savings}}', $this->money->getFormatedAmount(strval($p->compare_price - $p->regular_price)), $template);
         $template = str_replace('{{imageUser}}', ImageManager::asset_img('users/avatar.png'), $template);
-        $template = str_replace('{{imageUser2}}', ImageManager::asset_img('users/default-female-avatar.jpg'), $template);
-
-        return $template;
+        return str_replace('{{imageUser2}}', ImageManager::asset_img('users/default-female-avatar.jpg'), $template);
     }
 }

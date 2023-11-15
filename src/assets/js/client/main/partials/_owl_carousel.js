@@ -11,7 +11,6 @@ const responsive = {
   },
 };
 import owlCarousel from "owl.carousel";
-import { get_visitors_data, send_visitors_data } from "corejs/visitors";
 // import comments from "corejs/comments";
 import imageLoaded from "corejs/waitfor";
 import banner1 from "img/banner1-cr-500x150.jpg";
@@ -19,7 +18,10 @@ import banner2 from "img/banner2-cr-500x150.jpg";
 import blog1 from "img/blog/blog1.jpg";
 import blog2 from "img/blog/blog2.jpg";
 import blog3 from "img/blog/blog3.jpg";
-class Home {
+import logo1 from "img/logo1.png";
+import logo2 from "img/logo2.png";
+import payment from "img/payment.png";
+class Carousel {
   constructor(element) {
     this.element = element;
   }
@@ -43,6 +45,7 @@ class Home {
       dots: true,
       items: 1,
       autoplay: true,
+      checkVisible: false,
     });
 
     //Top sales
@@ -52,6 +55,7 @@ class Home {
       dots: false,
       margin: 15,
       responsive: responsive,
+      checkVisible: false,
     });
 
     //new product
@@ -61,6 +65,7 @@ class Home {
       dots: true,
       margin: 15,
       responsive: responsive,
+      checkVisible: false,
     });
     //blog
     phpPlugin.blog.find(".owl-carousel").owlCarousel({
@@ -71,6 +76,7 @@ class Home {
         0: { items: 1 },
         600: { items: 3 },
       },
+      checkVisible: false,
       center: true,
     });
 
@@ -128,25 +134,7 @@ class Home {
         equal_height();
       })
       .catch((e) => console.log(e));
-    /**
-     * Visitors
-     */
-    let visitor = get_visitors_data()
-      .then((visitors_data) => {
-        var data = {
-          ...{
-            url: "/visitors",
-          },
-          ...visitors_data,
-        };
-        send_visitors_data(data, (response) => {
-          console.log(response);
-        });
-      })
-      .catch((data) => {
-        console.log(data);
-      });
   };
 }
 
-export default new Home($("#main-site"));
+export default new Carousel($("#main-site"));

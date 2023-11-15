@@ -6,7 +6,6 @@ class CookieFacade
 {
     /** @var string - the namespace reference to the cookie store type */
     protected CookieStoreInterface $store;
-    protected ContainerInterface $container;
 
     /**
      * Main cookie facade class which pipes the properties to the method arguments.
@@ -16,12 +15,11 @@ class CookieFacade
      * @param string $store - optional defaults to nativeCookieStore
      * @return void
      */
-    public function __construct(array $cookieEnvironmentArray, CookieConfig $cookieConfig, GlobalVariablesInterface $gv)
+    public function __construct(array $cookieEnvironmentArray, ?CookieConfig $cookieConfig = null, ?GlobalVariablesInterface $gv = null)
     {
-        $this->container = Container::getInstance();
         $cookieArray = array_merge($cookieConfig->baseConfig(), $cookieEnvironmentArray);
-        $this->store = $this->container->make(CookieStoreInterface::class, [
-            'cookieEnvironment' => $this->container->make(CookieEnvironment::class, [
+        $this->store = Application::diget(CookieStoreInterface::class, [
+            'cookieEnvironment' => Application::diGet(CookieEnvironment::class, [
                 'cookieConfig' => $cookieArray,
             ]),
             'gv' => $gv,
@@ -37,6 +35,6 @@ class CookieFacade
      */
     public function initialize(): CookieInterface
     {
-        return $this->container->make(CookieFactory::class)->create($this->store);
+        return Application::diget(CookieFactory::class)->create($this->store);
     }
 }

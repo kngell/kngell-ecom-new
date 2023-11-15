@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-interface GlobalManagerInterface
+interface GlobalManagerInterface_old
 {
     /**
      * Set globals Variables

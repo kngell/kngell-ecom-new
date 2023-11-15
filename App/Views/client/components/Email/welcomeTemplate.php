@@ -11,7 +11,7 @@
                <table border="0" cellpadding="0" cellspacing="0">
                   <tr>
                      <td class="align-center">
-                        <a href="{{host}}" target="_blank"><img src="https://localhost:8001/public/assets/img/logoKngell.png"
+                        <a href="{{host}}" target="_blank"><img src="/public/assets/img/logoKngell.png"
                               width="70" height="41" alt="Logo" align="center"></a>
                      </td>
                   </tr>
@@ -22,7 +22,7 @@
             <table border="0" cellpadding="0" cellspacing="0" class="main">
                <tr>
                   <td>
-                     <img src="https://localhost:8001/public/assets/img/hero.jpg" alt="Helpful placeholder image text"
+                     <img src="/public/assets/img/hero.jpg" alt="Helpful placeholder image text"
                         width="600" class="img-responsive">
                   </td>
                </tr>
@@ -172,16 +172,16 @@
                               <td>
                                  <a
                                     href="https://twitter.com/home?status&#x3D;Check%20this%20out%20http%3A//htmlemail.io"><img
-                                       src="https://localhost:8001/public/assets/img/twitterN.png" alt="Follow us on Twitter"
+                                       src="/public/assets/img/twitterN.png" alt="Follow us on Twitter"
                                        width="44" class="social-sharing-icon"></a>&nbsp;
                                  <a href="https://www.facebook.com/sharer/sharer.php?u&#x3D;http%3A//htmlemail.io"><img
-                                       src="https://localhost:8001/public/assets/img/facebookN.png" alt="Like us on Facebook"
+                                       src="/public/assets/img/facebookN.png" alt="Like us on Facebook"
                                        width="44" class="social-sharing-icon"></a>&nbsp;
-                                 <a href=""><img src="https://localhost:8001/public/assets/img/pinterest.png"
+                                 <a href=""><img src="/public/assets/img/pinterest.png"
                                        alt="Follow us on Pinterest" width="44" class="social-sharing-icon"></a>&nbsp;
-                                 <a href=""><img src="https://localhost:8001/public/assets/img/instagramN.png"
+                                 <a href=""><img src="/public/assets/img/instagramN.png"
                                        alt="Follow us on Instagram" width="44" class="social-sharing-icon"></a>&nbsp;
-                                 <a href=""><img src="https://localhost:8001/public/assets/img/linkedinN.png"
+                                 <a href=""><img src="/public/assets/img/linkedinN.png"
                                        alt="Follow us on LinkedIn" width="44" class="social-sharing-icon"></a>&nbsp;
                               </td>
                            </tr>
@@ -193,10 +193,10 @@
                         <table border="0" cellpadding="0" cellspacing="0">
                            <tr>
                               <td>
-                                 <a href=""><img src="https://localhost:8001/public/assets/img/appstore.png" width="135"
+                                 <a href=""><img src="/public/assets/img/appstore.png" width="135"
                                        height="40" alt="Download from App Store"></a>
                                  &nbsp;
-                                 <a href=""><img src="https://localhost:8001/public/assets/img/playstore.png" width="135"
+                                 <a href=""><img src="/public/assets/img/playstore.png" width="135"
                                        height="40" alt="Available on Google Play"></a>
                                  &nbsp;
                               </td>

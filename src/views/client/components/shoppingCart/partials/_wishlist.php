@@ -38,8 +38,8 @@
                         <!-- Produt quantity -->
                         <div class="cart-qty">
                             <form action="#" class="delete-cart-item-frm<?=$product->pdtID?>">
-                                <input type="hidden" name="item_id" value="<?=$product->pdtID?>">
-                                <input type="hidden" name="user_id" value="1">
+                                <input type="hidden" name="itemId" value="<?=$product->pdtID?>">
+                                <input type="hidden" name="userId" value="1">
                                 <?=FH::csrfInput('csrftoken', $this->token->generate_token(8, 'delete-cart-item-frm' . $product->pdtID ?? 1)); ?>
                                 <button type="submit"
                                     class="btn font-baloo pl-0 pr-3 border-right deleteBtn">Supprimer</button>
@@ -51,7 +51,7 @@
                     <div class="col-sm-2 text-right cart-row__price">
                         <div class="price_wrapper">
                             <span
-                                class="product_price"><?=$product->get_money()->getAmount($product->p_regular_price * $product->item_qty)?></span>
+                                class="product_price"><?=$product->get_money()->getAmount($product->p_regular_price * $product->itemQty)?></span>
                         </div>
                     </div>
                 </div>

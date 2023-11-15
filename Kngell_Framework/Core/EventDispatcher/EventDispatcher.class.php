@@ -3,6 +3,8 @@
 declare(strict_types=1);
 class EventDispatcher extends AbstractEventDispatcher implements EventDispatcherInterface
 {
+    private array $log;
+
     public function __construct(private ListenerProviderInterface $listener)
     {
     }

@@ -9,22 +9,39 @@ abstract class AbstractModel
     protected string $_modelName;
     protected QueryParams $queryParams;
     protected RepositoryInterface|FileStorageRepositoryInterface $repository;
-    protected ContainerInterface $container;
     protected MoneyManager $money;
     protected Entity|CollectionInterface $entity;
     protected ModelHelper $helper;
-    protected SessionInterface $session;
+    // protected SessionInterface $session;
     protected CookieInterface $cookie;
-    protected CacheInterface $cache;
+    // protected CacheInterface $cache;
     protected Token $token;
-    protected RequestHandler $request;
-    protected ResponseHandler $response;
+    // protected RequestHandler $request;
+    // protected ResponseHandler $response;
     protected Validator $validator;
     protected bool $validates = true;
     protected array $validationErr = [];
     protected string $tableSchema;
     protected string $tableSchemaID;
+    protected mixed $_results;
+    protected string $_colID;
+    protected string $_table;
+    protected int $_count;
     protected bool $_flatDb;
+    protected int $_lasID;
+    protected string $_colIndex = '';
+    protected PDOStatement $_statement;
+    protected DatabaseConnexionInterface $_con;
+
+    public function __construct(string $tableSchema, string $tableSchemaID, bool $flatDb = false)
+    {
+        $this->throwException($tableSchema, $tableSchemaID);
+        $this->tableSchema = $tableSchema;
+        $this->tableSchemaID = $tableSchemaID;
+        $this->_flatDb = $flatDb;
+        $this->properties();
+        $this->_modelName = $this::class;
+    }
 
     /*
      * Prevent Deleting Ids
@@ -52,7 +69,7 @@ abstract class AbstractModel
             return $this;
         }
         $colID = $this->entity->getColId();
-        if (!$this->entity->isInitialized($colID)) {
+        if (! $this->entity->isInitialized($colID)) {
             throw new BaseException('unable to update row!');
         }
         $this->table()->where([$colID => $this->entity->{$this->entity->getGetters($colID)}()])->build();
@@ -102,7 +119,7 @@ abstract class AbstractModel
     //Before delete
     public function beforeDelete(Entity $entity)
     {
-        return !is_null($entity) ? true : false;
+        return ! is_null($entity) ? true : false;
     }
 
     //After delete
@@ -126,20 +143,22 @@ abstract class AbstractModel
     public function runValidation(CustomValidator $validator) : void
     {
         $status = $validator->run();
-        if (!$status) {
+        if (! $status) {
             $this->validates = false;
             $this->validationErr[$validator->getField()] = $validator->getMsg();
         }
     }
 
     /**
-     * Get Container.
-     *
-     * @return ContainerInterface
+     * Throw an exception
+     * ================================================================.
+     * @return void
      */
-    public function get_container() : ContainerInterface
+    public function throwException(string $tableSchema, string $tableSchemaID): void
     {
-        return $this->container;
+        if (empty($tableSchema) || empty($tableSchemaID)) {
+            throw new BaseInvalidArgumentException('Your repository is missing the required constants. Please add the TABLESCHEMA and TABLESCHEMAID constants to your repository.');
+        }
     }
 
     public function getModelName() : string
@@ -162,7 +181,7 @@ abstract class AbstractModel
     public function defaultShippingClass() : ?int
     {
         $en = $this->getEntity();
-        if (!$this->isInitialized('shipping_class')) {
+        if (! $this->isInitialized('shipping_class')) {
             return $this->container(ShippingClassManager::class)->getDefault();
             // if ($defaultShClass->count() === 1) {
             //     return current($defaultShClass->get_results());

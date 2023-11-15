@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 class Flash implements FlashInterface
 {
-    /* Contains the session object */
+    /** Contains the session object */
     use SessionTrait;
 
     /** @var string */
@@ -39,7 +39,6 @@ class Flash implements FlashInterface
     public function getSessionObject(object $session): self
     {
         $this->session = $session;
-
         return $this;
     }
 
@@ -59,10 +58,13 @@ class Flash implements FlashInterface
         if ($this->session->exists($this->flashKey)) {
             $this->session->set($this->flashKey, []);
         }
-        $this->session->setArray($this->flashKey, [
-            'message' => $message,
-            'type' => $type,
-        ]);
+        $this->session->setArray(
+            $this->flashKey,
+            [
+                'message' => $message,
+                'type' => $type,
+            ]
+        );
     }
 
     /**

@@ -33,13 +33,13 @@ class UserAccount extends UsersManager
         $userModel = current($userModel->get_results());
 
         return new Collection([
-            'user_id' => $user->isInitialized('user_id') ? $user->getUserId() : '',
-            'customer_id' => $user->isInitialized('customer_id') ? $user->getCustomerId() : '',
+            'userId' => $user->isInitialized('userId') ? $user->getUserId() : '',
+            'customerId' => $user->isInitialized('customerId') ? $user->getCustomerId() : '',
             'register_date' => $user->isInitialized('register_date') ? $user->getRegisterDate() : '',
             'updated_at' => $user->isInitialized('updated_at') ? $user->getUpdatedAt() : '',
             'deleted' => $user->isInitialized('deleted') ? $user->getDeleted() : '',
-            'first_name' => $user->isInitialized('first_name') ? $user->getFirstName() : '',
-            'last_name' => $user->isInitialized('last_name') ? $user->getLastName() : '',
+            'firstName' => $user->isInitialized('firstName') ? $user->getFirstName() : '',
+            'lastName' => $user->isInitialized('lastName') ? $user->getLastName() : '',
             'phone' => $user->isInitialized('phone') ? $user->getPhone() : '',
             'email' => $user->isInitialized('email') ? $user->getEmail() : '',
             'password' => $user->isInitialized('password') ? $user->getPassword() : '',
@@ -56,7 +56,7 @@ class UserAccount extends UsersManager
         $user = $userModel->getEntity();
 
         return $this->container(OrdersManager::class)->assign([
-            'ord_user_id' => $user->isInitialized('user_id') ? $user->getUserId() : '',
+            'ord_userId' => $user->isInitialized('userId') ? $user->getUserId() : '',
         ])->all();
     }
 }

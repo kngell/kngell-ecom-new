@@ -7,16 +7,16 @@ class GroupUserEntity extends Entity
     /** @id */
     private int $gruId;
     /** @userID */
-    private int $userID;
-    private int $groupID;
-    /** @var DateTimeInterface */
-    private DateTimeInterface $dateEnreg;
-    /** @var DateTimeInterface */
-    private DateTimeInterface $updateAt;
+    private int $userId;
+    private int $groupId;
+    /** @var ?string */
+    private ?string $dateEnreg;
+    /** @var ?string */
+    private ?string $updatedAt;
 
     public function __construct()
     {
-        $this->dateEnreg = !isset($this->dateEnreg) ? new DateTimeImmutable() : $this->dateEnreg;
+        // $this->dateEnreg = !isset($this->dateEnreg) ? new DateTimeImmutable() : $this->dateEnreg;
     }
 
     /**
@@ -77,7 +77,7 @@ class GroupUserEntity extends Entity
     /**
      * Get the value of dateEnreg.
      */
-    public function getDateEnreg(): DateTimeInterface
+    public function getDateEnreg(): ?string
     {
         return $this->dateEnreg;
     }
@@ -87,7 +87,7 @@ class GroupUserEntity extends Entity
      *
      * @return  self
      */
-    public function setDateEnreg(DateTimeInterface $dateEnreg) : self
+    public function setDateEnreg(?string $dateEnreg) : self
     {
         $this->dateEnreg = $dateEnreg;
 
@@ -95,22 +95,19 @@ class GroupUserEntity extends Entity
     }
 
     /**
-     * Get the value of updateAt.
+     * Get the value of updatedAt.
      */
-    public function getUpdateAt() : DateTimeInterface
+    public function getUpdatedAt(): ?string
     {
-        return $this->updateAt;
+        return $this->updatedAt;
     }
 
     /**
-     * Set the value of updateAt.
-     *
-     * @return  self
+     * Set the value of updatedAt.
      */
-    public function setUpdateAt(DateTimeInterface $updateAt) : self
+    public function setUpdatedAt(?string $updatedAt): self
     {
-        $this->updateAt = $updateAt;
-
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 }

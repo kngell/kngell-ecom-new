@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class PaginationPath implements PathsInterface
+class PaginationPath implements TemplatePathsInterface
 {
     private string $templatePath = APP . 'Display' . DS . 'Components' . DS . 'Pagination' . DS . 'Templates' . DS;
 

@@ -23,5 +23,10 @@ module.exports = {
       import: ["js/client/main/partials/_open_login_modal"],
       dependOn: "js/librairies/frontlib",
     },
+    //visitor Home page
+    "js/client/brand/phones/home/home": {
+      import: ["js/client/brand/phones/home/index"],
+      dependOn: "js/librairies/frontlib",
+    },
   },
 };

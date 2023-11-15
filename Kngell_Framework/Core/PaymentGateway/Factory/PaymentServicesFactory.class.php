@@ -25,7 +25,7 @@ class PaymentServicesFactory
             $gateway = ucfirst($this->defaultPlatForm) . $this->gatewaySuffix;
             $gatewayObject = $this->container->make($gateway, [
                 'paymentMethod' => isset($this->paymentMethod) ? $this->paymentMethod : null,
-                'customer_id' => isset($this->customerId) ? $this->customerId : null,
+                'customerId' => isset($this->customerId) ? $this->customerId : null,
                 'customerEntity' => isset($this->customerEntity) ? $this->customerEntity : null,
             ]);
             if (!$gatewayObject instanceof PaymentGatewayInterface) {

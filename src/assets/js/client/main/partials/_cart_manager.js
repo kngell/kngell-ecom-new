@@ -40,7 +40,7 @@ class Cart_Manager {
     // Qty down
     phpPlugin.wrapper.on("click", ".qty-down", function (e) {
       e.preventDefault();
-      const input = $(this).parent().find("input[name=item_qty]");
+      const input = $(this).parent().find("input[name=itemQty]");
       input.val(function (i, oldval) {
         return !isNaN(oldval) && oldval > 1 ? --oldval : oldval;
       });
@@ -122,15 +122,15 @@ class Cart_Manager {
 
     phpPlugin.wrapper.on("click", ".save-add", function (e) {
       e.preventDefault();
-      let cart_type = "wishlist";
+      let cartType = "wishlist";
       if ($(this).parents("#wishlist").length != 0) {
-        cart_type = "cart";
+        cartType = "cart";
       }
       const data = {
         url: "user_cart/save_for_later",
         frm: $(this).parent(),
         frm_name: $(this).parent().attr("id"),
-        cart_type: cart_type,
+        cartType: cartType,
       };
       Call_controller(data, (response) => {
         console.log(response);
@@ -156,7 +156,7 @@ class Cart_Manager {
         url: "user_cart/buy",
         frm: $(this),
         frm_name:
-          $(this).attr("class") + $(this).find('input[name="item_id"]').val(),
+          $(this).attr("class") + $(this).find('input[name="itemId"]').val(),
       };
       Call_controller(data, (response) => {
         phpPlugin.wrapper.find("#cart").replaceWith(response.msg.shoppingCart);

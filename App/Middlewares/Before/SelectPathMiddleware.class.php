@@ -24,6 +24,8 @@ class SelectPathMiddleware extends BeforeMiddleware
             $object->setLayout('admin');
             $object->view()->siteTitle("K'nGELL Administration");
             $object->setSelect2Field(YamlFile::get('select2Field')['admin']);
+        } else {
+            $object->setLayout('');
         }
         return $next($object);
     }

@@ -18,7 +18,7 @@ class LogoutUserManager extends Model
     {
         list($token, $id) = $this->deleteUserSessionAndCookie();
         if (!empty($id)) {
-            $this->userSession->table()->where(['user_id' => $id, 'session_token' => $token]);
+            $this->userSession->table()->where(['userId' => $id, 'session_token' => $token]);
             $this->userSession = $this->userSession->getAll();
             return $this->userSession->count() === 1 ? $this->userSession->assign(current($this->userSession->get_results())) : null;
         }

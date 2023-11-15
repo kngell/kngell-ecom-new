@@ -13,7 +13,7 @@
             </div>
             <div class="shop-button">
                <a href="" class="btn re-buy"><span class="re-buy-icon"><img
-                        src="/kngell/public/assets/img/products/re_buy.png" alt="" class="img-fluid pe-1"
+                        src="/kngell-ecom-ecom/public/assets/img/products/re_buy.png" alt="" class="img-fluid pe-1"
                         width=25></span>Acheter à
                   nouveau</a>&nbsp;&nbsp;
                <a href="" class="btn browse-article">Voir l'article</a>

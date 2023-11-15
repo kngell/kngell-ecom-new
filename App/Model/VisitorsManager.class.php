@@ -12,44 +12,61 @@ class VisitorsManager extends Model
         parent::__construct($this->_table, $this->_colID);
     }
 
+    public function assign(array|bool $data): self
+    {
+        if ($data) {
+            $data = $this->helper->transform_keys($data, H_visitors::new_IpAPI_keys());
+        }
+        parent::assign($data);
+        return $this;
+    }
+
     public function manageVisitors(array $params = []) : self
     {
-        $ipData = H_visitors::getIpData($params['ip'] ?? '91.173.88.22');
         if ($this->cookie->exists(VISITOR_COOKIE_NAME)) {
             $visitorInfos = $this->getVisitorInfos($params['ip'] ?? '91.173.88.22');
-            $return_value = match ($visitorInfos->count()) {
-                0 => $this->add_new_visitor($ipData),
-                1 => $this->updateVisitorInfos($visitorInfos, $ipData),
-                default => $this->cleanVisitorsInfos($visitorInfos, $ipData)
+            return match ($visitorInfos->count()) {
+                0 => $this->addNewVisitor($this->cookie->get(VISITOR_COOKIE_NAME)),
+                1 => $this->updateVisitorInfos(),
+                default => $this->deleteVisitor()
             };
         } else {
-            if (($visitorObject = $this->getVisitorByIp()) !== null) {
-                $this->cookie->set($visitorObject->cookies, VISITOR_COOKIE_NAME);
-                $return_value = $visitorObject;
+            /** @var VisitorsEntity */
+            $entity = $this->getVisitorByIp();
+            if ($entity !== null) {
+                $this->cookie->set($entity->getCookies(), VISITOR_COOKIE_NAME);
+                $this->entity = $entity;
+                return $this;
             } else {
-                $return_value = $this->add_new_visitor($ipData);
+                return $this->addNewVisitor();
             }
         }
-        return $return_value ?? false;
     }
 
     //Add new visitor
-    public function add_new_visitor(mixed $data)
+    public function addNewVisitor(?string $cookies = null) : self|bool
     {
-        $attr = [];
-        if (is_array($data) && count($data) > 0) {
-            $attr = $this->response->transform_keys($data, H_visitors::new_IpAPI_keys());
-        } else {
-            $attr = ['ipAddress' => $data];
+        $newV = false;
+        if ($cookies == null) {
+            $cookies = $this->getUniqueID('cookies');
+            $newV = true;
         }
-        $cookies = $this->getUniqueID('cookies');
-        $this->assign(array_merge($attr, ['cookies' => $cookies, 'useragent' => Session::uagent_no_version(), 'hits' => 1]));
-        $this->cookie->set($cookies);
+        $this->assign([
+            'cookies' => $cookies,
+            'useragent' => Session::uagent_no_version(),
+            'hits' => 1,
+        ]);
+
         if ($save = $this->save()) {
+            $newV ? $this->cookie->set($cookies) : '';
             return $save;
         }
-
         return false;
+    }
+
+    public function getEntity() : VisitorsEntity
+    {
+        return parent::getEntity();
     }
 
     public function getAllVisitors() : CollectionInterface
@@ -58,10 +75,10 @@ class VisitorsManager extends Model
         return new Collection($this->getAll()->get_results());
     }
 
-    public function getVisitorByIp() : ?self
+    public function getVisitorByIp() : ?Entity
     {
         $this->table()->where([
-            'ip_address|in' => [[H_visitors::getIP(), '2', '3'], 'visitors'],
+            'ipAddress|in' => [[H_visitors::getIP(), '2', '3'], 'visitors'],
         ])->return('class');
         $v = $this->getAll();
         if ($v->count() > 1) {
@@ -70,41 +87,52 @@ class VisitorsManager extends Model
         return null;
     }
 
+    private function getIpData() : mixed
+    {
+        if ($this->entity instanceof VisitorsEntity) {
+            $ip = $this->entity->isInitialized('ipAddress') ? $this->entity->getIpAddress() : H_visitors::getIP();
+            if ($ip == '::1') {
+                $ip = '91.173.88.22';
+            }
+            return H_visitors::getIpData($ip);
+        }
+    }
+
     private function getVisitorInfos(string $ip) : self
     {
         $query_data = $this->table()->where([
             'cookies' => $this->cookie->get(VISITOR_COOKIE_NAME),
-            'ip_address|in' => [[$ip, '2', '3'], 'visitors'],
+            'ipAddress|in' => [[$ip, '2', '3'], 'visitors'],
         ])
             ->return('class')
             ->build();
         return $this->getAll($query_data);
     }
 
-    private function updateVisitorInfos(Model $m, mixed $ipData = [])
+    private function updateVisitorInfos() : self
     {
-        /** @var Model */
-        $info = current($m->get_results());
-        $info->assign(array_merge($info->response->transform_keys(!is_array($ipData) ? ['ip_address' => $ipData] : $ipData, H_visitors::new_IpAPI_keys()), (array) $info));
-        if (!$update = $info->update()) {
+        // /** @var VisitorsEntity */
+        // $oldVisitor = current($m->get_results());
+        // $this->entity->assign(array_merge($this->helper->transform_keys(! is_array($ipData) ? ['ipAddress' => $ipData] : $ipData, H_visitors::new_IpAPI_keys()), (array) $this->entity));
+        if (! $update = $this->update()) {
             throw new BaseRuntimeException('Erreur lors de la mise à jour des données visiteur!');
         }
         return $update ?? null;
     }
 
-    private function cleanVisitorsInfos(Model $m, mixed $ipData)
+    private function deleteVisitor() : self
     {
-        $vInfos = $m->get_results();
-        if (count($vInfos) > 1) {
-            foreach ($vInfos as $info) {
-                $info->assign((array) $info);
-                $info->getQueryParams()->reset();
-                if (!$info->delete()) {
-                    throw new BaseRuntimeException('Erreur lors de la mise à jour des données visiteur!');
-                }
-            }
-
-            return $this->add_new_visitor($ipData);
+        // $vInfos = $m->get_results();
+        // if (count($vInfos) > 1) {
+        //     foreach ($vInfos as $info) {
+        //         $info->assign((array) $info);
+        //         $info->getQueryParams()->reset();
+        if (! $delete = $this->delete()) {
+            throw new BaseRuntimeException('Erreur lors de la mise à jour des données visiteur!');
         }
+        // }
+
+        return $delete; //$this->addNewVisitor();
+        // }
     }
 }

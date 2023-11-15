@@ -45,7 +45,7 @@ class AddressBookManager extends Model
     {
         /** @var AddressBookEntity */
         $en = $this->getEntity();
-        if (!$en->isInitialized('ab_id')) {
+        if (! $en->isInitialized('ab_id')) {
             $tbl = $en->isInitialized('tbl') ? $en->getTbl() : $tbl;
             $id = $en->isInitialized('rel_id') ? $en->getRelId() : $id;
             if ($en->getPrincipale() == 'Y') {

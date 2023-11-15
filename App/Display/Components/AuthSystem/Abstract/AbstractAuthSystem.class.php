@@ -80,12 +80,12 @@ abstract class AbstractAuthSystem
         $registerTemplate = str_replace('{{form_begin}}', $form->begin(), $registerTemplate);
         $registerTemplate = str_replace('{{camera}}', ImageManager::asset_img('camera' . DS . 'camera-solid.svg'), $registerTemplate);
         $registerTemplate = str_replace('{{avatar}}', ImageManager::asset_img('users' . DS . 'avatar.png'), $registerTemplate);
-        $registerTemplate = str_replace('{{last_name}}', $form->input([
-            TextType::class => ['name' => 'last_name'],
-        ])->placeholder(' ')->label('Last Name :')->id('last_name')->req()->html(), $registerTemplate);
-        $registerTemplate = str_replace('{{first_name}}', $form->input([
-            TextType::class => ['name' => 'first_name'],
-        ])->placeholder(' ')->label('First Name :')->id('first_name')->req()->html(), $registerTemplate);
+        $registerTemplate = str_replace('{{lastName}}', $form->input([
+            TextType::class => ['name' => 'lastName'],
+        ])->placeholder(' ')->label('Last Name :')->id('lastName')->req()->html(), $registerTemplate);
+        $registerTemplate = str_replace('{{firstName}}', $form->input([
+            TextType::class => ['name' => 'firstName'],
+        ])->placeholder(' ')->label('First Name :')->id('firstName')->req()->html(), $registerTemplate);
         $registerTemplate = str_replace('{{username}}', $form->input([
             TextType::class => ['name' => 'user_name'],
         ])->placeholder(' ')->label('UserName')->id('user_name')->html(), $registerTemplate);

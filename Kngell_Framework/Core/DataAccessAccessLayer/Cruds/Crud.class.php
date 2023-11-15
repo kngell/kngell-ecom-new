@@ -6,31 +6,30 @@ use Throwable;
 
 class Crud extends AbstractCrud implements CrudInterface
 {
-    /**
-     * dataMapper Object.
-     */
-    protected DataMapper $dataMapper;
-    /**
-     * Query Builder.
-     */
-    protected queryBuilder $queryBuilder;
-    /**
-     * Table Name.
-     */
-    protected string $tableSchema;
-    /**
-     * Table Name primary key.
-     */
-    protected string $tableSchemaID;
-    protected array $options;
+    public function __construct(
+        ?DataMapperInterface $dataMapper = null,
+        ?QueryBuilderInterface $queryBuilder = null,
+        ?string $tableSchema = null,
+        ?string $tableSchemaID = null,
+        ?array $options = []
+    ) {
+        parent::__construct($dataMapper, $queryBuilder, $tableSchema, $tableSchemaID, $options);
+    }
 
-    public function __construct(DataMapperInterface $dataMapper, queryBuilderInterface $queryBuilder, string $tableSchema, string $tableSchemaID, ?array $options = [])
-    {
+    public function setProperties(
+        DataMapperInterface $dataMapper,
+        QueryBuilderInterface $queryBuilder,
+        string $tableSchema,
+        string $tableSchemaID,
+        ?array $options = []
+    ) : self {
         $this->tableSchema = $tableSchema;
         $this->tableSchemaID = $tableSchemaID;
         $this->options = $options;
         $this->dataMapper = $dataMapper;
         $this->queryBuilder = $queryBuilder;
+
+        return $this;
     }
 
     /**
@@ -56,7 +55,7 @@ class Crud extends AbstractCrud implements CrudInterface
      * =====================================================================.
      *@inheritDoc
      */
-    public function read(array $selectors = [], array $conditions = [], array $params = [], array $options = [])
+    public function read(array $selectors = [], array $conditions = [], array $params = [], array $options = []) : DataMapperInterface
     {
         try {
             $arg = [
@@ -70,6 +69,29 @@ class Crud extends AbstractCrud implements CrudInterface
             ];
             $query = $this->queryBuilder->buildQuery($arg)->select();
             $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($arg['conditions'], $params));
+            if ($this->dataMapper->numrow() > 0) {
+                return $this->dataMapper->results($options, __FUNCTION__);
+            }
+            return $this->dataMapper;
+        } catch (\Throwable $th) {
+            throw new DataAccessLayerException($th->getMessage());
+        }
+    }
+
+    public function release(array $selectors = [], array $conditions = [], array $params = [], array $options = []) : mixed
+    {
+        try {
+            $arg = [
+                'table' => $this->getSchema(),
+                'type' => 'release',
+                'selectors' => $selectors,
+                'conditions' => $conditions,
+                'params' => $params,
+                'extras' => $options,
+                'recursive_query' => array_key_exists('recursive', $options) ? $this->recursive_query($options) : '',
+            ];
+            $query = $this->queryBuilder->buildQuery($arg)->select();
+            $this->dataMapper->release($query, $this->dataMapper->buildQueryParameters($arg['conditions'], $params));
             if ($this->dataMapper->numrow() > 0) {
                 return $this->dataMapper->results($options, __FUNCTION__);
             }
@@ -142,7 +164,7 @@ class Crud extends AbstractCrud implements CrudInterface
     /**
      *@inheritDoc
      */
-    public function search(array $selectors = [], array $searchconditions = [])
+    public function search(array $selectors = [], array $searchconditions = []) : mixed
     {
         try {
             $arg = [
@@ -183,7 +205,7 @@ class Crud extends AbstractCrud implements CrudInterface
         }
     }
 
-    public function aggregate(string $type, ?string $fields = 'id', array $conditions = [])
+    public function aggregate(string $type, ?string $fields = 'id', array $conditions = []) : mixed
     {
         $args = ['table' => $this->getSchema(), 'primary_key' => $this->getSchemaID(), 'type' => 'select', 'aggregate' => $type, 'aggregate_field' => $fields, 'conditions' => $conditions, 'extras' => ['orderby' => '']];
         $query = $this->queryBuilder->buildQuery($args)->select();
@@ -215,5 +237,33 @@ class Crud extends AbstractCrud implements CrudInterface
         if ($this->dataMapper->numrow() >= 0) {
             return $this->dataMapper->result();
         }
+    }
+
+    public function beginTransaction() : bool
+    {
+        return $this->dataMapper->beginTransaction();
+    }
+
+    public function exec(string $sql) : int|false
+    {
+        return $this->dataMapper->exec($sql);
+    }
+
+    public function inTransaction() : bool
+    {
+        return $this->dataMapper->inTransaction();
+    }
+
+    public function rollBack() : bool
+    {
+        return $this->dataMapper->rollBack();
+    }
+
+    /**
+     * Get the value of _con.
+     */
+    public function getCon(): DatabaseConnexionInterface
+    {
+        return $this->dataMapper->getCon();
     }
 }

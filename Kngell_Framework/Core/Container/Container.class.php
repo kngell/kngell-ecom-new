@@ -22,7 +22,7 @@ class Container implements ContainerInterface
      */
     protected $reboundCallbacks = [];
 
-    public function __construct()
+    private function __construct()
     {
     }
 
@@ -33,7 +33,7 @@ class Container implements ContainerInterface
      */
     public static function getInstance() : mixed
     {
-        if (!isset(static::$instance)) {
+        if (! isset(static::$instance)) {
             static::$instance = new static();
         }
         return static::$instance;
@@ -85,7 +85,7 @@ class Container implements ContainerInterface
      */
     public function get(string $id) : mixed
     {
-        if (!$this->has($id)) {
+        if (! $this->has($id)) {
             throw new ComponentNotFoundException(sprintf('Could not found Component name : %s', $id));
         }
         return $this->services[$id];
@@ -184,7 +184,7 @@ class Container implements ContainerInterface
         } catch (ReflectionException $e) {
             throw new BindingResolutionException("Target class [$concrete] does not exist.", 0, $e->getCode());
         }
-        if (!$reflector->isInstantiable()) {
+        if (! $reflector->isInstantiable()) {
             throw new BindingResolutionException("Target [$concrete] is not instantiable.");
         }
         $constructor = $reflector->getConstructor();
@@ -211,9 +211,9 @@ class Container implements ContainerInterface
         /** @var ReflectionParameter $dependency */
         foreach ($reflectionDependencies as $key => $dependency) {
             $serviceType = $dependency->getType(); // ReflectionType|null
-            if (!$serviceType instanceof ReflectionNamedType || $serviceType->isBuiltin()) {
-                if ($dependency->isDefaultValueAvailable() || !empty($args)) {
-                    if ($dependency->isDefaultValueAvailable() && !array_key_exists($dependency->name, $args)) {
+            if (! $serviceType instanceof ReflectionNamedType || $serviceType->isBuiltin()) {
+                if ($dependency->isDefaultValueAvailable() || ! empty($args)) {
+                    if ($dependency->isDefaultValueAvailable() && ! array_key_exists($dependency->name, $args)) {
                         $classDependencies[] = $dependency->getDefaultValue();
                     }
                     if (array_key_exists($dependency->name, $args)) {
@@ -224,13 +224,15 @@ class Container implements ContainerInterface
                 } else {
                     throw new DependencyHasNoDefaultValueException('Sorry cannot resolve class dependency ' . $dependency->name);
                 }
-            } elseif (!$reflector->isUserDefined()) {
+            } elseif (! $reflector->isUserDefined()) {
                 $classDependencies[] = $this->make($serviceType->getName());
             } else {
                 if (array_key_exists($dependency->name, $args)) {
                     $classDependencies[] = $args[$dependency->name];
                 } elseif (array_key_exists($key, $args)) {
                     $classDependencies[] = $args[$key];
+                } elseif (($dependency->isOptional() || $dependency->isDefaultValueAvailable()) && empty($args)) {
+                    $classDependencies[] = $dependency->getDefaultValue();
                 } else {
                     $classDependencies[] = $this->make($serviceType->getName()); //dependency->name;
                 }
@@ -251,7 +253,7 @@ class Container implements ContainerInterface
         if ($reflector->hasProperty('container')) {
             $reflectionContainer = $reflector->getProperty('container');
             $reflectionContainer->setAccessible(true);
-            if (!$reflectionContainer->isInitialized($obj)) {
+            if (! $reflectionContainer->isInitialized($obj)) {
                 $reflectionContainer->setValue($obj, $this);
             }
         }

@@ -36,7 +36,6 @@ class DataMapperEnvironmentConfig
                 $connexionArray = $credentials[$driver];
             }
         }
-
         return $connexionArray;
     }
 
@@ -48,13 +47,13 @@ class DataMapperEnvironmentConfig
      */
     private function isCredentialsValid(string $driver)
     {
-        if (empty($driver) && !is_string($driver)) {
+        if (empty($driver) && ! is_string($driver)) {
             throw new DataMapperInvalidArgumentException('Invalid Argument! This is missing or invalid Data type');
         }
-        if (!is_array($this->credentials)) {
+        if (! is_array($this->credentials)) {
             throw new DataMapperInvalidArgumentException('Invalid Credentials!');
         }
-        if (!in_array('driver', array_keys($this->credentials))) {
+        if (! in_array('driver', array_keys($this->credentials))) {
             throw new DataMapperInvalidArgumentException('Invalid or unsupported driver');
         }
     }

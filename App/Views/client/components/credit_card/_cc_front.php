@@ -1,7 +1,7 @@
 <div class="front">
    <div class="image">
-      <img src="https://localhost:8001/public/assets/img/chip.png" alt="">
-      <img src="https://localhost:8001/public/assets/img/visa.png" alt="">
+      <img src="/public/assets/img/chip.png" alt="">
+      <img src="/public/assets/img/visa.png" alt="">
    </div>
    <div class="card-number-box">################</div>
    <div class="flexbox">

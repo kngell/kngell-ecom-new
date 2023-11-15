@@ -31,7 +31,7 @@ $this->start('head'); ?>
       <?= $blogArea ?? ''?>
       <!-- End blog -->
    </div>
-   <input type="hidden" id="ip_address" style="display:none" value="<?=H_visitors::getIP()?>">
+   <input type="hidden" id="ipAddress" style="display:none" value="<?=H_visitors::getIP()?>">
 </main>
 <!-- End  Main -->
 <?php $this->end(); ?>

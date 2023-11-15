@@ -77,12 +77,12 @@ class AuthController extends Controller
                             $request->type = 1;
                             $request->timestamp = time();
                             if ($lastID = $request->save()['saveID']->get_lastID()) {
-                                $msg = '<a href="http://localhost/kngell/users/resetpassword/' . $lastID . '/' . $this->token->urlSafeEncode($code) . '">Click to reset your password.</a>';
-                            // if (H_Email::sendEmail($data['email'], $user[0]->name, 'Password Reset', $msg)) {
+                                $msg = '<a href="http://localhost/kngell-ecom/users/resetpassword/' . $lastID . '/' . $this->token->urlSafeEncode($code) . '">Click to reset your password.</a>';
+                                // if (H_Email::sendEmail($data['email'], $user[0]->name, 'Password Reset', $msg)) {
                                 //     $this->jsonResponse(['result' => 'success', 'msg' => FH::showMessage('success text-center', 'An Email has been sent if an account with that email exist.')]);
-                            // } else {
+                                // } else {
                                 //     $this->jsonResponse(['result' => 'error', 'msg' => FH::showMessage('warning text-center', 'Failed to send email')]);
-                            // }
+                                // }
                             } else {
                                 $this->jsonResponse(['result' => 'error', 'msg' => FH::showMessage('danger text-center', 'Failed to create request in database! Plase try again.')]);
                             }
@@ -268,7 +268,7 @@ class AuthController extends Controller
                 $msg = '<h2>Invalid Verification Request</h2>';
             }
             $request = null;
-        // Rooter::redirect('users' . DS . 'emailverified' . DS . $msg);
+            // Rooter::redirect('users' . DS . 'emailverified' . DS . $msg);
         } else {
             // Rooter::redirect('restricted');
         }
@@ -290,7 +290,7 @@ class AuthController extends Controller
                     $request->timestamp = time();
                     $request->hash = password_hash($verifiCode, PASSWORD_DEFAULT);
                     if ($resp = $request->save()) {
-                        // if (H_Email::sendEmail($email, $user[0]->name, 'Email Verification', '<a href="http://localhost/kngell/auth/verifyEmail/' . $resp->get_lastID() . '/' . $this->token->urlSafeEncode($verifiCode) . '">Click to verify your email</a>')) {
+                        // if (H_Email::sendEmail($email, $user[0]->name, 'Email Verification', '<a href="http://localhost/kngell-ecom-ecom/auth/verifyEmail/' . $resp->get_lastID() . '/' . $this->token->urlSafeEncode($verifiCode) . '">Click to verify your email</a>')) {
                         //     return true;
                         // }
                     }

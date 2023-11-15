@@ -9,70 +9,70 @@ $this->start('head'); ?>
    <div class="container k-pt-2">
       <nav class="header">
          <div class="left-section">
-            <img src="https://localhost:8001/public/assets/img/hamburger-menu.svg" class="hamburger-menu" alt="">
-            <img src="https://localhost:8001/public/assets/img/youtube-logo.svg" class="youtube-logo" alt="">
+            <img src="/public/assets/img/hamburger-menu.svg" class="hamburger-menu" alt="">
+            <img src="/public/assets/img/youtube-logo.svg" class="youtube-logo" alt="">
          </div>
          <div class="middle-section">
             <input type="text" class="search-bar" placeholder="Search">
             <button class="search-button">
-               <img src="https://localhost:8001/public/assets/img/search.svg" class="search-icon" alt="">
+               <img src="/public/assets/img/search.svg" class="search-icon" alt="">
                <div class="tooltip">Search</div>
             </button>
             <button class="voice-search-button">
-               <img src="https://localhost:8001/public/assets/img/voice-search-icon.svg" class="voice-search-icon" alt="">
+               <img src="/public/assets/img/voice-search-icon.svg" class="voice-search-icon" alt="">
                <div class="tooltip">Search with your voice</div>
             </button>
          </div>
          <div class="right-section">
             <div class="upload-icon-container">
-               <img src="https://localhost:8001/public/assets/img/upload.svg" class="upload-icon" alt="">
+               <img src="/public/assets/img/upload.svg" class="upload-icon" alt="">
                <div class="tooltip">upload</div>
             </div>
-            <img src="https://localhost:8001/public/assets/img/youtube-apps.svg" class="youtube-apps-icon" alt="">
+            <img src="/public/assets/img/youtube-apps.svg" class="youtube-apps-icon" alt="">
             <div class="notification-icon-container">
-               <img src="https://localhost:8001/public/assets/img/notifications.svg" class="notification-icon" alt="">
+               <img src="/public/assets/img/notifications.svg" class="notification-icon" alt="">
                <div class="notification-count">3</div>
             </div>
-            <img src="https://localhost:8001/public/assets/img/my-channel.jpeg" class="current-user-picture" alt="">
+            <img src="/public/assets/img/my-channel.jpeg" class="current-user-picture" alt="">
          </div>
 
       </nav>
       <nav class="sidebar">
          <div class="sidebar-link">
-            <img src="https://localhost:8001/public/assets/img/home.svg" alt="">
+            <img src="/public/assets/img/home.svg" alt="">
             <div>Home</div>
          </div>
          <div class="sidebar-link">
-            <img src="https://localhost:8001/public/assets/img/explore.svg" alt="">
+            <img src="/public/assets/img/explore.svg" alt="">
             <div>Explore</div>
          </div>
          <div class="sidebar-link">
-            <img src="https://localhost:8001/public/assets/img/subscriptions.svg" alt="">
+            <img src="/public/assets/img/subscriptions.svg" alt="">
             <div>Suscription</div>
          </div>
          <div class="sidebar-link">
-            <img src="https://localhost:8001/public/assets/img/originals.svg" alt="">
+            <img src="/public/assets/img/originals.svg" alt="">
             <div>Originals</div>
          </div>
          <div class="sidebar-link">
-            <img src="https://localhost:8001/public/assets/img/youtube-music.svg" alt="">
+            <img src="/public/assets/img/youtube-music.svg" alt="">
             <div>Youtune Music</div>
          </div>
          <div class="sidebar-link">
-            <img src="https://localhost:8001/public/assets/img/library.svg" alt="">
+            <img src="/public/assets/img/library.svg" alt="">
             <div>Librairy</div>
          </div>
       </nav>
       <section class="video-grid">
          <div class="video-preview">
             <div class="thumbnail-row">
-               <img src="https://localhost:8001/public/assets/img/thumbnail-1.webp" class="thumbnail" alt="">
+               <img src="/public/assets/img/thumbnail-1.webp" class="thumbnail" alt="">
                <div class="video-time">
                   14:20
                </div>
             </div>
             <div class="video-info-grid">
-               <div class="channel-picture"> <img src="https://localhost:8001/public/assets/img/channel-1.jpeg" class="profile-picture"
+               <div class="channel-picture"> <img src="/public/assets/img/channel-1.jpeg" class="profile-picture"
                      alt=""></div>
                <div class="video-info">
                   <p class="video-title">Talking Tech and AI with Google CEO Sundar Pichai!</p>
@@ -83,13 +83,13 @@ $this->start('head'); ?>
             </div>
          </div>
          <div class="video-preview">
-            <div class="thumbnail-row"><img src="https://localhost:8001/public/assets/img/thumbnail-2.webp" class="thumbnail" alt="">
+            <div class="thumbnail-row"><img src="/public/assets/img/thumbnail-2.webp" class="thumbnail" alt="">
                <div class="video-time">
                   12:40
                </div>
             </div>
             <div class="video-info-grid">
-               <div class="channel-picture"> <img src="https://localhost:8001/public/assets/img/channel-2.jpeg" class="profile-picture"
+               <div class="channel-picture"> <img src="/public/assets/img/channel-2.jpeg" class="profile-picture"
                      alt=""></div>
                <div class="video-info">
                   <p class="video-title">Try Not To Laugh Challenge #9</p>
@@ -100,13 +100,13 @@ $this->start('head'); ?>
             </div>
          </div>
          <div class="video-preview">
-            <div class="thumbnail-row"><img src="https://localhost:8001/public/assets/img/thumbnail-3.webp" class="thumbnail" alt="">
+            <div class="thumbnail-row"><img src="/public/assets/img/thumbnail-3.webp" class="thumbnail" alt="">
                <div class="video-time">
                   22:30
                </div>
             </div>
             <div class="video-info-grid">
-               <div class="channel-picture"> <img src="https://localhost:8001/public/assets/img/channel-3.jpeg" class="profile-picture"
+               <div class="channel-picture"> <img src="/public/assets/img/channel-3.jpeg" class="profile-picture"
                      alt=""></div>
                <div class="video-info">
                   <p class="video-title">Crazy Tik Toks Taken Moments Before DISASTER</p>
@@ -117,13 +117,13 @@ $this->start('head'); ?>
             </div>
          </div>
          <div class="video-preview">
-            <div class="thumbnail-row"><img src="https://localhost:8001/public/assets/img/thumbnail-4.webp" class="thumbnail" alt="">
+            <div class="thumbnail-row"><img src="/public/assets/img/thumbnail-4.webp" class="thumbnail" alt="">
                <div class="video-time">
                   08:25
                </div>
             </div>
             <div class="video-info-grid">
-               <div class="channel-picture"> <img src="https://localhost:8001/public/assets/img/channel-4.jpeg" class="profile-picture"
+               <div class="channel-picture"> <img src="/public/assets/img/channel-4.jpeg" class="profile-picture"
                      alt=""></div>
                <div class="video-info">
                   <p class="video-title">The Simplest Math Problem No One Can Solve - Collatz Conjecture</p>
@@ -134,13 +134,13 @@ $this->start('head'); ?>
             </div>
          </div>
          <div class="video-preview">
-            <div class="thumbnail-row"><img src="https://localhost:8001/public/assets/img/thumbnail-5.webp" class="thumbnail" alt="">
+            <div class="thumbnail-row"><img src="/public/assets/img/thumbnail-5.webp" class="thumbnail" alt="">
                <div class="video-time">
                   09:20
                </div>
             </div>
             <div class="video-info-grid">
-               <div class="channel-picture"> <img src="https://localhost:8001/public/assets/img/channel-5.jpeg" class="profile-picture"
+               <div class="channel-picture"> <img src="/public/assets/img/channel-5.jpeg" class="profile-picture"
                      alt=""></div>
                <div class="video-info">
                   <p class="video-title">Kadane's Algorithm to Maximum Sum Subarray Problem</p>
@@ -151,13 +151,13 @@ $this->start('head'); ?>
             </div>
          </div>
          <div class="video-preview">
-            <div class="thumbnail-row"><img src="https://localhost:8001/public/assets/img/thumbnail-6.webp" class="thumbnail" alt="">
+            <div class="thumbnail-row"><img src="/public/assets/img/thumbnail-6.webp" class="thumbnail" alt="">
                <div class="video-time">
                   10:00
                </div>
             </div>
             <div class="video-info-grid">
-               <div class="channel-picture"> <img src="https://localhost:8001/public/assets/img/channel-6.jpeg" class="profile-picture"
+               <div class="channel-picture"> <img src="/public/assets/img/channel-6.jpeg" class="profile-picture"
                      alt=""></div>
                <div class="video-info">
                   <p class="video-title">Anything You Can Fit In The Circle I’ll Pay For</p>
@@ -168,13 +168,13 @@ $this->start('head'); ?>
             </div>
          </div>
          <div class="video-preview">
-            <div class="thumbnail-row"><img src="https://localhost:8001/public/assets/img/thumbnail-1.webp" class="thumbnail" alt="">
+            <div class="thumbnail-row"><img src="/public/assets/img/thumbnail-1.webp" class="thumbnail" alt="">
                <div class="video-time">
                   14:30
                </div>
             </div>
             <div class="video-info-grid">
-               <div class="channel-picture"> <img src="https://localhost:8001/public/assets/img/channel-1.jpeg" class="profile-picture"
+               <div class="channel-picture"> <img src="/public/assets/img/channel-1.jpeg" class="profile-picture"
                      alt=""></div>
                <div class="video-info">
                   <p class="video-title">Talking Tech and AI with Google CEO Sundar Pichai!</p>
@@ -185,13 +185,13 @@ $this->start('head'); ?>
             </div>
          </div>
          <div class="video-preview">
-            <div class="thumbnail-row"><img src="https://localhost:8001/public/assets/img/thumbnail-2.webp" class="thumbnail" alt="">
+            <div class="thumbnail-row"><img src="/public/assets/img/thumbnail-2.webp" class="thumbnail" alt="">
                <div class="video-time">
                   07:06
                </div>
             </div>
             <div class="video-info-grid">
-               <div class="channel-picture"> <img src="https://localhost:8001/public/assets/img/channel-2.jpeg" class="profile-picture"
+               <div class="channel-picture"> <img src="/public/assets/img/channel-2.jpeg" class="profile-picture"
                      alt=""></div>
                <div class="video-info">
                   <p class="video-title">Try Not To Laugh Challenge #9</p>
@@ -204,7 +204,7 @@ $this->start('head'); ?>
       </section>
    </div>
    <!-- Fin Content -->
-   <input type="hidden" id="ip_address" style="display:none" value="<?=H_visitors::getIP()?>">
+   <input type="hidden" id="ipAddress" style="display:none" value="<?=H_visitors::getIP()?>">
 </main>
 <?php $this->end(); ?>
 <?php $this->start('footer') ?>

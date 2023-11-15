@@ -305,7 +305,7 @@ $this->start('head'); ?>
     </div>
 
     <!-- Fin Content -->
-    <input type="hidden" id="ip_address" style="display:none"
+    <input type="hidden" id="ipAddress" style="display:none"
         value="<?=H_visitors::getIP()?>">
 </main>
 <?php $this->end(); ?>

@@ -1,15 +1,14 @@
 <?php
 
 declare(strict_types=1);
-class AppConfig
+final class AppConfigSetup
 {
     use BootstrapTrait;
     use AppConfigGettersAndSettersTrait;
 
-    public const APP_MIN_VERSION = '7.4.12';
+    public const APP_MIN_VERSION = '8.2.11';
     public const APP_CORE_VERSION = '1.0.0';
 
-    protected ?RequestHandler $request;
     protected array$errorHandling = [];
     protected ?int $errorLevel = null;
     protected array $config = [];
@@ -27,12 +26,11 @@ class AppConfig
     protected string|null $newRouter;
     protected array $containerProviders = [];
 
-    public function __construct(?RequestHandler $request = null)
+    public function __construct()
     {
-        $this->request = $request;
     }
 
-    public function create() : self
+    final public function create() : self
     {
         $this->setConfig(YamlFile::get('app'))
             ->setErrorHandler(E_ALL)
@@ -128,16 +126,6 @@ class AppConfig
      */
     public function setRoutes(array $ymlRoutes, string|null $routeHandler = null, string|null $newRouter = null): self
     {
-        // $otherroutes['get'] = [
-        //     '/hello/{name:.+}' => function (string $name) {
-        //         return Container::getInstance()->make(ResponseHandler::class, [
-        //             'content' => "hello $name",
-        //         ]);
-        //     },
-        // ];
-        // foreach ($otherroutes['get'] as $key => $value) {
-        //     $ymlRoutes['get'][$key] = $value;
-        // }
         $this->routes = $ymlRoutes;
         $this->routeHandler = ($routeHandler !== null) ? $routeHandler : $this->defaultRouteHandler();
         $this->newRouter = ($newRouter !== null) ? $newRouter : '';
@@ -183,7 +171,7 @@ class AppConfig
      */
     protected function defaultRouteHandler(): string
     {
-        return $this->request->getPath();
+        return '/'; //$this->request->getPath();
     }
 
     /**

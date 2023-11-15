@@ -13,7 +13,7 @@ abstract class AbstractEventListener implements ListenerProviderInterface
 
     public function listnerCanBeInstantiated(string $class) : ListenerInterface
     {
-        $object = Container::getInstance()->make($class);
+        $object = Application::diGet($class);
         if (!$object instanceof ListenerInterface) {
             throw new BaseInvalidArgumentException("Listener can not be instantiate [$class]!");
         }

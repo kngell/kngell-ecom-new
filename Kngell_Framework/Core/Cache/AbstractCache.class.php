@@ -15,7 +15,7 @@ abstract class AbstractCache implements CacheInterface
 
     public function __construct(?string $cacheIdentifier, ?CacheStorageInterface $storage, array $options = [])
     {
-        $this->$cacheIdentifier = $cacheIdentifier;
+        $this->cacheIdentifier = $cacheIdentifier;
         if (!empty($storage) && $storage != null) {
             $this->storage = $storage;
         }

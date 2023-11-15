@@ -6,7 +6,7 @@ class TransactionsManager extends Model
 {
     protected string $_colID = 'tr_id';
     protected string $_table = 'transactions';
-    protected $_colIndex = 'user_id';
+    protected $_colIndex = 'userId';
 
     public function __construct()
     {

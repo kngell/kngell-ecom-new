@@ -12,7 +12,8 @@
    <meta name="robots" content="index,follow">
    <meta name="csrftoken" content="<?=$this->token->create(8, $this->getPageTitle())?>" />
    <meta name="frm_name" content="<?=$this->getPageTitle()?>" />
-   <link rel="stylesheet" type="image/ico" href="<?='favicon.ico'?>">
+   <?=$this->asset('img/favicon', 'ico')?>
+
    <title>
       <?= $this->getSiteTitle()?>
    </title>

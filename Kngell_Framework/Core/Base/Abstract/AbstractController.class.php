@@ -33,6 +33,7 @@ abstract class AbstractController
     protected array $frontEndComponents = [];
     protected array $select2Field = [];
     protected string $previousPage;
+    protected array $arguments = [];
 
     public function __construct(array $params)
     {

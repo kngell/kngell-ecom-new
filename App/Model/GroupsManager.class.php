@@ -3,8 +3,8 @@
 declare(strict_types=1);
 class GroupsMaganer extends Model
 {
-    protected $_colID = 'gr_id';
-    protected $_table = 'groups';
+    protected string $_colID = 'grId';
+    protected string $_table = 'groups';
 
     public function __construct()
     {

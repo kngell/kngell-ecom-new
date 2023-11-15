@@ -9,11 +9,9 @@ class PdoSessionStorage extends AbstractSessionStorage
      *
      * @param object $sessionEnvironment
      */
-    public function __construct(GlobalVariablesInterface $gv, array $options)
+    public function __construct(Object $sessionEnvironment)
     {
-        parent::__construct($options, $gv);
-        $this->gv = $gv;
-        $this->options = $options;
+        parent::__construct($sessionEnvironment);
     }
 
     public function setSession(string $key, mixed $value): void
@@ -36,39 +34,28 @@ class PdoSessionStorage extends AbstractSessionStorage
         // TODO: Implement deleteSession() method.
     }
 
-    public function invalidate(): void
+    public function invalidateSession(): void
     {
         // TODO: Implement invalidate() method.
     }
 
-    public function SessionExists(string $key) :bool
+    public function flushSession(string $key, mixed $default = null)
     {
-        return isset($_SESSION[$key]);
+        // TODO: Implement flush() method.
+    }
+
+    public function hasSession(string $key): bool
+    {
+        // TODO: Implement hasSession() method.
+        return false;
     }
 
     /**
-     *@inheritDoc
+     * @inheritDoc
      */
-    public function flushSession(string $key, $default) : mixed
+    public function SessionExists(string $key) :bool
     {
-        if ($this->SessionExists($key)) {
-            $value = $_SESSION[$key];
-            $this->deleteSession($key);
-
-            return $value;
-        }
-
-        return $default;
-    }
-
-    public function invalidateSession() : void
-    {
-        $_SESSION = [];
-        if (ini_set('session.use_cookies', $this->options['use_cookies'])) {
-            $params = session_get_cookie_params();
-            setcookie($this->getSessionName(), '', time() - $params['lifetime'], $params['path'], $params['domain'], $params['secure'], $params['httponly']);
-        }
-        session_unset();
-        session_destroy();
+        // TODO: Implement hasSession() method.
+        return false;
     }
 }

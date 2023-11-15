@@ -8,16 +8,14 @@ class LoginAttemptsEntity extends Entity
     private int $laId;
     /** @UserID */
     private int $userId;
-    private string $timestamp;
-    private string $ip;
-    /** @var DateTimeInterface */
-    private DateTimeInterface $createdAt;
-    /** @var DateTimeInterface */
-    private DateTimeInterface $updatedAt;
+    private ?string $timestamp;
+    private ?string $ip;
+    private ?string $createdAt;
+    private ?string $updatedAt;
 
     public function __construct()
     {
-        $this->createdAt = !isset($this->createdAt) ? new DateTimeImmutable() : $this->createdAt;
+        // $this->createdAt = !isset($this->createdAt) ? new DateTimeImmutable() : $this->createdAt;
     }
 
     /**
@@ -70,7 +68,7 @@ class LoginAttemptsEntity extends Entity
     /**
      * Get the value of createdAt.
      */
-    public function getCreatedAt() : DateTimeInterface
+    public function getCreatedAt() : string
     {
         return $this->createdAt;
     }
@@ -80,7 +78,7 @@ class LoginAttemptsEntity extends Entity
      *
      * @return  self
      */
-    public function setCreatedAt(DateTimeInterface $createdAt) : self
+    public function setCreatedAt(string $createdAt) : self
     {
         $this->createdAt = $createdAt;
 
@@ -90,7 +88,7 @@ class LoginAttemptsEntity extends Entity
     /**
      * Get the value of updatedAt.
      */
-    public function getUpdatedAt() : DateTimeInterface
+    public function getUpdatedAt() : string
     {
         return $this->updatedAt;
     }
@@ -100,7 +98,7 @@ class LoginAttemptsEntity extends Entity
      *
      * @return  self
      */
-    public function setUpdatedAt(DateTimeInterface $updatedAt) : self
+    public function setUpdatedAt(string $updatedAt) : self
     {
         $this->updatedAt = $updatedAt;
 

@@ -6,11 +6,10 @@ class UrlRoute
 {
     private ?string $route = null;
     private array $urlParams = [];
-    private ?RooterHelper $helper;
 
-    public function __construct(?RooterHelper $helper = null)
+    public function __construct(private RooterHelper $helper, private RequestHandler $request)
     {
-        $this->helper = $helper;
+        $this->handle();
     }
 
     /**
@@ -29,18 +28,22 @@ class UrlRoute
         return $this->urlParams;
     }
 
-    public function handle(RequestHandler $request) : self
+    public function handle(?string $url = null) : self
     {
         $route = DS;
-        $url = $request->getQuery()->get('url');
+        $url = $url ?? $this->request->getQuery()->get('url');
+        $urlInfos = explode(DS, filter_var(rtrim($url, DS)));
         if ($url == 'favicon.ico') {
             $this->urlParams = [$url];
-            $route = 'assets' . DS . 'getAsset';
+            $this->route = 'assets' . DS . 'getAsset';
         } elseif ($url == '/' || $url == '') {
             $this->urlParams = [];
             $this->route = DS;
+        } elseif (str_starts_with($url, 'assets/img')) {
+            $this->route = 'assets' . DS . 'getAsset';
+            unset($urlInfos[0]);
+            $this->urlParams = count($urlInfos) > 0 ? $this->helper->formatUrlArguments(array_values($urlInfos)) : [];
         } else {
-            $urlInfos = explode(DS, filter_var(rtrim($url, DS)));
             if (isset($urlInfos)) {
                 if (strtolower($urlInfos[0]) == 'dy' && count($urlInfos) >= 3) {
                     $route = strtolower($urlInfos[1]) . DS . strtolower($urlInfos[2]);
@@ -49,28 +52,28 @@ class UrlRoute
                     unset($urlInfos[2]);
                 } elseif (strtolower($urlInfos[0]) == 'asset' && strtolower($urlInfos[1]) == 'img') {
                     $route = $route . DS . 'getAsset';
-                    unset($urlroute[0]);
-                    unset($urlroute[1]);
-                } else {
-                    $route = !empty($urlInfos[0]) ? strtolower($urlInfos[0]) : '';
                     unset($urlInfos[0]);
+                    unset($urlInfos[1]);
+                } else {
+                    $route = ! empty($urlInfos[0]) ? strtolower($urlInfos[0]) : '';
+                    unset($urlInfos[0]);
+                    if (isset($urlInfos[1]) && is_string($urlInfos[1])) {
+                        $route = $route . DS . $urlInfos[1];
+                        unset($urlInfos[1]);
+                    }
                 }
             }
-
-            $urlInfos = array_values($urlInfos);
-            // if (!empty($urlInfos)) {
-            //     if ($route == 'assets' && $urlInfos[0] == 'img') {
-            //         unset($urlInfos[0]);
-            //         $route = $route . DS . 'getAsset';
-            //     } else {
-            //         $route = $route . DS . strtolower($urlInfos[0]);
-            //         unset($urlInfos[0]);
-            //     }
-            // }
-
-            $this->urlParams = count($urlInfos) > 0 ? $this->helper->formatUrlArguments(array_values($urlInfos)) : [];
             $this->route = strtolower($route);
+            $this->urlParams = count($urlInfos) > 0 ? $this->helper->formatUrlArguments(array_values($urlInfos)) : [];
         }
         return $this;
+    }
+
+    /**
+     * Get the value of request.
+     */
+    public function getRequest() : RequestHandler
+    {
+        return $this->request;
     }
 }

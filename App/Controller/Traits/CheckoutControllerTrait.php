@@ -78,7 +78,7 @@ trait CheckoutControllerTrait
         $gatewayMethod = 'createCustomer';
         $cust_id = '';
         if ($this->session->exists(CURRENT_USER_SESSION_NAME)) {
-            $cust_id = $this->session->get(CURRENT_USER_SESSION_NAME)['customer_id'];
+            $cust_id = $this->session->get(CURRENT_USER_SESSION_NAME)['customerId'];
             if (!empty($cust_id) && $cust_id != '') {
                 $gatewayMethod = 'retriveCustomer';
             }

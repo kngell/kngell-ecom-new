@@ -66,7 +66,7 @@ class ErrorHandling
             $stacktrace = self::$trace;
             $params = ['exception' => $exception, 'snippet' => $snippet, 'srcCode' => $srcCode, 'stacktrace' => $stacktrace];
             Container::getInstance()->make(ResponseHandler::class)->setStatus(HttpStatus::getStatus(HttpStatus::getName($code)));
-            Container::getInstance()->rooter()->resolve('error', $params)->send();
+            Application::getInstance()->rooter()->resolve('error', $params)->send();
         } else {
             $logFile = LOG_DIR . '/error-' . date('Y-m-d') . '-.log';
             ini_set('log_errors', 'On');

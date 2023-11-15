@@ -9,12 +9,12 @@ class StripeUserCard
 {
     private StripeClient $stripe;
     private string $stripeSecret = STRIPE_KEY_SECRET;
-    private string $customer_id;
+    private string $customerId;
 
-    public function __construct(string $customer_id)
+    public function __construct(string $customerId)
     {
         $this->stripe = Stripe::setApiKey($this->stripeSecret);
-        $this->customer_id = $customer_id;
+        $this->customerId = $customerId;
     }
 
     public function setupIntent()

@@ -24,9 +24,9 @@ abstract class AbstractUserAccount
 
     protected function user() : string
     {
-        if ($this->customerEntity->isInitialized('user_id')) {
+        if ($this->customerEntity->isInitialized('userId')) {
             return $this->frm->input([
-                HiddenType::class => ['name' => 'user_id'],
+                HiddenType::class => ['name' => 'userId'],
             ])->value($this->customerEntity->getUserId())->noLabel()->noWrapper()->html();
         }
         return '';
@@ -34,7 +34,7 @@ abstract class AbstractUserAccount
 
     protected function removeAccountButton() : string
     {
-        if ($this->customerEntity->isInitialized('user_id')) {
+        if ($this->customerEntity->isInitialized('userId')) {
             $this->frm->form([
                 'action' => '#',
                 'class' => ['remove-account-frm'],
@@ -47,15 +47,14 @@ abstract class AbstractUserAccount
             $template = str_replace('{{button}}', $this->frm->input([
                 ButtonType::class => ['type' => 'submit', 'class' => ['single-details-item__button"']],
             ])->content($buttonContent)->html(), $template);
-            $template = str_replace('{{form_end}}', $this->frm->end(), $template);
-            return $template;
+            return str_replace('{{form_end}}', $this->frm->end(), $template);
         }
         return '';
     }
 
     protected function userform(string $templateName) : string
     {
-        if (!$this->customerEntity->isInitialized('user_id')) {
+        if (!$this->customerEntity->isInitialized('userId')) {
             return '';
         }
         $this->frm->form([
@@ -67,16 +66,14 @@ abstract class AbstractUserAccount
 
         $template = str_replace('{{form_begin}}', $this->frm->begin(), $template);
 
-        $template = str_replace('{{user_id}}', $this->frm->input([
-            HiddenType::class => ['name' => 'ord_user_id'],
+        $template = str_replace('{{userId}}', $this->frm->input([
+            HiddenType::class => ['name' => 'ord_userId'],
         ])->value($this->customerEntity->getUserId())->noLabel()->noWrapper()->html(), $template);
 
         $template = str_replace('{{template_name}}', $this->frm->input([
             HiddenType::class => ['name' => 'user_process'],
         ])->value($templateName)->noLabel()->noWrapper()->html(), $template);
 
-        $template = str_replace('{{form_end}}', $this->frm->end(), $template);
-
-        return $template;
+        return str_replace('{{form_end}}', $this->frm->end(), $template);
     }
 }

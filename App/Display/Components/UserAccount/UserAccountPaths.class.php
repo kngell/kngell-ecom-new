@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class UserAccountPaths implements PathsInterface
+class UserAccountPaths implements TemplatePathsInterface
 {
     private string $viewPath = VIEW . 'client' . DS . 'components' . DS . 'user_account' . DS . 'partials' . DS;
     private string $templatePath = APP . 'Display' . DS . 'Components' . DS . 'UserAccount' . DS . 'Templates' . DS;

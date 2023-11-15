@@ -53,7 +53,7 @@ abstract class AbstractQueryParams implements QueryParamsInterface
                     unset($parts[$k]);
                 }
             }
-            if (!count($parts) === 1) {
+            if (! count($parts) === 1) {
                 throw new BaseInvalidArgumentException('Argument ou condition mal renseignée');
             }
             return [current($parts), $operator];
@@ -67,7 +67,7 @@ abstract class AbstractQueryParams implements QueryParamsInterface
             return [$value, ''];
         }
         $tbl = $this->tableSchema;
-        if (is_array($value) && !empty($value)) {
+        if (is_array($value) && ! empty($value)) {
             if (array_key_exists('tbl', $value)) {
                 $tbl = $value['tbl'];
                 unset($value['tbl']);
@@ -113,7 +113,7 @@ abstract class AbstractQueryParams implements QueryParamsInterface
         $where = [];
         $this->key('conditions');
         if (is_string($params['field'])) {
-            $where[$params['field']] = !is_array($params['value']) ? ['value' => $params['value'], 'tbl' => !isset($params['tbl']) ? $this->tableSchema : $params['tbl']] : ['value' => $params['value'], 'tbl' => !isset($params['tbl']) ? $this->tableSchema : $params['tbl']];
+            $where[$params['field']] = ! is_array($params['value']) ? ['value' => $params['value'], 'tbl' => ! isset($params['tbl']) ? $this->tableSchema : $params['tbl']] : ['value' => $params['value'], 'tbl' => ! isset($params['tbl']) ? $this->tableSchema : $params['tbl']];
         }
         if ($params['operator'] != '') {
             $where[$params['field']]['operator'] = $params['operator'];
@@ -143,7 +143,7 @@ abstract class AbstractQueryParams implements QueryParamsInterface
     {
         $tbl == null ? $tbl = $this->tableSchema : '';
         $this->key('options');
-        if (!array_key_exists('table', $this->query_params['options'])) {
+        if (! array_key_exists('table', $this->query_params['options'])) {
             $this->query_params['options']['table'] = [];
         }
         $this->query_params['options']['table'][] = $tbl;
@@ -152,7 +152,7 @@ abstract class AbstractQueryParams implements QueryParamsInterface
 
     protected function key(string $key) : void
     {
-        if (!array_key_exists($key, $this->query_params)) {
+        if (! array_key_exists($key, $this->query_params)) {
             $this->query_params[$key] = [];
         }
     }
@@ -168,9 +168,8 @@ abstract class AbstractQueryParams implements QueryParamsInterface
 
     protected function braceClose(string $separator, mixed $key) : string
     {
-        if (!empty($this->braceOpen)) {
+        if (! empty($this->braceOpen)) {
             $this->braceOpen = '';
-
             return ')';
         }
         return '';
@@ -182,7 +181,7 @@ abstract class AbstractQueryParams implements QueryParamsInterface
         $lastKey = array_key_last($conditions);
         $firstKey = key($conditions);
         $whereParams['separator'] = ($key != $lastKey) ? $this->separator(next($conditions), key($conditions)) : '';
-        $whereParams['braceOpen'] = ($key == $firstKey) || (is_numeric($key) && in_array($value, ['or', 'and']) || !empty($this->conditionBreak)) ? $this->braceOpen($conditions) : '';
+        $whereParams['braceOpen'] = ($key == $firstKey) || (is_numeric($key) && in_array($value, ['or', 'and']) || ! empty($this->conditionBreak)) ? $this->braceOpen($conditions) : '';
         $whereParams['braceEnd'] = $this->braceClose($whereParams['separator'], $key);
         $whereParams['value'] = $value;
         return $whereParams;
@@ -217,7 +216,7 @@ abstract class AbstractQueryParams implements QueryParamsInterface
             unset($parts[count($parts) - 1]);
         }
         $field = $parts[0] == 'or' ? $parts[1] : $parts[0];
-        if (!array_key_exists('params', $this->query_params['options']['join_on'])) {
+        if (! array_key_exists('params', $this->query_params['options']['join_on'])) {
             $this->query_params['options']['join_on']['params'] = [];
         }
         $tbl = is_array($arg) ? $arg[1] : $this->current_table;
@@ -234,10 +233,8 @@ abstract class AbstractQueryParams implements QueryParamsInterface
         if (null != $tbl && str_contains($tbl, '|')) {
             $parts = explode('|', $tbl);
             $this->tableSuffix = trim($parts[1]);
-
             return trim($parts[0]);
         }
-
         return $tbl;
     }
 
@@ -247,7 +244,7 @@ abstract class AbstractQueryParams implements QueryParamsInterface
         $tbl_columns = $this->tableColumns();
         $this->key('selectors');
         foreach ($tbl_columns as $tbl => $columns) {
-            if (!is_array($columns)) {
+            if (! is_array($columns)) {
                 throw new Exception('Columns must be in array!');
             }
             foreach ($columns as $column) {

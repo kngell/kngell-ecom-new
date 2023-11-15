@@ -88,6 +88,9 @@ post: # Http Post method =======================================================
   activation/activate/{token:[\da-f]+}:
     controller: activate_user_with_ajax
     method: activate
+  error:
+    controller: errors
+    method: index
   /{controller}/{method}/{id:[\da-f]+}:
   /{controller}/{method}:
   client/{controller}/{method}:

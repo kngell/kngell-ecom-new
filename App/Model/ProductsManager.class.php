@@ -3,15 +3,15 @@
 declare(strict_types=1);
 class ProductsManager extends Model
 {
-    protected $_colID = 'pdt_id';
-    protected $_table = 'products';
+    protected string $_colID = 'pdt_id';
+    protected string $_table = 'products';
 
     public function __construct()
     {
         parent::__construct($this->_table, $this->_colID);
     }
 
-    public function getProducts(int|string $brand = null) : CollectionInterface
+    public function getProducts(int|string|null $brand = null) : CollectionInterface
     {
         if ($brand === null) {
             $this->table()

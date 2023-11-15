@@ -7,7 +7,7 @@ class VisitorsController extends Controller
     public function track()
     {
         $data = $this->isValidRequest();
-        if (!$this->cache->exists($this->cachedFiles['visitors'])) {
+        if (! $this->cache->exists($this->cachedFiles['visitors'])) {
             /** @var VisitorsManager */
             $model = $this->model(VisitorsManager::class)->assign($data);
             $output = $model->manageVisitors($data);
@@ -25,9 +25,9 @@ class VisitorsController extends Controller
     public function saveipdata()
     {
         if ($this->request->exists('post')) {
-            $data = $this->response->transform_keys($this->request->get(), H_visitors::new_IpAPI_keys());
-            $this->model_instance->assign($data);
-            if (isset($data['ipAddress']) && !$this->model_instance->getByIp($data['ipAddress'])) {
+            $data = $this->helper->transform_keys($this->request->get(), H_visitors::new_IpAPI_keys());
+            $this->assign($data);
+            if (isset($data['ipAddress']) && ! $this->model_instance->getByIp($data['ipAddress'])) {
                 $this->model_instance->save();
             }
         }
@@ -37,7 +37,7 @@ class VisitorsController extends Controller
     {
         if ($visitors != null && $visitors->count() > 0) {
             foreach ($visitors as $visitor) {
-                if ($visitor->ip_address == $new_visitor['ip']) {
+                if ($visitor->ipAddress == $new_visitor['ip']) {
                     if ($this->cookie->exists(VISITOR_COOKIE_NAME)) {
                         if ($visitor->cookies == $this->cookie->get(VISITOR_COOKIE_NAME)) {
                             return true;

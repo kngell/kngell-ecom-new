@@ -7,21 +7,21 @@ class UserSessionsEntity extends Entity
     /** @id */
     private int $usId;
     /** @Remember Me Cookie */
-    private string $rememberMeCookie;
-    private string $sessionToken;
-    private string $userId;
-    private string $userAgent;
-    private string $userCookie;
-    private string $email;
-    private string $password;
-    /** @var DateTimeInterface */
-    private DateTimeInterface $createdAt;
-    /** @var DateTimeInterface */
-    private DateTimeInterface $udatedAt;
+    private ?string $rememberMeCookie;
+    private ?string $sessionToken;
+    private ?string $userId;
+    private ?string $userAgent;
+    private ?string $userCookie;
+    private ?string $email;
+    private ?string $password;
+    private ?string $createdAt;
+    private ?string $updatedAt;
+    private int $expiry;
+    private ?string $userData;
 
     public function __construct()
     {
-        $this->createdAt = !isset($this->createdAt) ? new DateTimeImmutable() : $this->createdAt;
+        // $this->createdAt = !isset($this->createdAt) ? new DateTimeImmutable() : $this->createdAt;
     }
 
     /**
@@ -194,7 +194,7 @@ class UserSessionsEntity extends Entity
     /**
      * Get the value of createdAt.
      */
-    public function getCreatedAt() : DateTimeInterface
+    public function getCreatedAt() : ?string
     {
         return $this->createdAt;
     }
@@ -204,7 +204,7 @@ class UserSessionsEntity extends Entity
      *
      * @return  self
      */
-    public function setCreatedAt(DateTimeInterface $createdAt) : self
+    public function setCreatedAt(?string $createdAt) : self
     {
         $this->createdAt = $createdAt;
 
@@ -212,21 +212,55 @@ class UserSessionsEntity extends Entity
     }
 
     /**
-     * Get the value of udatedAt.
+     * Get the value of updatedAt.
      */
-    public function getUdatedAt() : DateTimeInterface
+    public function getUpdatedAt(): ?string
     {
-        return $this->udatedAt;
+        return $this->updatedAt;
     }
 
     /**
-     * Set the value of udatedAt.
-     *
-     * @return  self
+     * Set the value of updatedAt.
      */
-    public function setUdatedAt(DateTimeInterface $udatedAt) : self
+    public function setUpdatedAt(?string $updatedAt): self
     {
-        $this->udatedAt = $udatedAt;
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of expiry.
+     */
+    public function getExpiry(): int
+    {
+        return $this->expiry;
+    }
+
+    /**
+     * Set the value of expiry.
+     */
+    public function setExpiry(int $expiry): self
+    {
+        $this->expiry = $expiry;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of userData.
+     */
+    public function getUserData(): ?string
+    {
+        return $this->userData;
+    }
+
+    /**
+     * Set the value of userData.
+     */
+    public function setUserData(?string $userData): self
+    {
+        $this->userData = $userData;
 
         return $this;
     }

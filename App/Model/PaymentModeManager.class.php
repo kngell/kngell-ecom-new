@@ -3,8 +3,8 @@
 declare(strict_types=1);
 class PaymentModeManager extends Model
 {
-    protected $_colID = 'pm_id';
-    protected $_table = 'payment_mode';
+    protected string $_colID = 'pm_id';
+    protected string $_table = 'payment_mode';
 
     public function __construct()
     {

@@ -115,7 +115,7 @@ class Authorized
      */
     protected static function getCurrentSessionID(): int
     {
-        return intval(SessionTrait::sessionFromGlobal()->get('user_id'));
+        return intval(SessionTrait::sessionFromGlobal()->get('userId'));
     }
 
     /**

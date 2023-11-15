@@ -10,18 +10,17 @@ abstract class Controller extends AbstractController
     }
 
     /** @inheritDoc */
-    public function __call($name, $argument) : ResponseHandler
+    public function __call(string $name, array $arguments) : ResponseHandler
     {
         if (is_string($name) && $name !== '') {
             $method = $name . 'Page';
             if (method_exists($this, $method)) {
                 if ($this->before() !== false) {
-                    $response = call_user_func_array([$this, $method], $argument);
+                    $args = empty($this->arguments) ? $arguments : array_merge($arguments[0], [$this->arguments]);
+                    $response = call_user_func_array([$this, $method], $args);
                     $this->after();
                     return $response->prepare($this->request);
                 }
-            } elseif ($this->request->isAjax() && $name == 'login') {
-                $this->redirect('restricted' . DS . 'login');
             } else {
                 throw new BaseBadMethodCallException("Method {$method} does not exists.", 405);
             }
@@ -30,23 +29,12 @@ abstract class Controller extends AbstractController
         }
     }
 
-    public function isInitialized(string $field) : bool
-    {
-        $rp = $this->reflectionInstance()->getProperty($field);
-        if ($rp->isInitialized($this)) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function render(string $viewName, array $context = []) : ?ResponseHandler
     {
         $this->throwViewException();
         if ($this->view_instance === null) {
             throw new BaseLogicException('You cannot use the render method if the View is not available !');
         }
-
         $content = $this->view()->render($viewName, array_merge($this->frontEndComponents, $context));
         return $this->response->setContent($content);
     }
@@ -63,11 +51,19 @@ abstract class Controller extends AbstractController
                 'viewAry' => [
                     'token' => $this->token,
                     'viewPath' => $this->viewPath,
-                    'response' => $this->response,
-                    'request' => $this->request,
                 ],
             ]);
         }
+    }
+
+    public function isInitialized(string $field) : bool
+    {
+        $rp = $this->reflectionInstance()->getProperty($field);
+        if ($rp->isInitialized($this)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function jsonResponse(array $resp) : void
@@ -105,12 +101,4 @@ abstract class Controller extends AbstractController
                 break;
         }
     }
-
-    // protected function redirect(string $url, bool $replace = true, int $responseCode = 303)
-    // {
-    //     $this->redirect = new Redirect($url, $this->routeParams, $replace, $responseCode);
-    //     if ($this->redirect) {
-    //         $this->redirect->redirect();
-    //     }
-    // }
 }

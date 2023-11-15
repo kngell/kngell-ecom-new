@@ -14,4 +14,8 @@ interface QueryParamsInterface
     public function build() : array;
 
     public function reset() : self;
+
+    public function getLock(string $field, mixed $value) : self;
+
+    public function doRelease(string $field) : self;
 }

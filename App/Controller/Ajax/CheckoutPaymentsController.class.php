@@ -18,8 +18,8 @@ class CheckoutPaymentsController extends Controller
                 'customerEntity' => $this->getCustomerEntityFromSession(),
             ]),
         ])->create();
-        list($customer_id, $gatewayMethod) = $this->getCustomerParams();
-        $payment = $payment->$gatewayMethod($customer_id)->createPayment()->confirmPayment();
+        list($customerId, $gatewayMethod) = $this->getCustomerParams();
+        $payment = $payment->$gatewayMethod($customerId)->createPayment()->confirmPayment();
         if (!$payment->ok()) {
             $this->jsonResponse(['result' => 'error', 'msg' => 'Something goes wrong']);
         }

@@ -20,6 +20,7 @@ class Uploader extends SplFileInfo implements UploaderInterface
     private int $errorCode;
     private FilesSystemInterface $fileSyst;
     private FilesManagerInterface $fm;
+    private string $path = null;
 
     public function __construct(?string $path, ?string $originalName, ?string $mimeType, int|null $errorCode = null, FilesSystemInterface $fileSyst, FilesManagerInterface $fm)
     {
@@ -39,7 +40,7 @@ class Uploader extends SplFileInfo implements UploaderInterface
     {
         $targetFilePath = $this->fm->getDestinationPath();
         $fileName = $targetFilePath . DS . $this->fm->getFileName();
-        if ($this->fileSytem->createDir($this->fm->getTargetDir() . DS . $targetFilePath)) {
+        if ($this->fileSyst->createDir($this->fm->getTargetDir() . DS . $targetFilePath)) {
             if (!file_exists($this->fm->getTargetDir() . DS . $fileName)) {
                 if (move_uploaded_file($this->fm->getSourcePath() . DS . $this->fm->getFileName(), $this->fm->getTargetDir() . DS . $fileName)) {
                     if (!file_exists(IMAGE_ROOT_SRC . $targetFilePath) && !in_array($this->fm->getDestinationPath(), ['posts'])) {

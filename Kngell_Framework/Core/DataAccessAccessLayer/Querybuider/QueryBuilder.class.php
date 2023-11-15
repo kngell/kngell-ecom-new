@@ -15,8 +15,7 @@ class QueryBuilder extends AbstractQueryBuilder implements QueryBuilderInterface
         if (count($args) < 0) {
             throw new QueryBuilderInvalidArgExceptions('Your BuildQuery method has no or bad defined argument. Please fix this');
         }
-        $arg = array_merge(self::SQL_DEFAULT, $args);
-        $this->key = $arg;
+        $this->key = array_merge(self::SQL_DEFAULT, $args);
         return $this;
     }
 

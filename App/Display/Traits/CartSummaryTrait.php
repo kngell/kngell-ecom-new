@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 trait CartSummaryTrait
 {
-    protected function filterTaxe(mixed $HT, object $product, CollectionInterface $taxes, int $item_qty) : object
+    protected function filterTaxe(mixed $HT, object $product, CollectionInterface $taxes, int $itemQty) : object
     {
         $productTaxes = $taxes->filter(fn ($taxe) => $product->cat_id == $taxe->tr_catID);
         if (property_exists($this, 'userItems')) {
-            $this->userItems[] = ['id' => $product->item_id, 'HT' => $HT, 'taxes' => $productTaxes, 'item_qty' => $item_qty];
+            $this->userItems[] = ['id' => $product->itemId, 'HT' => $HT, 'taxes' => $productTaxes, 'itemQty' => $itemQty];
         }
 
-        return (object) ['item' => $product->item_id, 'taxes' => $productTaxes, 'amount' => $HT];
+        return (object) ['item' => $product->itemId, 'taxes' => $productTaxes, 'amount' => $HT];
     }
 
     protected function getAllTaxes(CollectionInterface $userCart) : CollectionInterface
@@ -47,8 +47,8 @@ trait CartSummaryTrait
         if ($obj->count() > 0) {
             $price = $this->money->getCustomAmt('0', 2);
             foreach ($obj as $product) {
-                if ($product->cart_type == 'cart') {
-                    $price = $price->plus($this->money->getCustomAmt(strval($product->regular_price * $product->item_qty), 2));
+                if ($product->cartType == 'cart') {
+                    $price = $price->plus($this->money->getCustomAmt(strval($product->regular_price * $product->itemQty), 2));
                 }
             }
 

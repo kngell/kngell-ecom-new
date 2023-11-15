@@ -3,8 +3,8 @@
 declare(strict_types=1);
 class SettingsManager extends Model
 {
-    protected $_colID = 'setID';
-    protected $_table = 'settings';
+    protected string $_colID = 'setID';
+    protected string $_table = 'settings';
 
     public function __construct()
     {

@@ -21,8 +21,8 @@ class SaveOrderDetailsListener implements ListenerInterface
             $od[] = $odManager->assign($this->orderDetailsData($object, $cartItem, $orders))->save();
         }
         $customer = $this->container->make(UsersManager::class)->assign([
-            'user_id' => $object->getCustomerEntity()->getUserId(),
-            'customer_id' => $object->getCustomer()->id,
+            'userId' => $object->getCustomerEntity()->getUserId(),
+            'customerId' => $object->getCustomer()->id,
         ])->save();
 
         return [$orders, $tr, $od, $customer];
@@ -35,7 +35,7 @@ class SaveOrderDetailsListener implements ListenerInterface
         return [
             'od_order_id' => $orders->getLastID(),
             'od_product_id' => $cartItem['id'],
-            'od_quantity' => $cartItem['item_qty'],
+            'od_quantity' => $cartItem['itemQty'],
             'od_amount' => $cartItem['HT'],
             'od_tax_amount' => $object->getMoney()->getIntAmount(strval($taxeAmount)),
             'od_tax_details' => serialize($taxeDetails),
@@ -65,9 +65,9 @@ class SaveOrderDetailsListener implements ListenerInterface
     {
         return [
             'transaction_id' => $object->getPaymentIntent()->id,
-            'customer_id' => $object->getPaymentIntent()->customer,
+            'customerId' => $object->getPaymentIntent()->customer,
             'order_id' => $object->getCustomerEntity()->getOrderId(),
-            'user_id' => $object->getCustomerEntity()->getUserId(),
+            'userId' => $object->getCustomerEntity()->getUserId(),
             'currency' => $object->getPaymentIntent()->currency,
             'status' => $object->getPaymentIntent()->status,
         ];
@@ -77,7 +77,7 @@ class SaveOrderDetailsListener implements ListenerInterface
     {
         return [
             'ord_number' => $obj->getCustomerEntity()->getOrderId(),
-            'ord_user_id' => $obj->getCustomerEntity()->getUserId(),
+            'ord_userId' => $obj->getCustomerEntity()->getUserId(),
             'ord_pmt_mode' => $obj->getPaymentMethod()->offsetGet('type'),
             'ord_pay_transaction_Id' => $obj->getPaymentIntent()->id,
             'ord_delivery_address' => $obj->getCustomerEntity()->getAddress()->filter(function ($addr) {

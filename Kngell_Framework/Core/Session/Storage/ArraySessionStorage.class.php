@@ -9,9 +9,9 @@ class ArraySessionStorage extends AbstractSessionStorage
      *
      * @param object $sessionEnvironment
      */
-    public function __construct(SessionEnvironment $sessionEnvironment)
+    public function __construct(Object $sessionEnvironment)
     {
-        $this->sessionEnv = $sessionEnvironment;
+        parent::__construct($sessionEnvironment);
     }
 
     public function setSession(string $key, mixed $value): void

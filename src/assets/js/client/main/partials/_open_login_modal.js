@@ -1,3 +1,3 @@
-$(document).ready(function () {
-  $(".connect .connexion").click();
-});
+// $(document).ready(function () {
+//   $(".connect .connexion").click();
+// });

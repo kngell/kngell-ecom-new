@@ -9,37 +9,35 @@ class UsersEntity extends Entity
     /** @id */
     private int $userId;
     /** @Last Name */
-    private string $lastName;
-    private string $firstName;
-    private string $userName;
-    /** @var string */
-    private string $email;
-    private string $password;
-    /** @var DateTimeInterface */
-    private DateTimeInterface $registerDate;
-    /** @var DateTimeInterface */
-    private DateTimeInterface $updatedAt;
+    private ?string $lastName;
+    private ?string $firstName;
+    private ?string $userName;
+    /** @var ?string */
+    private ?string $email;
+    private ?string $password;
+    private ?string $registerDate;
+    private ?string $updatedAt;
     /** @media */
-    private string $profileImage;
-    private string $salt;
-    private string $userToken;
-    private string $userCookie;
-    private string $customerId;
-    private string $rememberMeCookie;
-    /** @var DateTimeInterface */
-    private DateTimeInterface $tokenExpire;
-    private string $phone;
-    private int $deleted;
-    private int $verified;
-    private string $fbAccessToken;
-    private string $terms;
-    private string $cpassword;
+    private ?string $profileImage;
+    private ?string $salt;
+    private ?string $userToken;
+    private ?string $userCookie;
+    private ?string $customerId;
+    private ?string $rememberMeCookie;
+    private ?string $tokenExpire;
+    private ?string $phone;
+    private ?int $deleted;
+    private ?int $verified;
+    private ?string $fbAccessToken;
+    private ?string $terms;
+    private ?string $cpassword;
+    private int $number;
 
     public function __construct()
     {
-        if (!isset($this->registerDate)) {
-            $this->registerDate = new DateTimeImmutable();
-        }
+        // if (!isset($this->registerDate)) {
+        //    $this->registerDate = new DateTimeImmutable();
+        // }
     }
 
     /**
@@ -53,7 +51,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of lastName.
      */
-    public function getLastName() : string
+    public function getLastName() : ?string
     {
         return $this->lastName;
     }
@@ -63,7 +61,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setLastName(string $lastName) : self
+    public function setLastName(?string $lastName) : self
     {
         $this->lastName = $lastName;
 
@@ -73,7 +71,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of firstName.
      */
-    public function getFirstName() : string
+    public function getFirstName() : ?string
     {
         return $this->firstName;
     }
@@ -83,7 +81,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setFirstName(string $firstName) : self
+    public function setFirstName(?string $firstName) : self
     {
         $this->firstName = $firstName;
 
@@ -93,7 +91,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of userName.
      */
-    public function getUserName() : string
+    public function getUserName() : ?string
     {
         return $this->userName;
     }
@@ -103,7 +101,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setUserName(string $userName) : self
+    public function setUserName(?string $userName) : self
     {
         $this->userName = $userName;
 
@@ -113,7 +111,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of email.
      */
-    public function getEmail() : string
+    public function getEmail() : ?string
     {
         return $this->email;
     }
@@ -123,7 +121,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setEmail(string $email) : self
+    public function setEmail(?string $email) : self
     {
         $this->email = $email;
 
@@ -133,7 +131,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of password.
      */
-    public function getPassword() : string
+    public function getPassword() : ?string
     {
         return $this->password;
     }
@@ -143,7 +141,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setPassword(string $password) : self
+    public function setPassword(?string $password) : self
     {
         $this->password = $password;
 
@@ -153,7 +151,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of registerDate.
      */
-    public function getRegisterDate() : DateTimeInterface
+    public function getRegisterDate() : ?string
     {
         return $this->registerDate;
     }
@@ -161,7 +159,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of updateAt.
      */
-    public function getUpdatedAt() : DateTimeInterface
+    public function getUpdatedAt() : ?string
     {
         return $this->updatedAt;
     }
@@ -171,7 +169,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setUpdatedAt(DateTimeInterface $updatedAt) : self
+    public function setUpdatedAt(?string $updatedAt) : self
     {
         $this->updatedAt = $updatedAt;
 
@@ -181,7 +179,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of profileImage.
      */
-    public function getProfileImage() : string
+    public function getProfileImage() : ?string
     {
         return $this->profileImage;
     }
@@ -191,7 +189,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setProfileImage(string $profileImage) : self
+    public function setProfileImage(?string $profileImage) : self
     {
         $this->profileImage = $profileImage;
 
@@ -201,7 +199,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of salt.
      */
-    public function getSalt() : string
+    public function getSalt() : ?string
     {
         return $this->salt;
     }
@@ -211,7 +209,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setSalt(string $salt) : self
+    public function setSalt(?string $salt) : self
     {
         $this->salt = $salt;
 
@@ -221,7 +219,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of token.
      */
-    public function getUserToken() : string
+    public function getUserToken() : ?string
     {
         return $this->userToken;
     }
@@ -231,7 +229,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setUserToken(string $token) : self
+    public function setUserToken(?string $token) : self
     {
         $this->userToken = $token;
 
@@ -241,7 +239,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of phone.
      */
-    public function getPhone() : string
+    public function getPhone() : ?string
     {
         return $this->phone;
     }
@@ -251,7 +249,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setPhone(string $phone) : self
+    public function setPhone(?string $phone) : self
     {
         $this->phone = $phone;
 
@@ -362,7 +360,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of userCookie.
      */
-    public function getUserCookie() : string
+    public function getUserCookie() : ?string
     {
         return $this->userCookie;
     }
@@ -372,7 +370,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setUserCookie(string $userCookie) : self
+    public function setUserCookie(?string $userCookie) : self
     {
         $this->userCookie = $userCookie;
 
@@ -382,7 +380,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of userCustomerID.
      */
-    public function getCustomerId() : string
+    public function getCustomerId() : ?string
     {
         return $this->customerId;
     }
@@ -392,7 +390,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setCustomerId(string $userCustomerID) : self
+    public function setCustomerId(?string $userCustomerID) : self
     {
         $this->customerId = $userCustomerID;
 
@@ -402,7 +400,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of rememberCookie.
      */
-    public function getRememberMeCookie() : string
+    public function getRememberMeCookie() : ?string
     {
         return $this->rememberMeCookie;
     }
@@ -412,7 +410,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setRememberMeCookie(string $rememberCookie) : self
+    public function setRememberMeCookie(?string $rememberCookie) : self
     {
         $this->rememberMeCookie = $rememberCookie;
 
@@ -422,7 +420,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of tokenExpire.
      */
-    public function getTokenExpire() : DateTimeInterface
+    public function getTokenExpire() : ?string
     {
         return $this->tokenExpire;
     }
@@ -432,7 +430,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setTokenExpire(DateTimeInterface $tokenExpire) : self
+    public function setTokenExpire(?string $tokenExpire) : self
     {
         $this->tokenExpire = $tokenExpire;
 
@@ -442,7 +440,7 @@ class UsersEntity extends Entity
     /**
      * Get the value of fbAccessToken.
      */
-    public function getFbAccessToken() : string
+    public function getFbAccessToken() : ?string
     {
         return $this->fbAccessToken;
     }
@@ -452,7 +450,7 @@ class UsersEntity extends Entity
      *
      * @return  self
      */
-    public function setFbAccessToken(string $fbAccessToken) : self
+    public function setFbAccessToken(?string $fbAccessToken) : self
     {
         $this->fbAccessToken = $fbAccessToken;
 
@@ -467,6 +465,26 @@ class UsersEntity extends Entity
     public function setRegisterDate(DateTimeInterface $registerDate) : self
     {
         $this->registerDate = $registerDate;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of number.
+     */
+    public function getNumber()
+    {
+        return $this->number;
+    }
+
+    /**
+     * Set the value of number.
+     *
+     * @return  self
+     */
+    public function setNumber($number)
+    {
+        $this->number = $number;
 
         return $this;
     }

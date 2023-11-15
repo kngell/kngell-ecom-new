@@ -61,7 +61,7 @@ interface DataMapperInterface
      * @param array $options
      * @return self
      */
-    public function results(array $options) : self;
+    public function results(array $options = [], string $method = '') : self;
 
     /**
      * --------------------------------------------------------------------------------------------------
@@ -72,4 +72,26 @@ interface DataMapperInterface
     public function getLasID(): int;
 
     public function count() : int;
+
+    public function persist(string $sql = '', array $parameters = []) : mixed;
+
+    public function buildQueryParameters(array $conditions = [], array $parameters = []): array;
+
+    public function column();
+
+    public function beginTransaction() : bool;
+
+    public function exec(string $sql) : int|false;
+
+    public function inTransaction() : bool;
+
+    public function rollBack() : bool;
+
+    public function getCon(): DatabaseConnexionInterface;
+
+    public function release(string $sql = '', array $parameters = []) : mixed;
+
+    public function get_results() : mixed;
+
+    public function getQuery(): PDOStatement;
 }

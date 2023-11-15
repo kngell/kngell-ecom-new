@@ -10,7 +10,6 @@ class Cors extends GlobalVariables
         $allowedOrigins = [
             'https://localhost',
             'https://localhost:8001',
-            'localhost:8001/favicon.ico',
             '/',
         ];
         $origin = $this->getServerVar('HTTP_ORIGIN');

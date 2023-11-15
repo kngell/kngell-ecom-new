@@ -6,12 +6,20 @@ trait ModelTrait
     public function find() : self
     {
         list($selectors, $conditions, $parameters, $options) = $this->queryParams->params('findBy');
-        if (isset($options['return_mode']) && $options['return_mode'] == 'class' && !isset($options['class'])) {
-            $options = array_merge($options, ['class' => $this->getModelName()]);
+        if (isset($options['return_mode']) && $options['return_mode'] == 'class' && ! isset($options['class'])) {
+            $options = array_merge($options, ['class' => $this->entity::class]);
         }
         $results = $this->repository->findBy($selectors, $conditions, $parameters, $options);
-        $this->setResults($results->count() > 0 ? $results->get_results() : null);
-        $this->setCount($results->count() > 0 ? $results->count() : 0);
+        $this->setAllReturnedValues($results);
+        $results = null;
+        return $this;
+    }
+
+    public function release() : self
+    {
+        list($selectors, $conditions, $parameters, $options) = $this->queryParams->params('release');
+        $results = $this->repository->release($selectors, $conditions, $parameters, $options);
+        $this->setAllReturnedValues($results);
         $results = null;
         return $this;
     }
@@ -19,7 +27,7 @@ trait ModelTrait
     public function findWithSearchAndPagin(array $args) : self
     {
         list($selectors, $conditions, $parameters, $options) = $this->queryParams->params('findBySearch');
-        if (isset($options['return_mode']) && $options['return_mode'] == 'class' && !isset($options['class'])) {
+        if (isset($options['return_mode']) && $options['return_mode'] == 'class' && ! isset($options['class'])) {
             $options = array_merge($options, ['class' => $this->getModelName()]);
         }
         $totalRecords = $this->repository->countRecords($conditions);
@@ -43,8 +51,8 @@ trait ModelTrait
     public function findFirst() : Model
     {
         list($conditions, $options) = $this->queryParams->params('findOneBy');
-        if (isset($options['return_mode']) && $options['return_mode'] == 'class' && !isset($options['class'])) {
-            $options = array_merge($options, ['class' => get_class($this)]);
+        if (isset($options['return_mode']) && $options['return_mode'] == 'class' && ! isset($options['class'])) {
+            $options = array_merge($options, ['class' => $this->entity::class]);
         }
         $dataMapperResults = $this->repository->findOneBy($conditions, $options);
         if ($dataMapperResults->count() <= 0) {
@@ -164,6 +172,14 @@ trait ModelTrait
             $colID = $this->entity->getColId();
             return ['id' => $item->$colID, 'text' => StringUtil::htmlDecode($item->$title)];
         }, $data);
+    }
+
+    protected function setAllReturnedValues(DataMapperInterface $results) : void
+    {
+        $this->setResults($results->count() > 0 ? $results->get_results() : null);
+        $this->setCount($results->count() > 0 ? $results->count() : 0);
+        $this->setStatement($results->getQuery());
+        $this->setCon($results->getCon());
     }
 
     protected function properties() : void

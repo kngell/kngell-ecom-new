@@ -13,10 +13,10 @@
     {{form_begin}}
     <div class="row">
         <div class="col">
-            {{last_name}}
+            {{lastName}}
         </div>
         <div class="col">
-            {{first_name}}
+            {{firstName}}
         </div>
     </div>
     {{username}}

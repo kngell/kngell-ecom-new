@@ -12,7 +12,7 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
      */
     public function __construct(DatabaseConnexionInterface $_con)
     {
-        $this->_con = $_con;
+        parent::__construct($_con);
     }
 
     /**
@@ -89,7 +89,7 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
                 $i++;
             }
         } else {
-            if (!empty($fields)) {
+            if (! empty($fields)) {
                 if (isset($fields['bind_array'])) {
                     unset($fields['bind_array']);
                 }
@@ -167,11 +167,21 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
      * @param string $sql
      * @param array $parameters
      */
-    public function persist(string $sql = '', array $parameters = [])
+    public function persist(string $sql = '', array $parameters = []) : mixed
     {
         try {
             $sql = $this->cleanSql($sql);
             return isset($parameters[0]) && $parameters[0] == 'all' ? $this->prepare($sql)->execute() : $this->prepare($sql)->bindParameters($parameters)->execute();
+        } catch (Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function release(string $sql = '', array $parameters = []) : mixed
+    {
+        try {
+            $sql = $this->cleanSql($sql);
+            return $this->prepare($sql)->bindParameters($parameters);
         } catch (Throwable $th) {
             throw $th;
         }
@@ -186,7 +196,7 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
      */
     public function buildQueryParameters(array $conditions = [], array $parameters = []): array
     {
-        return (!empty($parameters) || !empty($conditions)) ? array_merge($conditions, $parameters) : $parameters;
+        return (! empty($parameters) || ! empty($conditions)) ? array_merge($conditions, $parameters) : $parameters;
     }
 
     /**
@@ -208,6 +218,31 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
         return $sqlArr[0];
     }
 
+    public function beginTransaction() : bool
+    {
+        return $this->_con->beginTransaction();
+    }
+
+    public function exec(string $sql) : int|false
+    {
+        return $this->_con->exec($sql);
+    }
+
+    public function inTransaction() : bool
+    {
+        return $this->_con->inTransaction();
+    }
+
+    public function rollBack() : bool
+    {
+        return $this->_con->rollBack();
+    }
+
+    public function commit() : bool
+    {
+        return $this->_con->commit();
+    }
+
     /**
      * Bind usual values.
      * ================================================.
@@ -226,7 +261,7 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
                 }
                 break;
             case isset($val['operator']) && in_array($val['operator'], ['NOT IN', 'IN']):
-                if (!empty($this->bind_arr)) {
+                if (! empty($this->bind_arr)) {
                     foreach ($this->bind_arr as $k => $v) {
                         $this->bind(":$k", $v);
                     }

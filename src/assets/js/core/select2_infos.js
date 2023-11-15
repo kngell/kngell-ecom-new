@@ -17,7 +17,7 @@ $("#yourDropdownId").select2({
         results: $.map(data.items, function (item) {
           return {
             text: item.item_name,
-            id: item.item_id,
+            id: item.itemId,
           };
         }),
       };

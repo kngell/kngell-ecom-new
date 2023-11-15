@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class AdminHomePagePaths implements PathsInterface
+class AdminHomePagePaths implements TemplatePathsInterface
 {
     private string $viewPath = VIEW . 'admin' . DS . 'pages' . DS;
     private string $templatePath = APP . 'Display' . DS . 'Admin' . DS . 'Home' . DS . 'Templates' . DS;

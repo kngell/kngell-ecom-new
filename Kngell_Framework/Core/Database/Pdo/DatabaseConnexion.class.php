@@ -11,11 +11,11 @@ final class DatabaseConnexion implements DatabaseConnexionInterface
     /**
      * @var PDO
      */
-private PDO $con;
+    private PDO $con;
 
     public function __construct(array $credentials)
     {
-    $this->credentials = $credentials;
+        $this->credentials = $credentials;
     }
 
     /**
@@ -23,7 +23,6 @@ private PDO $con;
      */
     public function open() :PDO
     {
-        // Set Options
         $options = [
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci',
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET CHARACTER SET UTF8mb4',
@@ -35,7 +34,7 @@ private PDO $con;
             PDO::ATTR_CASE => PDO::CASE_NATURAL,
             PDO::ATTR_ORACLE_NULLS => PDO::NULL_EMPTY_STRING,
         ];
-        if (!isset($this->con)) {
+        if (! isset($this->con)) {
             try {
                 $this->con = new PDO($this->credentials['dsn'], $this->credentials['dbUser'], $this->credentials['dbPass'], $options);
             } catch (PDOException $e) {
@@ -84,5 +83,30 @@ private PDO $con;
     {
         $this->credentials = $credentials;
         return $this;
+    }
+
+    public function beginTransaction() : bool
+    {
+        return $this->con->beginTransaction();
+    }
+
+    public function exec(string $sql) : int|false
+    {
+        return $this->con->exec($sql);
+    }
+
+    public function inTransaction() : bool
+    {
+        return $this->con->inTransaction();
+    }
+
+    public function rollBack() : bool
+    {
+        return $this->con->rollBack();
+    }
+
+    public function commit() : bool
+    {
+        return $this->con->commit();
     }
 }

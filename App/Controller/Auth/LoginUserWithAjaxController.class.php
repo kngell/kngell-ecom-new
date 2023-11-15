@@ -13,10 +13,11 @@ class LoginUserWithAjaxController extends Controller
             $this->isLoginAttempsValid($number);
             $this->isPasswordValid($user);
             $resp = $user->login($this->isRememberingLogin(), [
-                'password' => $model->getEntity()->{'getPassword'}(),
+                'password' => $model->getEntity()->getPassword(),
             ]);
             if ($resp !== null) {
                 $this->dispatcher->dispatch(new LoginEvent($resp->getEntity()));
+                dd($_SESSION['user']);
                 $this->jsonResponse(['result' => 'success', 'msg' => 'success']);
             }
             $this->jsonResponse(['result' => 'error', 'msg' => $this->helper->showMessage('warning text-warning', 'Something goes wrong! plase contact the administrator!')]);
@@ -53,14 +54,18 @@ class LoginUserWithAjaxController extends Controller
         }
     }
 
-    private function isPasswordValid(Model $user)
+    private function isPasswordValid(Object $user)
     {
-        if (!password_verify($user->getEntity()->{'getPassword'}(), $user->password)) {
+        /** @var UserEntity */
+        $en = $user->getEntity(); // en from end user
+        /** @var UserEntity */
+        $enFrmDb = current($user->get_results());
+        if (!password_verify($en->getPassword(), $enFrmDb->getPassword())) {
             try {
                 $this->model(LoginAttemptsManager::class)->assign([
-                    'userID' => $user->userID,
+                    'userId' => $enFrmDb->getUserId(),
                     'timestamp' => time(),
-                    'ip' => $this->request->getServer('REMOTE_ADDR'),
+                    'ip' => $this->request->getServerVar('REMOTE_ADDR'),
                 ])->save();
                 $this->jsonResponse(['result' => 'error', 'msg' => $this->helper->showMessage('danger text-center', 'Your password is incorrect, Please try again!')]);
             } catch (\Throwable $th) {

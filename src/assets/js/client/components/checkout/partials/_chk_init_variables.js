@@ -44,7 +44,7 @@ class InitializeVariables {
       lastName: document.getElementById("chk-lastName"),
       firstName: document.getElementById("chk-firstName"),
       email: document.getElementById("chk-email"),
-      user_id: document.getElementById("chk-user_id"),
+      userId: document.getElementById("chk-userId"),
     };
     // this.sucess_popup = document.querySelector(".popup-modal");
     // this.sucess_popup_btn_close = document.querySelector(

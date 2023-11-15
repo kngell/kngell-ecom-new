@@ -36,7 +36,7 @@ class UserCartController extends Controller
         $model = $this->model(CartManager::class)->assign($this->isValidRequest());
         $shopping_cart = $this->selectItem($model);
         if ($shopping_cart->count() === 1) {
-            $model->assign(['cart_id' => $shopping_cart->pop()->cart_id]);
+            $model->assign(['cartId' => $shopping_cart->pop()->cartId]);
             if ($model->delete()->count() === 1) {
                 $this->dispatcher->dispatch(new UserCartChangeEvent($this, '', [
                     'displayUserCart',
@@ -54,7 +54,7 @@ class UserCartController extends Controller
         $shopping_cart = $this->selectItem($model);
         if ($shopping_cart->count() === 1) {
             $item = $shopping_cart->pop();
-            $model->assign(['cart_id' => $item->cart_id]);
+            $model->assign(['cartId' => $item->cartId]);
             if ($model->save()->count() === 1) {
                 $this->dispatcher->dispatch(new UserCartChangeEvent($this, '', [
                     'displayUserCart',
@@ -76,9 +76,9 @@ class UserCartController extends Controller
         /** @var CartEntity */
         $en = $m->getEntity();
         foreach ($shopping_cart as $item) {
-            if ($item->item_id === $en->getItemId()) {
-                $item->item_qty = $en->getItemQty();
-                $m->assign(['cart_id' => $item->cart_id]);
+            if ($item->itemId === $en->getItemId()) {
+                $item->itemQty = $en->getItemQty();
+                $m->assign(['cartId' => $item->cartId]);
             }
         }
 

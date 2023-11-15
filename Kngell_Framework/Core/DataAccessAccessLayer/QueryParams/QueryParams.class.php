@@ -18,6 +18,12 @@ class QueryParams extends AbstractQueryParams
         return $this;
     }
 
+    public function query(string $sql) : self
+    {
+        $this->query_params['custom'] = $sql;
+        return $this;
+    }
+
     public function params(?string $repositoryMethod = null) : array
     {
         $this->getSelectors();
@@ -33,7 +39,7 @@ class QueryParams extends AbstractQueryParams
     {
         $tbl = $this->parseTable($tbl);
         $this->key('table_join');
-        if (!array_key_exists($tbl, $this->query_params['table_join'])) {
+        if (! array_key_exists($tbl, $this->query_params['table_join'])) {
             $this->query_params['table_join'] += [$tbl != null ? $tbl : $this->tableSchema => $columns != null ? $columns : ['*']];
             $this->key('options');
             $this->query_params['options']['join_rules'][] = $joinType;
@@ -59,7 +65,7 @@ class QueryParams extends AbstractQueryParams
         $this->key('options');
         $tableIndex = 0;
         foreach ($params as $key => $join_params) {
-            if (is_array($join_params) && !empty($join_params)) {
+            if (is_array($join_params) && ! empty($join_params)) {
                 foreach ($join_params as $k => $arg) {
                     if (is_array($arg)) {
                         $this->getParams($k, $arg);
@@ -73,20 +79,33 @@ class QueryParams extends AbstractQueryParams
         return $this;
     }
 
+    public function getLock(string $field, mixed $value) : self
+    {
+        $this->query_params['options']['lock_field'] = $field;
+        $this->query_params['options']['lock_value'] = $value;
+        return $this;
+    }
+
+    public function doRelease(string $field) : self
+    {
+        $this->query_params['options']['doRelease'] = $field;
+        return $this;
+    }
+
     public function where(array $conditions, ?string $op = null, ?string $whereType = null) : self
     {
-        if (isset($conditions) && !empty($conditions)) {
+        if (isset($conditions) && ! empty($conditions)) {
             foreach ($conditions as $key => $value) {
                 $whereParams = $this->whereParams($conditions, $key, $value);
                 if (is_string($key)) {
-                    if (!is_null($whereType)) {
+                    if (! is_null($whereType)) {
                         list($key, $tbl) = $this->getField($key);
                         $key = $key . '|' . 'IN';
                         $whereParams['tbl'] = $tbl == '' ? $this->tableSchema : $tbl;
                     }
                     list($whereParams['field'], $whereParams['operator']) = $this->fieldOperator($key);
                     list($whereParams['value'], $table) = $this->fieldValue($whereParams['value'], $whereParams['operator'], $whereType);
-                    $whereParams['tbl'] = !array_key_exists('tbl', $whereParams) && !empty($table) ? $table : $whereParams['tbl'];
+                    $whereParams['tbl'] = ! array_key_exists('tbl', $whereParams) && ! empty($table) ? $table : $whereParams['tbl'];
                     is_null($op) ? $this->query_params['conditions'] += $this->condition($whereParams) : $this->query_params['conditions'][$op] += $this->condition($whereParams);
                     $this->conditionBreak = [];
                 } else {
@@ -117,8 +136,8 @@ class QueryParams extends AbstractQueryParams
 
     public function and(array $cond, string $op = 'and') : self
     {
-        if (isset($cond) && !empty($cond)) {
-            if (!array_key_exists($op, $this->query_params['conditions'])) {
+        if (isset($cond) && ! empty($cond)) {
+            if (! array_key_exists($op, $this->query_params['conditions'])) {
                 $this->query_params['conditions'][$op] = [];
             }
 
@@ -177,7 +196,7 @@ class QueryParams extends AbstractQueryParams
 
     public function parameters(array $params) : self
     {
-        if (!array_key_exists('parameters', $this->query_params)) {
+        if (! array_key_exists('parameters', $this->query_params)) {
             $this->query_params['parameters'] = [];
         }
 
@@ -208,7 +227,7 @@ class QueryParams extends AbstractQueryParams
 
     private function aryParams(array $params, string $name) : self
     {
-        if (isset($params) && !empty($params)) {
+        if (isset($params) && ! empty($params)) {
             $this->query_params[$name] = $params;
         }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class EmailPaths implements PathsInterface
+class EmailPaths implements TemplatePathsInterface
 {
     private string $viewPath = VIEW . 'client' . DS . 'components' . DS . 'Email' . DS;
     private string $templatePath = APP . 'Display' . DS . 'Components' . DS . 'Email' . DS . 'Templates' . DS;

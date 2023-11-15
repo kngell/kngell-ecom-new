@@ -6,7 +6,7 @@ import { BASE_URL, HOST } from "corejs/config";
 import cart_manager from "./partials/_cart_manager";
 import owl_carousel from "./partials/_owl_carousel";
 import user_account from "js/client/components/user_account/user_account";
-import imageList from "./partials/_image_list";
+// import imageList from "./partials/_image_list";
 
 class Main {
   constructor(element) {
@@ -24,13 +24,13 @@ class Main {
     var phpPlugin = this;
     /** Cart Manager */
     cart_manager._init();
-    /** Owl_Carousel */
-    owl_carousel._init();
     /** User Account */
     user_account._init();
+    /** Owl_Carousel */
+    owl_carousel._init();
     /** FavIcon */
-    document.querySelector("link[type='image/ico']").href =
-      imageList["favicon"];
+    // document.querySelector("link[type='image/ico']").href =
+    //   imageList["favicon"];
     /** Authentication Manager */
 
     /**
@@ -42,15 +42,16 @@ class Main {
       var data = {
         url: "user_cart/add",
         frm: $(this),
-        frm_name: "add_to_cart_frm" + $(this).find("input[name=item_id]").val(),
+        frm_name: "add_to_cart_frm" + $(this).find("input[name=itemId]").val(),
         method: "addUserItem",
       };
       const inputs = phpPlugin.wrapper.find(
-        "input[value='" + $(this).children("input[name='item_id']").val() + "']"
+        "input[value='" + $(this).children("input[name='itemId']").val() + "']"
       );
 
       Call_controller(data, ManageR);
       function ManageR(response) {
+        $("html").html(response[0]);
         if (response.result == "success") {
           if (document.location.pathname != BASE_URL + "cart") {
             phpPlugin.header

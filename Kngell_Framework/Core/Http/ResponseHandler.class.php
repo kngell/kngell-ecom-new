@@ -28,8 +28,12 @@ class ResponseHandler
             throw new ResponseException('Response need to be prepared');
         }
         $this->sendAllHeaders();
-        echo $this->content;
-        die();
+        if ($this->request->isAjax()) {
+            $this->jsonResponse([$this->content]);
+        } else {
+            echo $this->content;
+            exit();
+        }
     }
 
     public function addHeader(string $name, string $value) : self
@@ -98,37 +102,17 @@ class ResponseHandler
         }
     }
 
-    /**
-     * Transform Key -> transform source key from old to new key when present on $item
-     * ==================================================================================.
-     * @param array $source
-     * @param array $item
-     * @return array
-     */
-    public function transform_keys(array $source = [], array | null $newKeys = []) : array
-    {
-        $S = $source;
-        if (isset($newKeys) && !empty($newKeys)) {
-            foreach ($source as $key => $val) {
-                if (isset($newKeys[$key])) {
-                    $S = $this->_rename_arr_key($key, $newKeys[$key], $S);
-                }
-            }
-        }
-        return $S;
-    }
-
     public function jsonResponse(array $resp) : void
     {
-        $this->setJsonHeader()->setResponseCode(200);
+        $this->sendJsonHeader();
+        $this->setResponseCode(200);
         echo json_encode($resp);
         exit;
     }
 
-    public function setJsonHeader() : self
+    public function sendJsonHeader() : void
     {
         header('Content-Type: application/json;charset=utf-8');
-        return $this;
     }
 
     public function setResponseCode(int $code) : self
@@ -175,25 +159,12 @@ class ResponseHandler
             header(sprintf('%s: %s', $name, $value), false, $this->status->value);
         }
         header('X-Response-Time: ' . (microtime(true) - $this->request->getRequestStartTime()), );
-    }
-
-    /**
-     * Rename keys
-     * ==================================================================================.
-     * @param string $oldkey
-     * @param string $newkey
-     * @param array $arr
-     * @return array|bool
-     */
-    private function _rename_arr_key(string $oldkey, string $newkey, array $arr = []) : bool|array
-    {
-        if (array_key_exists($oldkey, $arr)) {
-            $arr[$newkey] = $arr[$oldkey];
-            unset($arr[$oldkey]);
-
-            return $arr;
-        } else {
-            return false;
-        }
+        // header('Access-Control-Allow-Origin: ' . $this->request->getServerVar('HTTP_ORIGIN'));
+        // header('Access-Control-Max-Age: 360');
+        // header('Access-Control-Allow-Credentials: true');
+        // header('Access-Control-Allow-Methods: *');
+        // header('Access-Control-Allow-Headers: Origin');
+        // header('Access-Control-Expose-Headers: Access-Control-Allow-Origin');
+        // header('Access-Control-Allow-Origin: "https://localhost');
     }
 }

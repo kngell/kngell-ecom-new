@@ -59,8 +59,8 @@ trait CheckoutFromTrait
         $uContactInfos = $this->getTemplate('contactInfosPath');
 
         $uContactInfos = str_replace('{{userID}}', (string) $this->frm->input([
-            HiddenType::class => ['name' => 'user_id'],
-        ])->noLabel()->id('chk-user_id')->noWrapper()->value($this->customerEntity->isInitialized('user_id') ? $this->customerEntity->getUserId() : '')->html(), $uContactInfos);
+            HiddenType::class => ['name' => 'userId'],
+        ])->noLabel()->id('chk-userId')->noWrapper()->value($this->customerEntity->isInitialized('userId') ? $this->customerEntity->getUserId() : '')->html(), $uContactInfos);
 
         $uContactInfos = str_replace('{{lastName}}', (string) $this->frm->input([
             TextType::class => ['name' => 'lastName'],

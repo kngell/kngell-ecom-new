@@ -5,7 +5,7 @@
             <h3>
                <a href="#">
                   <div class="img-wrap">
-                     <img src="https://localhost:8001/public/assets/img/logo.png" alt="Logo">
+                     <img src="/public/assets/img/logo.png" alt="Logo">
                   </div>
                   <span class="img-text">Logistics</span>
                </a>

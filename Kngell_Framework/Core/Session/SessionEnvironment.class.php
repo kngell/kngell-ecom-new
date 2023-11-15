@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+/**
+ * SessionEnvironment handles the session configuration from the application
+ * which passes in the user define session options. This class also exposes
+ * session helper methods for fetching name, path, etc...
+ */
 class SessionEnvironment
 {
     /** @var string - the current stable session version */
@@ -41,10 +46,11 @@ class SessionEnvironment
      */
     public function getLifetime(): int
     {
-        $lifetime = (isset($this->getConfig()['lifetime']) ? filter_var($this->getConfig()['lifetime'], FILTER_VALIDATE_INT) : 120);
-        if ($lifetime) {
-            return $lifetime;
-        }
+        return filter_var($this->getSessionParam('cookie_lifetime'), FILTER_VALIDATE_INT) ?? 120;
+        // $lifetime = (isset($this->getConfig()['cookie_lifetime']) ? filter_var($this->getConfig()['cookie_lifetime'], FILTER_VALIDATE_INT) : 120);
+        // if ($lifetime) {
+        //     return $lifetime;
+        // }
     }
 
     /**
@@ -55,10 +61,7 @@ class SessionEnvironment
      */
     public function getPath(): string
     {
-        $path = ($this->getConfig()['path'] ?? '');
-        if ($path) {
-            return $path;
-        }
+        return $this->getSessionParam('path') ?? '/';
     }
 
     /**
@@ -69,10 +72,7 @@ class SessionEnvironment
      */
     public function getDomain(): ?string
     {
-        $domain = ($this->getConfig()['domain'] ?? $_SERVER['SERVER_NAME']);
-        if ($domain) {
-            return $domain;
-        }
+        return $this->getSessionParam('domain') ?? $_SERVER['SERVER_NAME'];
     }
 
     /**
@@ -82,7 +82,8 @@ class SessionEnvironment
      */
     public function isSecure(): bool
     {
-        return $this->getConfig()['secure'] ?? isset($_SERVER['HTTPS']);
+        return (bool) $this->getSessionParam('cookie_secure') ?? isset($_SERVER['HTTPS']);
+        // return $this->getConfig()['cookie_secure'] ?? isset($_SERVER['HTTPS']);
     }
 
     /**
@@ -93,7 +94,7 @@ class SessionEnvironment
      */
     public function isHttpOnly(): ?bool
     {
-        return $this->getConfig()['httpOnly'] ?? null;
+        return (bool) $this->getSessionParam('cookie_httponly');
     }
 
     /**
@@ -103,10 +104,12 @@ class SessionEnvironment
      */
     public function getSessionName(): string
     {
-        $sessionName = ($this->getConfig()['session_name'] ?? '');
-        if ($sessionName) {
-            return $sessionName;
-        }
+        return $this->getSessionParam('session_name');
+    }
+
+    public function storagePath() : string
+    {
+        return $this->getSessionParam('storage_path');
     }
 
     /**
@@ -116,7 +119,17 @@ class SessionEnvironment
      */
     public function getSessionRuntimeConfigurations(): array
     {
-        return ['session.gc_maxlifetime', 'session.gc_divisor', 'session.gc_probability', 'session.lifetime', 'session.use_cookies'];
+        return [
+            'session.gc_maxlifetime',
+            'session.cookie_lifetime',
+            'session.use_trans_sid',
+            'session.gc_divisor',
+            'session.gc_probability',
+            'session.use_cookies',
+            'session.cookie_httponly',
+            'session.cookie_secure',
+            'session.use_strict_mode',
+        ];
     }
 
     /**
@@ -126,16 +139,23 @@ class SessionEnvironment
      * Values are fetched using the getConfig() method and simple calling the
      * config value within the square brackets.
      *
+     * @param string $option
      * @return mixed
      */
-    public function getSessionIniValues(): mixed
+    public function getSessionIniValues(string $sessionKey): mixed
     {
-        foreach ($this->getSessionRuntimeConfigurations() as $runtimeConfig) {
-            switch ($runtimeConfig) {
-                case $runtimeConfig:
-                    return $this->getConfig()[str_replace('session.', '', $runtimeConfig)];
-                    break;
+        return $this->getConfig()[$sessionKey];
+    }
+
+    private function getSessionParam(?string $key = null): mixed
+    {
+        if ($key !== null) {
+            $sessionKey = ($this->getConfig()[$key] ?? '');
+            if ($sessionKey) {
+                return $sessionKey;
             }
+            return null;
         }
+        return false;
     }
 }

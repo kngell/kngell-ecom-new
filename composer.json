@@ -27,14 +27,12 @@
   "require": {
     "symfony/yaml": "^6.0",
     "symfony/cache": "^6.0",
-    "php": "^8.0 || ^8.1",
-    "ext-mbstring": "*",
+    "php": "^8.1 || ^8.2",
     "ext-iconv": "*",
     "ext-pdo": "*",
     "ext-json": "*",
     "ext-intl": "*",
     "ext-curl": "*",
-    "ext-imap": "*",
     "ext-simplexml": "*",
     "symfony/var-dumper": "^6.0",
     "brick/money": "^0.5.2",
@@ -42,7 +40,6 @@
     "phpmailer/phpmailer": "^6.5",
     "symfony/http-foundation": "^6.0",
     "tijsverkoyen/css-to-inline-styles": "^2.2",
-    "pelago/emogrifier": "^6.0",
     "league/iso3166": "^4.0",
     "psr/container": "^2.0"
   },
@@ -53,7 +50,8 @@
   "autoload": {
     "classmap": [
       "App/",
-      "Kngell_Framework/"
+      "Kngell_Framework/",
+      "/usr/local/bin/php-cs-fixer"
     ]
   },
   "autoload-dev": {

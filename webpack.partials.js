@@ -7,7 +7,7 @@ const frontendEntries = require("./src/entries/assets/frontend/frontendEntries")
 const adminEntries = require("./src/entries/assets/backend/admin/adminEntries");
 const { viewRules, assetsRules } = require("./webpack.modules");
 const config = require("./config");
-const ASSET_PATH = config.PATH;
+const ASSET_PATH = config.ROOT + config.PATH;
 
 //process.env.ASSET_PATH || `${path.sep}public${path.sep}assets${path.sep}`;
 
@@ -36,8 +36,6 @@ exports.alias = {
  */
 const serverOpt = {
   compress: true,
-  allowedHosts: "auto",
-  // host: "localhost",
   bonjour: true,
   client: {
     logging: "none",
@@ -46,19 +44,15 @@ const serverOpt = {
       warnings: false,
     },
     // progress: true,
-    reconnect: true,
-    webSocketTransport: "ws",
+    // reconnect: true,
+    // webSocketTransport: "ws",
     // webSocketURL: "ws://localhost/ws",
   },
-  webSocketServer: "ws",
+  // webSocketServer: "ws",
   devMiddleware: {
-    index: true,
-    publicPath: ASSET_PATH,
-    serverSideRender: true,
+    index: false,
+    // serverSideRender: true,
     writeToDisk: true,
-    // writeToDisk: (filePath) => {
-    //   return /^(?!.*(hot)).*/.test(filePath);
-    // },
   },
   hot: true,
   liveReload: false,
@@ -73,10 +67,10 @@ const serverOpt = {
   proxy: {
     context: () => true,
     "/**": {
-      target: "https://kngell-ecom.da",
+      target: "https://localhost",
       secure: false,
-      changeOrigin: true,
-      pathRewrite: { "^/kngell-ecom": "" },
+      // changeOrigin: true,
+      pathRewrite: { "^/*": "" },
     },
   },
   server: {
@@ -86,16 +80,24 @@ const serverOpt = {
       cert: "/mnt/d/ssl/local/ssl/localhost.crt",
     },
   },
-  static: {
-    directory: path.resolve(__dirname, "App", "Views"),
-  },
+  static: [
+    {
+      directory: path.resolve(__dirname, "App", "Views"),
+    },
+    {
+      directory: path.resolve(__dirname, "src"),
+      publicPath: ASSET_PATH,
+    },
+  ],
+  allowedHosts: ["localhost", "kngell-ecom.da"],
+
   // headers: {
-  //   "Access-Control-Allow-Origin": "https://corona.lmao.ninja/v2/countries",
+  //   "Access-Control-Allow-Origin": "*",
   //   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
   //   "Access-Control-Allow-Headers":
   //     "X-Requested-With, content-type, Authorization",
   // },
-  // watchFiles: ["App/**/*.php", "public/**/*"],
+  // watchFiles: ["src/**/*.php", "public/**/*"],
 };
 const entries = {
   "css/librairies/frontlib": "./src/assets/css/lib/frontlib.sass",

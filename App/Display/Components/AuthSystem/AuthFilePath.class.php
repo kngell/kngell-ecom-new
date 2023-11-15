@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class AuthFilePath implements PathsInterface
+class AuthFilePath implements TemplatePathsInterface
 {
     private string $modalPath = VIEW . 'client' . DS . 'components' . DS . 'authSystem' . DS;
     private string $templatePath = APP . 'Display' . DS . 'Components' . DS . 'AuthSystem' . DS . 'Templates' . DS;

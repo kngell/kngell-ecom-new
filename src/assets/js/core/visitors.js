@@ -1,22 +1,24 @@
 import { csrftoken, frm_name } from "corejs/config";
-//Get visitors Data
+
 export const get_visitors_data = () => {
-  return new Promise((resolve, reject) => {
-    const ip = $("#ip_address");
-    if (ip.length) {
+  fetch("https://ipapi.co/json/")
+    .then((response) => response.json())
+    .then((visitors_data) => {
       let data = {
-        ip: ip.val(),
-        csrftoken: csrftoken,
-        frm_name: frm_name,
+        ...{
+          url: "visitors",
+          csrftoken: csrftoken,
+          frm_name: frm_name,
+        },
+        ...visitors_data,
       };
-      resolve(data);
-    } else {
-      reject("no data");
-    }
-  });
+      send_visitors_data(data, (response) => {
+        console.log(response);
+      });
+    });
 };
 
-export const send_visitors_data = (data, manageR) => {
+const send_visitors_data = (data, manageR) => {
   $.ajax({
     url: data.url,
     method: "post",

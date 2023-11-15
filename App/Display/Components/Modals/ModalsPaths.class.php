@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ModalsPaths implements PathsInterface
+class ModalsPaths implements TemplatePathsInterface
 {
     private string $viewPath = VIEW . 'client' . DS . 'components' . DS . 'modals' . DS;
     private string $templatePath = APP . 'Display' . DS . 'Components' . DS . 'Modals' . DS . 'Templates' . DS;

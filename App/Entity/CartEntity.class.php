@@ -6,17 +6,17 @@ class CartEntity extends Entity
 {
     /** @id */
     private int $cartId;
-    private string $userId;
-    private int $itemId;
-    private int $itemQty;
-    private string $totalAmount;
-    private string $cartType;
-    private DateTimeInterface $createdAt;
-    private DateTimeInterface $updatedAt;
+    private ?string $userId;
+    private ?int $itemId;
+    private ?int $itemQty;
+    private ?string $totalAmount;
+    private ?string $cartType;
+    private ?string $createAt;
+    private ?string $updateAt;
 
     public function __construct()
     {
-        $this->createdAt = !isset($this->createdAt) ? new DateTimeImmutable() : $this->createdAt;
+        // $this->createdAt = !isset($this->createdAt) ? new DateTimeImmutable() : $this->createdAt;
     }
 
     /**
@@ -142,9 +142,9 @@ class CartEntity extends Entity
     /**
      * Get the value of createdAt.
      */
-    public function getCreatedAt() : DateTimeInterface
+    public function getCreateAt() : ?string
     {
-        return $this->createdAt;
+        return $this->createAt;
     }
 
     /**
@@ -152,9 +152,9 @@ class CartEntity extends Entity
      *
      * @return  self
      */
-    public function setCreatedAt(DateTimeInterface $createdAt) : self
+    public function setCreateAt(?string $createdAt) : self
     {
-        $this->createdAt = $createdAt;
+        $this->createAt = $createdAt;
 
         return $this;
     }
@@ -162,9 +162,9 @@ class CartEntity extends Entity
     /**
      * Get the value of updatedAt.
      */
-    public function getUpdatedAt() : DateTimeInterface
+    public function getUpdateAt() : string
     {
-        return $this->updatedAt;
+        return $this->updateAt;
     }
 
     /**
@@ -172,9 +172,9 @@ class CartEntity extends Entity
      *
      * @return  self
      */
-    public function setUpdatedAt(DateTimeInterface $updatedAt) : self
+    public function setUpdatedAt(?string $updatedAt) : self
     {
-        $this->updatedAt = $updatedAt;
+        $this->updateAt = $updatedAt;
 
         return $this;
     }

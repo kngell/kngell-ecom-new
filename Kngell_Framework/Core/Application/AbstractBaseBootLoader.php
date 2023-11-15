@@ -4,35 +4,8 @@ declare(strict_types=1);
 
 abstract class AbstractBaseBootLoader extends Container implements ApplicationInterface
 {
-    protected ?AppConfig $appConfig = null;
+    protected ?AppConfigSetup $appConfig = null;
     protected ?RooterInterface $rooter = null;
-
-    public function __construct()
-    {
-        $this->registerBaseAppSingleton();
-    }
-
-    /**
-     * Set application base Constant.
-     *
-     * @return self
-     */
-    public function setConst() : self
-    {
-        BaseConstants::load($this->app());
-        return $this;
-    }
-
-    /**
-     * Boot Application.
-     *
-     * @return self
-     */
-    public function boot() : self
-    {
-        $this->appConfig = $this->make(AppConfig::class)->create();
-        return $this;
-    }
 
     /**
      * Returns the bootstrap appplications object.
@@ -51,7 +24,7 @@ abstract class AbstractBaseBootLoader extends Container implements ApplicationIn
      *
      * @return object
      */
-    public static function getSession(): Object
+    public static function getSessionObject(): Object
     {
         return GlobalManager::get('session_global');
     }
@@ -69,15 +42,6 @@ abstract class AbstractBaseBootLoader extends Container implements ApplicationIn
         return self::getInstance()->make($class, $args);
     }
 
-    public function loadCache(): CacheInterface
-    {
-        $cache = $this->make(CacheFacade::class)->create($this->appConfig->getCacheIdentifier(), $this->appConfig->getCache());
-        if ($this->app()->isCacheGlobal() === true) {
-            GLobalManager::set($this->app()->getGlobalCacheKey(), $cache);
-        }
-        return $cache;
-    }
-
     public function rooter() : RooterInterface
     {
         return $this->rooter;
@@ -86,11 +50,19 @@ abstract class AbstractBaseBootLoader extends Container implements ApplicationIn
     public function loadRoutes() : RooterInterface
     {
         return $this->rooter = $this->make(RooterFactory::class, [
-            'rooter' => $this->make(RooterInterface::class, [
-                'controllerProperties' => $this->loadProviders(),
-            ]),
             'routes' => $this->appConfig->getRoutes(),
+            'controllerProperties' => $this->loadProviders(),
         ])->create();
+    }
+
+    /**
+     * Turn on global session from public/index.php bootstrap file to make the session
+     * object available globally throughout the application using the GlobalManager object.
+     * @return bool
+     */
+    protected function isSessionGlobal(): bool
+    {
+        return $this->appConfig->isSessionGlobal();
     }
 
     /**
@@ -147,23 +119,26 @@ abstract class AbstractBaseBootLoader extends Container implements ApplicationIn
         return $this->appConfig->getControllerArray();
     }
 
-    /**
-     * Builds the application session component and returns the configured object. Based
-     * on the session configuration array.
-     *
-     * @return object - returns the session object
-     */
     protected function loadSession(): Object
     {
         $session = $this->make(SessionFacade::class, [
-            'sessionEnvironment' => $this->appConfig->getSession(),
-            'sessionIdentifier' => $this->appConfig->getSession()['session_name'],
-            'storage' => $this->appConfig->getSessionDriver(),
+            $this->appConfig->getSession()['session_name'],
+            $this->appConfig->getSessionDriver(),
+            $this->make(SessionEnvironment::class, [$this->appConfig->getSession()]),
         ])->setSession();
-        if ($this->app()->isSessionGlobal() === true) {
+        if ($this->isSessionGlobal() === true) {
             GlobalManager::set($this->app()->getGlobalSessionKey(), $session);
         }
         return $session;
+    }
+
+    protected function loadCache(): CacheInterface
+    {
+        $cache = $this->make(CacheFacade::class)->create($this->appConfig->getCacheIdentifier(), $this->appConfig->getCache());
+        if ($this->app()->isCacheGlobal() === true) {
+            GlobalManager::set($this->app()->getGlobalCacheKey(), $cache);
+        }
+        return $cache;
     }
 
     protected function loadCookies()
@@ -184,48 +159,23 @@ abstract class AbstractBaseBootLoader extends Container implements ApplicationIn
 
     protected function run(?string $route = null, array $params = []) : ResponseHandler
     {
-        $this->phpVersion();
-        $this->handleCors();
-        $this->loadErrorHandlers();
-        $this->loadSession();
-        $this->loadCache();
-        $this->loadCookies();
-        $this->loadEnvironment();
-        $this->registeredClass();
         return $this->loadRoutes()->resolve($route, $params);
     }
 
-    /**
-     * Register the basic bindings into the container.
-     *
-     * @return void
-     */
-    private function registerBaseAppSingleton()
+    protected function registerContainerAliases(array $aliasesGroup = [])
     {
-        $objs = ContainerAliasses::singleton();
-        if (is_array($objs)) {
-            foreach ($objs as $obj => $value) {
-                $this->singleton($obj, $value);
+        if (!empty($aliasesGroup) && is_array($aliasesGroup)) {
+            foreach ($aliasesGroup as $method => $aliases) {
+                if (is_array($aliases) && !empty($aliases)) {
+                    foreach ($aliases as $obj => $value) {
+                        $this->$method($obj, $value);
+                    }
+                }
             }
         }
     }
 
-    /**
-     * Register the basic bindings into the container.
-     *
-     * @return void
-     */
-    private function registeredClass()
-    {
-        $objs = array_merge(ContainerAliasses::dataAccessLayerClass(), ContainerAliasses::bindedClass());
-        if (is_array($objs)) {
-            foreach ($objs as $obj => $value) {
-                $this->bind($obj, $value);
-            }
-        }
-    }
-
-    private function handleCors()
+    protected function handleCors()
     {
         $this->make(Cors::class)->handle();
         return $this;

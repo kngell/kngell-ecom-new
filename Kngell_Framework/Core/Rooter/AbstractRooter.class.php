@@ -5,18 +5,21 @@ declare(strict_types=1);
 abstract class AbstractRooter
 {
     protected ?UrlRoute $urlRoute;
-    protected ?RequestHandler $request;
-    protected array $routesCollector = [];
+    protected ?RoutesCollector $routesCollector = null;
+    protected ResponseHandler $response;
+    protected RequestHandler $request;
     protected array $controllerProperties;
     protected array $params = [];
     protected string $controllerSuffix = 'Controller';
     protected ?string $methodSuffix = '';
 
-    public function __construct(?RequestHandler $request = null, ?UrlRoute $url = null, array $controllerProperties = [])
+    public function __construct(UrlRoute $urlRoute, RoutesCollector $routesCollector, array $controllerProperties, ResponseHandler $response, RequestHandler $request)
     {
-        $this->request = $request;
-        $this->urlRoute = $url;
+        $this->urlRoute = $urlRoute;
+        $this->routesCollector = $routesCollector;
         $this->controllerProperties = $controllerProperties;
+        $this->response = $response;
+        $this->request = $request;
     }
 
     public function getMatchingRoutes(string $url, array $routes) : array
@@ -29,17 +32,15 @@ abstract class AbstractRooter
 
     public function getRoutes() : array
     {
-        return $this->routesCollector;
+        return $this->routesCollector->getRoutes();
     }
 
     protected function resolveWithException(string $route): closure|array
     {
-        if (!$this->match($route, $this->routesCollector[strtolower($this->request->getHttpMethod())])) {
-            $e = new RouterNoRoutesFound('Route ' . $route . ' does not match any valid route.', 404);
-            //$e->setStatusCode(404);
-            throw $e;
+        if (! $this->match($route, $this->routesCollector->getRoutes()[strtolower($this->urlRoute->getRequest()->getHttpMethod())])) {
+            throw new RouterNoRoutesFound('Route ' . $route . ' does not match any valid route.', 404);
         }
-        if (!class_exists($controller = $this->controllerString())) {
+        if (! class_exists($controller = $this->controllerString())) {
             throw new RouterBadFunctionCallException('Class ' . $controller . ' does not exists.', 404);
         }
         if ($controller instanceof Closure) {
@@ -67,6 +68,9 @@ abstract class AbstractRooter
 
     protected function controllerObject(string $controllerString) : Controller
     {
+        if (! class_exists($controllerString)) {
+            throw new BadControllerExeption('Controller ' . $controllerString . ' does not exists.', 404);
+        }
         return Container::getInstance()->make(ControllerFactory::class, [
             'controllerString' => $controllerString,
             'controllerProperties' => $this->controllerProperties,
@@ -102,7 +106,7 @@ abstract class AbstractRooter
 
     protected function controllerMethod(): string
     {
-        if (!isset($this->params['method'])) {
+        if (! isset($this->params['method'])) {
             throw new NoActionFoundException('the method is not defined');
         }
         return StringUtil::camelCase($this->params['method']);

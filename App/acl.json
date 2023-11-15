@@ -16,7 +16,8 @@
     "CommentsController": ["*"],
     "NewslettersController": ["*"],
     "AssetsController": ["*"],
-    "TestController": ["*"]
+    "TestController": ["*"],
+    "SingleProductController": ["*"]
   },
   "LoggedIn": {
     "denied": {},

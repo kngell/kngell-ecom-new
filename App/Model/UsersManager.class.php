@@ -3,27 +3,24 @@
 declare(strict_types=1);
 class UsersManager extends Model
 {
-    protected $_colID = 'user_id';
-    protected $_table = 'users';
-    protected $_colIndex = '';
-    protected $_colContent = '';
-    protected $_media_img = 'profileImage';
+    protected string $_colID = 'userId';
+    protected string $_table = 'users';
+    protected string $_colContent = '';
+    protected string $_media_img = 'profileImage';
 
-    public function __construct()
+    public function __construct(private GroupsMaganer $groups)
     {
         parent::__construct($this->_table, $this->_colID);
     }
 
     public function get_selectedOptions(?Model $m = null)
     {
-        /** @var Model */
-        $groups = $this->container->make(GroupsMaganer::class);
-        $query_params = $groups->table()->join('group_user', ['user_id', 'group_id'])
-            ->on(['gr_id', 'group_id'])
-            ->where(['user_id' => $m->getEntity()->{'getUserId'}() . '|group_user'])
+        $query_params = $this->groups->table()->join('group_user', ['userId', 'groupId'])
+            ->on(['grId', 'groupId'])
+            ->where(['userId' => $m->getEntity()->{'getUserId'}() . '|group_user'])
             ->return('class')
             ->build();
-        $user_roles = $groups->getAll($query_params);
+        $user_roles = $this->groups->getAll($query_params);
         $response = [];
         if ($user_roles->count() >= 1) {
             foreach ($user_roles->get_results() as $role) {
@@ -39,8 +36,8 @@ class UsersManager extends Model
     {
         if (!($id < 0)) {
             $this->table()->leftJoin('user_extra_data', ['u_descr', 'u_comment', 'gender', 'dob', 'u_function'])
-                ->on(['user_id', 'user_id'])
-                ->where(['user_id' => $id])
+                ->on(['userId', 'userId'])
+                ->where(['userId' => $id])
                 ->return('class');
             $u = $this->getAll();
             if ($u->count() === 1) {

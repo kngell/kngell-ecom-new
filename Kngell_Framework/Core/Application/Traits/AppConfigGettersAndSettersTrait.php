@@ -5,29 +5,6 @@ declare(strict_types=1);
 trait AppConfigGettersAndSettersTrait
 {
     /**
-     * Set the default theming qualified namespace.
-     *
-     * @param string $theme
-     * @return void
-     */
-    public function setTheme(string $theme): self
-    {
-        $this->theme = $theme;
-
-        return $this;
-    }
-
-    /**
-     * Returns the theme qualified namespace.
-     *
-     * @return string
-     */
-    public function getTheme(): string
-    {
-        return isset($this->theme) ? $this->theme : '';
-    }
-
-    /**
      * Set the application main configuration from the project app.yml file.
      *
      * @param array $ymlApp
@@ -64,42 +41,9 @@ trait AppConfigGettersAndSettersTrait
         return $this->errorLevel;
     }
 
-    /**
-     * @return string
-     */
-    public function getLogger(): string
-    {
-        return $this->handler;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLoggerFile(): string
-    {
-        return $this->logFile;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLoggerOptions(): array
-    {
-        return $this->logOptions;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLogMinLevel(): string
-    {
-        return $this->logMinLevel;
-    }
-
     public function setControllerArray(array $crtl) : self
     {
         $this->controllerArray = $crtl;
-
         return $this;
     }
 
@@ -118,7 +62,6 @@ trait AppConfigGettersAndSettersTrait
         if (count($this->routes) < 0) {
             throw new BaseInvalidArgumentException('No routes detected within your routes.yml file');
         }
-
         return $this->routes;
     }
 
@@ -214,6 +157,14 @@ trait AppConfigGettersAndSettersTrait
             throw new BaseInvalidArgumentException('You have no session configuration. This is required.');
         }
         return $this->session;
+    }
+
+    /**
+     * Get the value of request.
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 
     /**

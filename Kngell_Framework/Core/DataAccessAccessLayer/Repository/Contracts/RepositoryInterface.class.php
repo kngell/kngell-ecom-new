@@ -121,4 +121,16 @@ interface RepositoryInterface
     public function get_tableColumn(array $options): object;
 
     public function countRecords(array $conditions, ?string $fields): int;
+
+    public function beginTransaction() : bool;
+
+    public function exec(string $sql) : int|false;
+
+    public function customQuery(string $query = '', array $conditions = []) : mixed;
+
+    public function inTransaction() : bool;
+
+    public function rollBack() : bool;
+
+    public function release(array $selectors = [], array $conditions = [], array $parameters = [], array $options = []) : mixed;
 }

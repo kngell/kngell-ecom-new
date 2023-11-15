@@ -6,16 +6,9 @@ final class Application extends AbstractBaseBootLoader
 {
     use SystemTrait;
 
-    //private RooterInterface $rooter;
-
-    /**
-     * Main constructor
-     * =========================================================.
-     * @param string $appRoot
-     */
     public function __construct()
     {
-        parent::__construct();
+        $this->registerContainerAliases(ContainerAliasses::get());
     }
 
     public function handle(?string $route = null, array $params = []) : ResponseHandler
@@ -34,6 +27,35 @@ final class Application extends AbstractBaseBootLoader
     }
 
     /**
+     * Set application base Constant.
+     *
+     * @return self
+     */
+    public function setConst() : self
+    {
+        BaseConstants::load($this);
+        return $this;
+    }
+
+    /**
+     * Boot Application.
+     *
+     * @return self
+     */
+    public function boot() : self
+    {
+        $this->appConfig = $this->make(AppConfigSetup::class)->create();
+        $this->phpVersion();
+        $this->loadEnvironment();
+        // $this->handleCors();
+        $this->loadErrorHandlers();
+        $this->loadCache();
+        $this->loadSession();
+        $this->loadCookies();
+        return $this;
+    }
+
+    /**
      * Turn on global caching from public/index.php bootstrap file to make the cache
      * object available globally throughout the application using the GlobalManager object.
      * @return bool
@@ -41,20 +63,6 @@ final class Application extends AbstractBaseBootLoader
     public function isCacheGlobal(): bool
     {
         return $this->appConfig->isCacheGlobal();
-        // $isCacheGlobal = $this->appConfig->getIsIsCacheGlobal();
-        // return isset($isCacheGlobal) && $isCacheGlobal === true ? true : false;
-    }
-
-    /**
-     * Turn on global session from public/index.php bootstrap file to make the session
-     * object available globally throughout the application using the GlobalManager object.
-     * @return bool
-     */
-    public function isSessionGlobal(): bool
-    {
-        return $this->appConfig->isSessionGlobal();
-        // $isSessionGlobal = $this->appConfig->getIsSessionGlobal();
-        // return isset($isSessionGlobal) && $isSessionGlobal === true ? true : false;
     }
 
     /**

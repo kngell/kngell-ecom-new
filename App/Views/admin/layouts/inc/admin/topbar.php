@@ -34,7 +34,7 @@
                   <a href="#" class="list-group-item">
                      <div class="row no-gutters align-items-center">
                         <div class="col-2">
-                           <img src="https://localhost:8001/public/assets/img/default-female-avatar.jpg" alt="Users">
+                           <img src="/public/assets/img/default-female-avatar.jpg" alt="Users">
                         </div>
                         <div class="col-10">
                            <div class="email-name">Sam Robert</div>
@@ -48,7 +48,7 @@
                   <a href="#" class="list-group-item">
                      <div class="row no-gutters align-items-center">
                         <div class="col-2">
-                           <img src="https://localhost:8001/public/assets/img/default-female-avatar.jpg" alt="User"
+                           <img src="/public/assets/img/default-female-avatar.jpg" alt="User"
                               class="user-avatar rounded-circle" />
                         </div>
                         <div class="col-10">
@@ -63,7 +63,7 @@
                   <a href="#" class="list-group-item">
                      <div class="row no-gutters align-items-center">
                         <div class="col-2">
-                           <img src="https://localhost:8001/public/assets/img/default-female-avatar.jpg" alt="User"
+                           <img src="/public/assets/img/default-female-avatar.jpg" alt="User"
                               class="user-avatar rounded-circle" />
                         </div>
                         <div class="col-10">
@@ -78,7 +78,7 @@
                   <a href="#" class="list-group-item">
                      <div class="row no-gutters align-items-center">
                         <div class="col-2">
-                           <img src="https://localhost:8001/public/assets/img/default-female-avatar.jpg" alt="User"
+                           <img src="/public/assets/img/default-female-avatar.jpg" alt="User"
                               class="user-avatar rounded-circle" />
                         </div>
                         <div class="col-10">
@@ -93,7 +93,7 @@
                   <a href="#" class="list-group-item">
                      <div class="row no-gutters align-items-center">
                         <div class="col-2">
-                           <img src="https://localhost:8001/public/assets/img/default-female-avatar.jpg" alt="User"
+                           <img src="/public/assets/img/default-female-avatar.jpg" alt="User"
                               class="user-avatar rounded-circle" />
                         </div>
                         <div class="col-10">
@@ -108,7 +108,7 @@
                   <a href="#" class="list-group-item">
                      <div class="row no-gutters align-items-center">
                         <div class="col-2">
-                           <img src="https://localhost:8001/public/assets/img/default-female-avatar.jpg" alt="User"
+                           <img src="/public/assets/img/default-female-avatar.jpg" alt="User"
                               class="user-avatar rounded-circle" />
                         </div>
                         <div class="col-10">
@@ -274,7 +274,7 @@
          <li class="nav-item user-setting-list topbar-dropdown">
             <a class="nav-link dropdown-toggle nav-profile" data-bs-toggle="dropdown" href="#" role="button"
                aria-haspopup="false" aria-expanded="false">
-               <img src="https://localhost:8001/public/assets/img/DA.png" alt="user-image" class="rounded-circle" />
+               <img src="/public/assets/img/DA.png" alt="user-image" class="rounded-circle" />
                <span class="ms-1 d-none d-lg-inline">
                   <span class="user-name">Hi, Admin</span>
                </span>

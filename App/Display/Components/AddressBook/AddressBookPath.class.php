@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class AddressBookPath implements PathsInterface
+class AddressBookPath implements TemplatePathsInterface
 {
     private string $templatePath = APP . 'Display' . DS . 'Components' . DS . 'AddressBook' . DS . 'Templates' . DS;
 

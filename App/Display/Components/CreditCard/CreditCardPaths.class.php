@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class CreditCardPaths implements PathsInterface
+class CreditCardPaths implements TemplatePathsInterface
 {
     private string $templatePath = APP . 'Display' . DS . 'Components' . DS . 'CreditCard' . DS . 'Templates' . DS;
     private string $viewPath = VIEW . 'client' . DS . 'components' . DS . 'credit_card' . DS;

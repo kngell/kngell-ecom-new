@@ -6,10 +6,10 @@
    <div class="col-md-12">
       <div class="row g-3">
          <div class="col-md-6">
-            {{first_name}}
+            {{firstName}}
          </div>
          <div class="col-md-6">
-            {{last_name}}
+            {{lastName}}
          </div>
          <div class="col-md-6">
             {{phone}}

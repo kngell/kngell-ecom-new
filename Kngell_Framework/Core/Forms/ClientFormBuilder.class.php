@@ -8,6 +8,7 @@ class ClientFormBuilder extends FormBuilder
      * @var mixed
      */
     protected ?RepositoryInterface $repositoryObject;
+    protected ?ClientFormBuilderInterface $frm;
 
     /**
      * Main purpose of this constructor is to provide an easy way for us

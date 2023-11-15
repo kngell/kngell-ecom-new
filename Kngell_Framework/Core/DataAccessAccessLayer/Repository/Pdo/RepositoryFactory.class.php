@@ -7,7 +7,6 @@ class RepositoryFactory
     protected string $tableSchema;
     protected string $tableSchemaID;
     protected string $crudIdentifier;
-    protected ContainerInterface $container;
     protected Entity $entity;
 
     /**
@@ -30,10 +29,10 @@ class RepositoryFactory
      */
     public function create() : RepositoryInterface
     {
-        $repositoryObject = $this->container->make(RepositoryInterface::class, [
+        $repositoryObject = Application::diget(RepositoryInterface::class, [
             'em' => $this->initializeDataAccessManager(),
         ]);
-        if (!$repositoryObject instanceof RepositoryInterface) {
+        if (! $repositoryObject instanceof RepositoryInterface) {
             throw new BaseUnexpectedValueException(get_class($repositoryObject) . ' is not a valid repository Object!');
         }
 
@@ -42,8 +41,8 @@ class RepositoryFactory
 
     public function initializeDataAccessManager()
     {
-        return $this->container->make(DataAccessLayerManager::class, [
-            'dataMapperEnvConfig' => $this->container->make(DataMapperEnvironmentConfig::class, [
+        return Application::diget(DataAccessLayerManager::class, [
+            'dataMapperEnvConfig' => Application::diget(DataMapperEnvironmentConfig::class, [
                 'credentials' => YamlFile::get('database'),
             ]),
             'tableSchema' => $this->tableSchema,

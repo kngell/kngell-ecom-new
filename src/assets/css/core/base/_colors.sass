@@ -12,21 +12,21 @@
         //Light variation
         @for $i from 1 through 9
             .k-text-#{$key}-light-#{$i}
-                color: mix(white,$val,$i*10)!important
+                color: mix(white,$val,$i*10%)!important
             .k-text-hover-#{$key}-light-#{$i}
                 &:hover
-                    color: mix(white,$val,$i*10)!important
+                    color: mix(white,$val,$i*10%)!important
             .k-bg-#{$key}-light-#{$i}
-                background-color: mix(white,$val,$i*10)
+                background-color: mix(white,$val,$i*10%)
         //Dark variation
         @for $i from 1 through 9
             .k-text-#{$key}-dark-#{$i}
-                color: mix(black,$val,$i*10)!important
+                color: mix(black,$val,$i*10%)!important
             .k-text-hover-#{$key}-dark-#{$i}
                 &:hover
-                    color: mix(black,$val,$i*10)!important
+                    color: mix(black,$val,$i*10%)!important
             .k-bg-#{$key}-dark-#{$i}
-                background-color: mix(black,$val,$i*10)
+                background-color: mix(black,$val,$i*10%)
 .color-primary
     color: $color-primary
 

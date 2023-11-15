@@ -33,8 +33,8 @@
                     </div>
                     <div class="col">
                         <form class="add_to_cart_frm">
-                            <input type="hidden" name="item_id" value="<?= $p->pdtID ?? 1 ?>">
-                            <input type="hidden" name="user_id" value="1">
+                            <input type="hidden" name="itemId" value="<?= $p->pdtID ?? 1 ?>">
+                            <input type="hidden" name="userId" value="1">
                             <?php $pdtID = $p->pdtID ?? 1?>
                             <?= $this->token->csrfInput('csrftoken', 'add_to_cart_frm'); ?>
                             <?php

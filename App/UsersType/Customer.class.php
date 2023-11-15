@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 class Customer extends UsersManager
 {
-    protected $_table = 'customer';
-    private int $_count;
+    protected string $_table = 'customer';
 
     public function get() : self
     {
@@ -17,14 +16,14 @@ class Customer extends UsersManager
                 /** @var UsersEntity */
                 $user = $user->getEntity();
                 $this->assign([
-                    'user_id' => $user->isInitialized('user_id') ? $user->getUserId() : '',
-                    'order_id' => $this->container->make(TransactionsManager::class)->getUniqueId('order_id', 'ORD-', '-0XKF', 6),
-                    'customer_id' => $user->isInitialized('customer_id') ? $user->getCustomerId() : '',
-                    'first_name' => $user->isInitialized('first_name') ? $user->getFirstName() : '',
-                    'last_name' => $user->isInitialized('last_name') ? $user->getLastName() : '',
+                    'userId' => $user->isInitialized('userId') ? $user->getUserId() : '',
+                    'order_id' => Application::diGet(TransactionsManager::class)->getUniqueId('order_id', 'ORD-', '-0XKF', 6),
+                    'customerId' => $user->isInitialized('customerId') ? $user->getCustomerId() : '',
+                    'firstName' => $user->isInitialized('firstName') ? $user->getFirstName() : '',
+                    'lastName' => $user->isInitialized('lastName') ? $user->getLastName() : '',
                     'phone' => $user->isInitialized('phone') ? $user->getPhone() : '',
                     'email' => $user->isInitialized('email') ? $user->getEmail() : '',
-                    'address' => $this->container->make(AddressBookManager::class)->getUserAddress(),
+                    'address' => Application::diGet(AddressBookManager::class)->getUserAddress(),
                     'userCards' => $this->userCards($user),
                     'profile_image' => $user->isInitialized('profile_image') ? $user->getProfileImage() : '',
                 ]);
@@ -40,13 +39,13 @@ class Customer extends UsersManager
 
     private function userCards(UsersEntity $user)
     {
-        if ($user->isInitialized('customer_id')) {
-            $customer_id = $user->getCustomerId();
+        if ($user->isInitialized('customerId')) {
+            $customerId = $user->getCustomerId();
             /** @var PaymentGatewayInterface */
             $pmg = $this->container(PaymentGatewayInterface::class, [
-                'params' => ['customer_id' => $customer_id],
+                'params' => ['customerId' => $customerId],
             ])->create();
-            return $pmg->retriveCustomer($customer_id)->getCards();
+            return $pmg->retriveCustomer($customerId)->getCards();
         }
 
         return new stdClass();

@@ -3,7 +3,7 @@
       <div class="card h-100" id="orders">
          <div class="card-body">
             <h5 class="card-title"><span class="card-img-wrapper">
-                  <img src="https://localhost:8001/public/assets/img/account_mescommandes.png" alt="Mes commandes"
+                  <img src="/public/assets/img/account_mescommandes.png" alt="Mes commandes"
                      class="img-fluid">
                </span>Mes
                commandes</h5>
@@ -16,7 +16,7 @@
       <div class="card h-100">
          <div class="card-body">
             <h5 class="card-title"><span class="card-img-wrapper">
-                  <img src="https://localhost:8001/public/assets/img/account_donnees-personnelles.png"
+                  <img src="/public/assets/img/account_donnees-personnelles.png"
                      alt="Mes données personnelles" class="img-fluid">
                </span>Données
                personnels</h5>
@@ -31,7 +31,7 @@
       <div class="card h-100" id="address_book">
          <div class="card-body">
             <h5 class="card-title"><span class="card-img-wrapper">
-                  <img src="https://localhost:8001/public/assets/img/account_adresses.png" alt="Mes adresses"
+                  <img src="/public/assets/img/account_adresses.png" alt="Mes adresses"
                      class="img-fluid">
                </span>Mes
                addresses</h5>
@@ -45,7 +45,7 @@
       <div class="card h-100">
          <div class="card-body">
             <h5 class="card-title"><span class="card-img-wrapper">
-                  <img src="https://localhost:8001/public/assets/img/account_mode-de-paiement.png"
+                  <img src="/public/assets/img/account_mode-de-paiement.png"
                      alt="Mes modes de paiement" class="img-fluid">
                </span>Moyens de
                paiement</h5>

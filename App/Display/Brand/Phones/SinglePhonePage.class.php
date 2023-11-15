@@ -6,7 +6,7 @@ class SinglePhonePage extends AbstractSinglePage implements DisplayPagesInterfac
 {
     protected CollectionInterface $paths;
 
-    public function __construct(?object $product, CollectionInterface|Closure $products, ?object $userCart, FormBuilder $frm, MoneyManager $money, CookieInterface $cookie, ?PhonesHomePagePaths $paths)
+    public function __construct(?object $product, CollectionInterface|Closure $products, ?object $userCart, FormBuilder $frm, MoneyManager $money, CookieInterface $cookie, ?PhonesHomePageTemplatePaths $paths)
     {
         parent::__construct($product, $products, $userCart, $frm, $money, $cookie, $paths);
     }
@@ -15,7 +15,7 @@ class SinglePhonePage extends AbstractSinglePage implements DisplayPagesInterfac
     {
         return [
             'singleProduct' => $this->singleProduct(),
-            'topSales' => Container::getInstance()->make(PhonesHomePage::class, [
+            'topSales' => Application::diGet(PhonesHomePage::class, [
                 'products' => $this->products,
                 'frm' => $this->frm,
                 'userCart' => $this->userCart,
@@ -27,7 +27,6 @@ class SinglePhonePage extends AbstractSinglePage implements DisplayPagesInterfac
     {
         if (count((array) $this->product) !== 0) {
             $template = $this->getTemplate('productDetailsPath');
-
             return $this->outputSingleProduct($template, $this->product);
         } else {
             return '<div class="text-center text-lead py-5">

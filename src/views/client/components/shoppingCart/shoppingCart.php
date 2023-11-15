@@ -16,7 +16,7 @@ $this->start('head'); ?>
    <!-- New Phones -->
    <?= $new_products ?? ''?>
    <!-- End New Phones -->
-   <input type="hidden" id="ip_address" style="display:none" value="<?=H_visitors::getIP()?>">
+   <input type="hidden" id="ipAddress" style="display:none" value="<?=H_visitors::getIP()?>">
 </main>
 <!-- End  Main -->
 

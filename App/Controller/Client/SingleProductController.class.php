@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-class DetailsController extends Controller
+class SingleProductController extends Controller
 {
     /**
      * IndexPage
@@ -9,10 +9,10 @@ class DetailsController extends Controller
      * @param array $data
      * @return void
      */
-    protected function singlePage(array $data = []) : void
+    protected function detailsPage(array $data = []) : ResponseHandler
     {
         $slug = array_pop($data);
-        $this->render('phones' . DS . 'details', $this->showParams($slug));
+        return $this->render('phones' . DS . 'details', $this->showParams($slug));
     }
 
     protected function singleClothesPage(array $data = []) : void

@@ -28,16 +28,15 @@ class UserAccountHomePage extends AbstractUserAccount implements DisplayPagesInt
         $template = $this->getTemplate('userMiniProfilePath');
         $template = str_replace('{{userIdentification}}', $this->user(), $template);
         $template = str_replace('{{profile_image}}', $en->isInitialized('profile_image') ? $en->getProfileImage() : '', $template);
-        $template = str_replace('{{firstName}}', $en->isInitialized('first_name') ? $en->getFirstName() : '', $template);
-        $template = str_replace('{{lastName}}', $en->isInitialized('last_name') ? $en->getLastName() : '', $template);
+        $template = str_replace('{{firstName}}', $en->isInitialized('firstName') ? $en->getFirstName() : '', $template);
+        $template = str_replace('{{lastName}}', $en->isInitialized('lastName') ? $en->getLastName() : '', $template);
         $template = str_replace('{{Email}}', $en->isInitialized('email') ? $en->getEmail() : '', $template);
         $template = str_replace('{{profile_link}}', $this->params['links']['profile'], $template);
         $template = str_replace('{{orders_link}}', $this->params['links']['orders'], $template);
         $template = str_replace('{{address_link}}', $this->params['links']['address'], $template);
         $template = str_replace('{{user_card_link}}', $this->params['links']['card'], $template);
         $template = str_replace('{{remove_account_frm}}', $this->removeAccountButton(), $template);
-        $template = str_replace('{{account_route}}', '/account', $template);
-        return $template;
+        return str_replace('{{account_route}}', '/account', $template);
     }
 
     private function userTransaction() : string
@@ -47,8 +46,7 @@ class UserAccountHomePage extends AbstractUserAccount implements DisplayPagesInt
         $template = str_replace('{{usercard}}', $this->userPaymentCard(), $template);
         $template = str_replace('{{transaction_content}}', $content, $template);
         $template = str_replace('{{transaction_footer}}', $pagination, $template);
-        $template = str_replace('{{add_address_modal}}', isset($this->addAddressModal) ? $this->addAddressModal : '', $template);
-        return $template;
+        return str_replace('{{add_address_modal}}', isset($this->addAddressModal) ? $this->addAddressModal : '', $template);
     }
 
     private function userTransactionItems() : array
@@ -116,8 +114,6 @@ class UserAccountHomePage extends AbstractUserAccount implements DisplayPagesInt
     private function buttons() : string
     {
         $template = $this->getTemplate('buttonsPath');
-        $template = str_replace('{{route}}', '/shop', $template);
-
-        return $template;
+        return str_replace('{{route}}', '/shop', $template);
     }
 }

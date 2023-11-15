@@ -1,4 +1,4 @@
 {{form_begin}}
-{{user_id}}
+{{userId}}
 {{template_name}}
 {{form_end}}

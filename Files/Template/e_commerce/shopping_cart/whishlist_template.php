@@ -23,8 +23,8 @@
         <div class="cart-qty">
             <form action="#" class="delete-cart-item-frm{{product_id}}">
                 {{del_save_token}}
-                <input type="hidden" name="item_id" value="{{product_id}}">
-                <input type="hidden" name="user_id" value="1">
+                <input type="hidden" name="itemId" value="{{product_id}}">
+                <input type="hidden" name="userId" value="1">
                 <button type="submit" class="btn font-baloo pl-0 pr-3 border-right deleteBtn">Supprimer</button>
                 <button type="button" class="button save-add">Add to cart</button>
             </form>

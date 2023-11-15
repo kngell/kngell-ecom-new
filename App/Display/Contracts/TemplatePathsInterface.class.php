@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-interface PathsInterface
+interface TemplatePathsInterface
 {
     public function Paths() : CollectionInterface;
 }

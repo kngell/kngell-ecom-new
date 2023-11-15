@@ -4,12 +4,9 @@ declare(strict_types=1);
 class Model extends AbstractModel
 {
     protected string $defaultMedia;
-    private $_results;
-    private int $_count;
-    private bool $_softDelete = false;
-    private bool $_deleted_item = false;
-    private string $_current_ctrl_method = 'update';
-    private int $_lasID;
+    // private bool $_softDelete = false;
+    // private bool $_deleted_item = false;
+    // private string $_current_ctrl_method = 'update';
 
     /**
      * Main Constructor
@@ -19,12 +16,7 @@ class Model extends AbstractModel
      */
     public function __construct(string $tableSchema, string $tableSchemaID, bool $flatDb = false)
     {
-        $this->throwException($tableSchema, $tableSchemaID);
-        $this->tableSchema = $tableSchema;
-        $this->tableSchemaID = $tableSchemaID;
-        $this->_flatDb = $flatDb;
-        $this->properties();
-        $this->_modelName = $this::class;
+        parent::__construct($tableSchema, $tableSchemaID, $flatDb);
     }
 
     public function assign(array|bool $data) : self
@@ -35,29 +27,29 @@ class Model extends AbstractModel
         return $this;
     }
 
-    public function uploadFiles(string $dir, ?string $newName = null) : self
-    {
-        $mediakey = $this->getMediakey();
-        if(is_null($mediakey)) {
-            return $this;
-        }
-        $files = $this->request->getHttpFiles();
-        if($files->count() <= 0 && isset($this->defaultMedia)) {
-            $this->set($mediakey, serialize([$this->tableSchema . DS . $this->defaultMedia]));
-            return $this;
-        }
-        $newAry = [];
-        foreach ($files->all() as $uploader) {
-            $incommingPath = $this->tableSchema . DS . $uploader->getOriginalName();
-            if ($uploader->saveFile($dir . $this->tableSchema, $newName)) {
-                $newAry[] = $incommingPath;
-            }
-        }
-        list($ToDelete, $ToSave) = $this->filterUpload($newAry, $mediakey);
-        $this->set($mediakey, serialize($ToSave));
-        $this->deleteFiles($ToDelete);
-        return $this;
-    }
+    // public function uploadFiles(string $dir, ?string $newName = null) : self
+    // {
+    //     $mediakey = $this->getMediakey();
+    //     if(is_null($mediakey)) {
+    //         return $this;
+    //     }
+    //     $files = $this->request->getHttpFiles();
+    //     if($files->count() <= 0 && isset($this->defaultMedia)) {
+    //         $this->set($mediakey, serialize([$this->tableSchema . DS . $this->defaultMedia]));
+    //         return $this;
+    //     }
+    //     $newAry = [];
+    //     foreach ($files->all() as $uploader) {
+    //         $incommingPath = $this->tableSchema . DS . $uploader->getOriginalName();
+    //         if ($uploader->saveFile($dir . $this->tableSchema, $newName)) {
+    //             $newAry[] = $incommingPath;
+    //         }
+    //     }
+    //     list($ToDelete, $ToSave) = $this->filterUpload($newAry, $mediakey);
+    //     $this->set($mediakey, serialize($ToSave));
+    //     $this->deleteFiles($ToDelete);
+    //     return $this;
+    // }
 
     public function deleteFiles(array $files = []) : void
     {
@@ -72,7 +64,7 @@ class Model extends AbstractModel
         }
         if(count($new) > count($existingAry)) {
             foreach ($existingAry as $mediapth) {
-                if(!in_array($mediapth, $new)) {
+                if(! in_array($mediapth, $new)) {
                     $new[] = $mediapth;
                 }
             }
@@ -94,12 +86,6 @@ class Model extends AbstractModel
      */
     public function getDetails(mixed $id = null, string $colID = '', string $mode = 'class') : ?self
     {
-        if ($id == null) {
-            $en = $this->getEntity();
-            if ($en->isInitialized($this->get_colID())) {
-                $id = $en->{$en->getGetters($en->getColId())}();
-            }
-        }
         if (null == $id) {
             throw new BaseException("Impossible de trouver l'enregistrement souhaité");
         }
@@ -122,10 +108,14 @@ class Model extends AbstractModel
         return $this->find();
     }
 
+    public function doRelease() : self
+    {
+        return $this->release();
+    }
+
     public function getAllByIndex(mixed $id, string $return = '') : ?self
     {
         $this->table()->where([$this->getColIndex() => $id])->return($return == '' ? 'class' : $return);
-
         return $this->getAll();
     }
 
@@ -142,6 +132,31 @@ class Model extends AbstractModel
         endwhile;
 
         return $output;
+    }
+
+    public function customQuery(string $query = '', array $conditions = [])
+    {
+        $result = $this->repository->customQuery($query);
+    }
+
+    public function beginTransaction() : bool
+    {
+        return $this->repository->beginTransaction();
+    }
+
+    public function exec(string $query) : int|false
+    {
+        return $this->repository->exec($query);
+    }
+
+    public function inTransaction() : bool
+    {
+        return $this->repository->inTransaction();
+    }
+
+    public function rollBack() : bool
+    {
+        return $this->repository->rollBack();
     }
 
     /**
@@ -175,17 +190,5 @@ class Model extends AbstractModel
     public function validator(array $items = []) : void
     {
         $this->validator->validate($items, $this);
-    }
-
-    /**
-     * Throw an exception
-     * ================================================================.
-     * @return void
-     */
-    public function throwException(string $tableSchema, string $tableSchemaID): void
-    {
-        if (empty($tableSchema) || empty($tableSchemaID)) {
-            throw new BaseInvalidArgumentException('Your repository is missing the required constants. Please add the TABLESCHEMA and TABLESCHEMAID constants to your repository.');
-        }
     }
 }

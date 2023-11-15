@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 class FileSystem extends AbstractFiles implements FilesSystemInterface
 {
+    private string $rootPath = ROOT_DIR . DS;
+
     public function readFile(string $file): string
     {
         try {
@@ -15,6 +17,7 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
 
     public function get(string $folder, string $file = ''): mixed
     {
+        $folder = $this->folder($folder);
         $file = file_exists($folder . $file) ? [$folder . $file] : $this->search_file($folder, $file);
         if (isset($file) && count($file) === 1) {
             $file = current($file);
@@ -26,7 +29,6 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
                 'js' => file_get_contents($file)
             };
         }
-
         return false;
     }
 
@@ -70,6 +72,16 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
             } catch (FileSystemManagementException $th) {
                 throw new FileSystemManagementException($th->getMessage(), $th->getCode());
             }
+        }
+        return false;
+    }
+
+    public function listAllFiles(string $folder) : array|bool
+    {
+        $folder = $this->folder($folder);
+        $fileList = $this->fileListFromFolder($folder);
+        if ($fileList) {
+            return array_diff($fileList, ['.', '..']);
         }
         return false;
     }
@@ -165,6 +177,16 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
         }
     }
 
+    public function removeFile(string $folder, string $file) : bool
+    {
+        $file = $this->folder($folder) . $file;
+        if (file_exists($file)) {
+            unlink($file);
+            return true;
+        }
+        return false;
+    }
+
     public function remove_files(mixed $fileToRemove, ?Model $m = null): bool
     {
         try {
@@ -186,8 +208,9 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
         }
     }
 
-    public function search_file(string $folder, ?string $file_to_search = null, ?string $subFolder = '', array &$results = []): array
+    public function search_file(string $folder, ?string $file_to_search = null, ?string $subFolder = '', array &$results = []): array|bool
     {
+        $folder = $this->folder($folder);
         $files = ($folder !== false && is_dir($folder)) ? scandir($folder) : false;
         if ($files) {
             foreach ($files as $key => $value) {
@@ -214,5 +237,15 @@ class FileSystem extends AbstractFiles implements FilesSystemInterface
             return $results;
         }
         return false;
+    }
+
+    private function folder(string $folder) : string
+    {
+        return str_starts_with($folder, $this->rootPath) ? $folder : $this->rootPath . $folder . DS;
+    }
+
+    private function fileListFromFolder(string $folder): array|bool
+    {
+        return ($folder !== false && is_dir($folder)) ? scandir($folder) : false;
     }
 }

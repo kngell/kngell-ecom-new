@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ClothesHomePagePaths implements PathsInterface
+class ClothesHomePagePaths implements TemplatePathsInterface
 {
     private string $viewPath = VIEW . 'client' . DS . 'brand' . DS . 'clothes' . DS . 'partials' . DS;
     private string $templatePath = APP . 'Display' . DS . 'Brand' . DS . 'Clothes' . DS . 'Templates' . DS;

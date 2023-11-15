@@ -3,6 +3,20 @@
 declare(strict_types=1);
 abstract class AbstractCrud implements CrudInterface
 {
+    public function __construct(
+        protected ?DataMapperInterface $dataMapper = null,
+        protected ?QueryBuilderInterface $queryBuilder = null,
+        protected ?string $tableSchema = null,
+        protected ?string $tableSchemaID = null,
+        protected ?array $options = [],
+    ) {
+        $this->tableSchema = $tableSchema;
+        $this->tableSchemaID = $tableSchemaID;
+        $this->options = $options;
+        $this->dataMapper = $dataMapper;
+        $this->queryBuilder = $queryBuilder;
+    }
+
     /**
      *@inheritDoc
      */

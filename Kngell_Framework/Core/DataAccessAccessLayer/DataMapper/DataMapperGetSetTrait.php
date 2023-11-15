@@ -21,7 +21,7 @@ trait DataMapperGetSetTrait
         return $this->_count;
     }
 
-    public function get_results()
+    public function get_results() : mixed
     {
         return $this->_results;
     }
@@ -38,7 +38,7 @@ trait DataMapperGetSetTrait
         try {
             if ($this->_con->open()) {
                 $lastID = $this->_con->open()->lastInsertId();
-                if (!empty($lastID)) {
+                if (! empty($lastID)) {
                     $this->_lastID = intval($lastID);
                 }
             }
@@ -58,5 +58,21 @@ trait DataMapperGetSetTrait
         if ($this->_query) {
             return $this->_count = $this->_query->rowCount();
         }
+    }
+
+    /**
+     * Get the value of _con.
+     */
+    public function getCon(): DatabaseConnexionInterface
+    {
+        return $this->_con;
+    }
+
+    /**
+     * Get the value of _query.
+     */
+    public function getQuery(): PDOStatement
+    {
+        return $this->_query;
     }
 }

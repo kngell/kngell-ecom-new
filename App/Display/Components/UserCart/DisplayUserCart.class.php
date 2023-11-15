@@ -23,7 +23,7 @@ class DisplayUserCart extends AbstractDisplayUserCart implements DisplayPagesInt
     private function whishlist() : string
     {
         $whislist = $this->userCart->filter(function ($item) {
-            return $item->cart_type === 'wishlist';
+            return $item->cartType === 'wishlist';
         });
 
         return '<a href="/cart#wishlist" class="px-3 border-right text-dark text-decoration-none" id="wishlist_items_count">Whishlist(' . ($whislist->count() > 0 ? $whislist->count() : 0) . ')</a>';

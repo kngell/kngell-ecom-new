@@ -3,6 +3,6 @@
    <div class="box">
       <span>cvv</span>
       <div class="ccv-box"></div>
-      <img src="https://localhost:8001/public/assets/img/visa.png" alt="">
+      <img src="/public/assets/img/visa.png" alt="">
    </div>
 </div>

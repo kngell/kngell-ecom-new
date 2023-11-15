@@ -10,7 +10,7 @@ class ErrorsController extends Controller
 
     public function indexPage($data) : ResponseHandler
     {
-        $this->setLayout('default');
+        // $this->setLayout('default');
         $this->pageTitle('Errors');
         $this->view()->addProperties(['name' => 'Errors']);
         return $this->render('errors' . DS . '_errors', $data);

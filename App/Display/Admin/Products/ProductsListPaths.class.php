@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ProductsListPaths implements PathsInterface
+class ProductsListPaths implements TemplatePathsInterface
 {
     private string $viewPath = VIEW . 'admin' . DS . 'pages' . DS . 'products' . DS;
     private string $templatePath = APP . 'Display' . DS . 'Admin' . DS . 'Products' . DS . 'Templates' . DS;

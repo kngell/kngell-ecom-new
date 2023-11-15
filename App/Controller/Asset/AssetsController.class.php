@@ -37,7 +37,7 @@ class AssetsController extends Controller
         }
     }
 
-    public function getAsset(array $data)
+    public function getAsset(array $data) : ResponseHandler
     {
         $file = array_pop($data);
         $path = array_pop($data);
@@ -60,8 +60,7 @@ class AssetsController extends Controller
                 $type = 'application/x-font-ttf';
                 break;
         }
-
-        return $this->read_asset($fileToGet, $type);
+        return $this->response->setContent($this->read_asset($fileToGet, $type))->prepare($this->request);
     }
 
     public function acme($data)
@@ -90,14 +89,15 @@ class AssetsController extends Controller
             $buffer = '';
             while (!feof($handle)) {
                 $buffer = fread($handle, 4096);
-                echo $buffer;
-                ob_flush();
-                flush();
+                // echo $buffer;
+                // ob_flush();
+                // flush();
             }
             fclose($handle);
             // echo file_get_contents($fileToGet);
             // readfile($fileToGet);
-            exit;
+            // exit;
+            return  $buffer;
         }
     }
 }

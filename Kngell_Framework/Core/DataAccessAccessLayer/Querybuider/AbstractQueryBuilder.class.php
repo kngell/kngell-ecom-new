@@ -45,7 +45,6 @@ abstract class AbstractQueryBuilder
         $sql .= $this->groupBy();
         $sql .= $this->orderBy();
         $sql .= $this->queryOffset();
-
         return [$sql, $query];
     }
 
@@ -61,7 +60,7 @@ abstract class AbstractQueryBuilder
     protected function mainQuery() : string
     {
         $sql = '';
-        if (!array_key_exists('sql', $this->key['extras'])) {
+        if (! array_key_exists('sql', $this->key['extras'])) {
             if (strpos($this->key['table'], 'SELECT') !== false) {
                 $sql = $this->key['table'];
             } else {
@@ -90,10 +89,10 @@ abstract class AbstractQueryBuilder
     {
         $sql = '';
         if (array_key_exists('table', $options)) {
-            if (!(count($options['join_rules']) === count($options['table']) - 1)) {
+            if (! (count($options['join_rules']) === count($options['table']) - 1)) {
                 throw new QueryBuilderInvalidArgExceptions('Cannot join tables');
             }
-            $columns = (!empty($selectors)) ? implode(', ', $selectors) : '*';
+            $columns = (! empty($selectors)) ? implode(', ', $selectors) : '*';
             $sql .= "SELECT {$columns} FROM {$options['table'][0]}";
         }
         $all_tables = $options['table'];
@@ -128,13 +127,12 @@ abstract class AbstractQueryBuilder
         $sql .= '(' . $globalQuery . ') ';
         $sql .= 'UNION ALL ';
         $sql .= $query;
-
         return $sql;
     }
 
     protected function recursiveQuery(string $query) : array
     {
-        if (array_key_exists('recursive_query', $this->key) && !empty($this->key['recursive_query'])) {
+        if (array_key_exists('recursive_query', $this->key) && ! empty($this->key['recursive_query'])) {
             return [$query, $this->key['recursive_query']];
         }
         $q = $query;
@@ -174,14 +172,14 @@ abstract class AbstractQueryBuilder
     protected function where() : string
     {
         $where = '';
-        $whereCond = (is_array($this->key['where']) && !empty($this->key['where'])) ? array_merge($this->key['conditions'], $this->key['where']) : $this->key['conditions'];
-        if (isset($whereCond) && !empty($whereCond)) {
+        $whereCond = (is_array($this->key['where']) && ! empty($this->key['where'])) ? array_merge($this->key['conditions'], $this->key['where']) : $this->key['conditions'];
+        if (isset($whereCond) && ! empty($whereCond)) {
             $where .= ' WHERE ';
             $i = 0;
             $where .= '(';
             foreach ($whereCond as $field => $aryCond) {
                 if ($field != 'or' && $field != 'and') {
-                    if (is_array($aryCond) && !empty($aryCond)) {
+                    if (is_array($aryCond) && ! empty($aryCond)) {
                         $sep = $i > 0 ? ' ' : '';
                         $where .= $sep . $this->whereConditions($aryCond, $field);
                         $i++;
@@ -226,7 +224,6 @@ abstract class AbstractQueryBuilder
         if (isset($this->key['extras']['orderby']) && $this->key['extras']['orderby'] != '') {
             $sql .= is_array($this->key['extras']['orderby']) ? ' ORDER BY ' . implode(', ', $this->key['extras']['orderby']) . ' ' : ' ORDER BY ' . $this->key['extras']['orderby'];
         }
-
         return $sql;
     }
 
@@ -236,7 +233,7 @@ abstract class AbstractQueryBuilder
         if (isset($this->key['params']['limit']) && isset($this->key['params']['offset']) && $this->key['params']['offset'] != -1) {
             $sql .= ' LIMIT :offset, :limit';
         }
-        if (isset($this->key['params']['limit']) && !isset($this->key['params']['offset'])) {
+        if (isset($this->key['params']['limit']) && ! isset($this->key['params']['offset'])) {
             $sql .= ' LIMIT :limit';
         }
 
@@ -245,7 +242,7 @@ abstract class AbstractQueryBuilder
 
     protected function insertKeys(array $aryFields) : string
     {
-        if (!array_key_exists('fields', $aryFields) && !array_key_exists('values', $aryFields)) {
+        if (! array_key_exists('fields', $aryFields) && ! array_key_exists('values', $aryFields)) {
             return implode(', ', array_keys($aryFields));
         }
         return implode(', ', $aryFields['fields']);
@@ -253,7 +250,7 @@ abstract class AbstractQueryBuilder
 
     protected function insertValues(array $aryFields) : string
     {
-        if (!array_key_exists('fields', $aryFields) && !array_key_exists('values', $aryFields)) {
+        if (! array_key_exists('fields', $aryFields) && ! array_key_exists('values', $aryFields)) {
             return '(:' . implode(', :', array_keys($this->key['fields'])) . ')';
         }
         $i = 0;
@@ -297,7 +294,7 @@ abstract class AbstractQueryBuilder
             return $recursiveCount;
         }
 
-        return (!empty($this->key['selectors'])) ? implode(', ', $this->key['selectors']) : '*';
+        return (! empty($this->key['selectors'])) ? implode(', ', $this->key['selectors']) : '*';
     }
 
     private function getValue(mixed $arg) : mixed

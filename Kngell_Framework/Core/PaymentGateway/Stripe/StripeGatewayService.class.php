@@ -21,16 +21,16 @@ class StripeGatewayService extends AbstractGatewayService implements PaymentGate
     private Customer $customer;
     private ?CustomerEntity $customerEntity;
     private ?CollectionInterface $paymentMethod;
-    private ?string $customer_id;
+    private ?string $customerId;
 
-    public function __construct(SessionInterface $session, CacheInterface $cache, ?string $customer_id = null, ?CustomerEntity $customerEntity = null, ?object $paymentMethod = null)
+    public function __construct(SessionInterface $session, CacheInterface $cache, ?string $customerId = null, ?CustomerEntity $customerEntity = null, ?object $paymentMethod = null)
     {
         $this->stripe = new StripeClient($this->stripeSecret);
         $this->session = $session;
         $this->cache = $cache;
         $this->money = MoneyManager::getInstance();
         $this->customerEntity = $customerEntity;
-        $this->customer_id = $customer_id;
+        $this->customerId = $customerId;
         $this->paymentMethod = $paymentMethod;
     }
 
@@ -82,7 +82,7 @@ class StripeGatewayService extends AbstractGatewayService implements PaymentGate
     public function retriveCustomer() : self
     {
         try {
-            $cId = isset($this->customer_id) ? $this->customer_id : $this->customerEntity->getCustomerId();
+            $cId = isset($this->customerId) ? $this->customerId : $this->customerEntity->getCustomerId();
             $this->customer = $this->stripe->customers->retrieve($cId);
             if (isset($this->paymentMethod)) {
                 $this->createCard();
@@ -96,9 +96,7 @@ class StripeGatewayService extends AbstractGatewayService implements PaymentGate
 
     public function getCards()
     {
-        $cards = $this->stripe->customers->allSources($this->customer->id, ['object' => 'card', 'limit' => 3]);
-
-        return $cards;
+        return $this->stripe->customers->allSources($this->customer->id, ['object' => 'card', 'limit' => 3]);
     }
 
     public function createPayment(): ?self

@@ -33,10 +33,10 @@ trait PhonesHomePageTraits
         $template = $this->getTemplate('productFormPath');
         $template = str_replace('{{form_begin}}', $form->begin(), $template);
         $template = str_replace('{{item}}', $form->input([
-            HiddenType::class => ['name' => 'item_id'],
+            HiddenType::class => ['name' => 'itemId'],
         ])->noLabel()->noWrapper()->value($product->pdt_id)->html(), $template);
         $template = str_replace('{{user}}', $form->input([
-            HiddenType::class => ['name' => 'user_id'],
+            HiddenType::class => ['name' => 'userId'],
         ])->noLabel()->noWrapper()->value('1')->html(), $template);
         $template = str_replace('{{button}}', $form->input([
             ButtonType::class => ['type' => 'submit', 'class' => $class],
@@ -47,7 +47,7 @@ trait PhonesHomePageTraits
     private function detailsRoute(object $product) : string
     {
         if (isset($product->slug)) {
-            return 'details' . DS . 'single' . DS . $product->slug;
+            return $this->simpleProductRoute . $product->slug;
         }
         return '';
     }
@@ -57,8 +57,8 @@ trait PhonesHomePageTraits
         /** @var CollectionInterface */
         $userCart = $dataRepository->userCart;
         $cartKeys = $userCart->map(function ($item) {
-            if ($item->cart_type == 'cart') {
-                return $item->item_id;
+            if ($item->cartType == 'cart') {
+                return $item->itemId;
             }
         })->all();
         if ($title !== null && $title == 'Proceed to buy') {

@@ -4,14 +4,12 @@ declare(strict_types=1);
 class AuthManager extends Model
 {
     public static $currentLoggedInUser = null;
-    protected $_colID = 'user_id';
-    protected $_table = 'users';
     private $_isLoggedIn = false;
     private $_confirm;
 
     public function __construct(string $user = '')
     {
-        parent::__construct($this->_table, $this->_colID);
+        parent::__construct(tableSchema:'userId', tableSchemaID:'users');
         if ($user) {
             $u = is_numeric($user) ? $this->getDetails($user) : $this->getDetails($user, 'email');
             if ($u->count() > 0) {
@@ -24,7 +22,7 @@ class AuthManager extends Model
     {
         $session = Container::getInstance()->make(SessionInterface::class);
         if ($session->exists(CURRENT_USER_SESSION_NAME)) {
-            return $session->get(CURRENT_USER_SESSION_NAME)['first_name'];
+            return $session->get(CURRENT_USER_SESSION_NAME)['firstName'];
         }
         return '';
     }

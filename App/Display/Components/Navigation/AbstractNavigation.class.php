@@ -26,11 +26,9 @@ abstract class AbstractNavigation
     protected function settings() : string
     {
         $settings = $this->getTemplate('settingsPath');
-        if (isset($this->settings) && !empty($this->settings)) {
+        if (isset($this->settings) && ! empty($this->settings)) {
             $settings = str_replace('{{address}}', $this->settings->offsetGet('site_address'), $settings);
-            $settings = str_replace('{{phone}}', $this->settings->offsetGet('site_phone'), $settings);
-
-            return $settings;
+            return str_replace('{{phone}}', $this->settings->offsetGet('site_phone'), $settings);
         }
 
         return '';
@@ -38,15 +36,13 @@ abstract class AbstractNavigation
 
     protected function connexion() : string
     {
-        if (!AuthManager::isUserLoggedIn()) {
+        if (! AuthManager::isUserLoggedIn()) {
             $connexion = $this->btnConnexion();
         } else {
             $connexion = $this->userDropDownMenu();
         }
         $template = str_replace('{{connectedUser}}', $connexion, $this->getTemplate('conectPath'));
-        $template = str_replace('{{wishlist}}', $this->cartItem['whishlistItmes'], $template);
-
-        return $template;
+        return str_replace('{{wishlist}}', $this->cartItem['whishlistItmes'], $template);
     }
 
     protected function navBrand() : string

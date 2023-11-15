@@ -29,7 +29,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
     public function create(array $fields = []) : DataMapperInterface
     {
         try {
-            return $this->em->getCrud()->create($this->fields());
+            return $this->em->create($this->fields());
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -44,7 +44,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
     public function delete(array $conditions = []) : DataMapperInterface
     {
         try {
-            return $this->em->getCrud()->delete($conditions);
+            return $this->em->delete($conditions);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -53,7 +53,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
     public function update(array $conditions) : ?DataMapperInterface
     {
         try {
-            return $this->em->getCrud()->update($this->fields($conditions), $conditions);
+            return $this->em->update($this->fields($conditions), $conditions);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -87,7 +87,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
     {
         if ($this->isArray($conditions)) {
             try {
-                return $this->em->getCrud()->read([], $conditions, [], $options);
+                return $this->em->read([], $conditions, [], $options);
             } catch (\Throwable $th) {
                 throw $th;
             }
@@ -122,7 +122,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
     public function findBy(array $selectors = [], array $conditions = [], array $parameters = [], array $options = []) : mixed
     {
         try {
-            return $this->em->getCrud()->read($selectors, $conditions, $parameters, $options);
+            return $this->em->read($selectors, $conditions, $parameters, $options);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -151,7 +151,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
     {
         $this->isArray($conditions);
         try {
-            return $this->em->getCrud()->search($selectors, $conditions, $parameters, $options);
+            return $this->em->search($selectors, $conditions, $parameters, $options);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -169,7 +169,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
             try {
                 $result = $this->findOneBy($conditions, []);
                 if ($result != null && $result > 0) {
-                    $delete = $this->em->getCrud()->delete($conditions);
+                    $delete = $this->em->delete($conditions);
                     if ($delete) {
                         return true;
                     }
@@ -193,8 +193,8 @@ class Repository extends AbstractRepository implements RepositoryInterface
         try {
             $result = $id > 0 ? $this->findOneBy([$this->em->getCrud()->getSchemaID() => $id], []) : null;
             if ($result != null && count($result) > 0) {
-                $params = (!empty($fields)) ? array_merge([$this->im->getCrud()->getSchemaID() => $id], $fields) : $fields;
-                $update = $this->em->getCrud()->update($params, $this->im->getCrud()->getSchemaID());
+                $params = (! empty($fields)) ? array_merge([$this->em->getCrud()->getSchemaID() => $id], $fields) : $fields;
+                $update = $this->em->update($params, [], $this->em->getCrud()->getSchemaID());
                 if ($update) {
                     return true;
                 }
@@ -216,6 +216,15 @@ class Repository extends AbstractRepository implements RepositoryInterface
         return $this;
     }
 
+    public function release(array $selectors = [], array $conditions = [], array $parameters = [], array $options = []) : mixed
+    {
+        try {
+            return $this->em->release($selectors, $conditions, $parameters, $options);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function get_tableColumn(array $options): object
     {
         try {
@@ -229,9 +238,38 @@ class Repository extends AbstractRepository implements RepositoryInterface
     {
         $this->isArray($conditions);
         try {
-            return $this->em->getCrud()->countRecords($conditions);
+            return $this->em->countRecords($conditions);
         } catch (\Throwable $th) {
             throw $th;
         }
+    }
+
+    public function customQuery(string $query = '', array $conditions = []) : mixed
+    {
+        try {
+            return $this->em->customQuery($query, $conditions);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function beginTransaction() : bool
+    {
+        return $this->em->beginTransaction();
+    }
+
+    public function exec(string $sql) : int|false
+    {
+        return $this->em->exec($sql);
+    }
+
+    public function inTransaction() : bool
+    {
+        return $this->em->inTransaction();
+    }
+
+    public function rollBack() : bool
+    {
+        return $this->em->rollBack();
     }
 }

@@ -4,48 +4,42 @@ declare(strict_types=1);
 
 class AuthenticateUserManager extends Model
 {
-    private string $_colID = 'userID';
-    private string $_table = 'users';
-    private Model $userSession;
+    protected string $_colID = 'userId';
+    protected string $_table = 'users';
 
-    public function __construct()
-    {
+    public function __construct(
+        protected UserSessionsManager $userSession,
+        protected SessionInterface $session,
+        protected VisitorsManager $visitor
+    ) {
         parent::__construct($this->_table, $this->_colID);
-        $this->userSession = $this->container(UserSessionsManager::class);
     }
 
     public function authenticate() : bool|array
     {
-        $user = $this->loginAttemps($this->entity->{'getEmail'}());
+        $user = $this->loginAttemps($this->getEntity()->getEmail());
         if ($user->count() > 0) {
-            /** @var ModelInterfce */
-            $u = current($user->get_results());
-            $u->_count = $user->count();
-            $u->setEntity($this->entity);
-            $user = null;
-            return [$u, (int) $u->number];
+            return [$user, current($user->get_results())->getNumber()];
         }
-
         return false;
     }
 
     public function login(bool|string $remember_me, array $data) : ?Model
     {
         if (!AuthManager::isUserLoggedIn()) {
-            $this->assign((array) $this);
-            /** @var VisitorsManager */
-            $visitor = $this->container(VisitorsManager::class)->manageVisitors([
-                'ip' => H_visitors::getIP(),
-            ]);
+            /* @var UsersEntity */
+            $this->setEntity(current($this->get_results()));
             $this->session->set(CURRENT_USER_SESSION_NAME, [
-                'id' => (int) $this->user_id,
-                'first_name' => (string) $this->first_name ?? '',
-                'last_name' => (string) $this->last_name ?? '',
+                'id' => (int) $this->getEntity()->getUserId(),
+                'firstName' => (string) $this->getEntity()->getFirstName() ?? '',
+                'lastName' => (string) $this->getEntity()->getLastName() ?? '',
                 'acl' => (array) $this->acls(),
-                'verified' => (int) $this->verified ?? 0,
-                'customer_id' => (string) $this->customer_id ?? '',
+                'verified' => (int) $this->getEntity()->getVerified() ?? 0,
+                'customerId' => (string) $this->getEntity()->getCustomerId() ?? '',
             ]);
-            return $this->userSession->assign(array_merge($data, $this->manageSession($visitor, $remember_me)))->save();
+            return $this->userSession->assign(array_merge($data, $this->manageSession($this->visitor->manageVisitors([
+                'ip' => H_visitors::getIP(),
+            ]), $remember_me)))->save();
         }
 
         return null;
@@ -54,12 +48,11 @@ class AuthenticateUserManager extends Model
     public function rememberMeCheck() : array
     {
         if (!$this->cookie->exists(REMEMBER_ME_COOKIE_NAME)) {
-            $visitor = $this->container(VisitorsManager::class)->manageVisitors();
-            $en = $visitor->getEntity();
-            $cookies = $en->{$en->getGetters('cookies')}();
+            $visitor = $this->visitor->manageVisitors();
+            $cookies = $visitor->getEntity()->getCookies();
         }
         $rem = $cookies ?? $this->cookie->get(REMEMBER_ME_COOKIE_NAME);
-        $this->userSession->getDetails($rem, 'remember_me_cookie');
+        $this->userSession->getDetails($rem, 'rememberMeCookie');
         if ($this->userSession->count() === 1) {
             $userSession = $this->userSession->get_results();
             return [
@@ -71,18 +64,23 @@ class AuthenticateUserManager extends Model
         return [];
     }
 
+    public function getEntity() : UsersEntity
+    {
+        return $this->entity;
+    }
+
     private function rememberMe(bool|string $remember_me, UserSessionsManager $session) : string
     {
         $rem_cookie = '';
         if ($remember_me != false) {
             if ($session->count() === 1) {
-                if (!$session->getEntity()->isInitialized('remember_me_cookie')) {
+                if (!$session->getEntity()->isInitialized('rememberMeCookie')) {
                     return $this->rememberCookie();
                 }
                 $cookieSession = $session->getEntity()->{'getRememberMeCookie'}();
                 if ($this->cookie->exists(REMEMBER_ME_COOKIE_NAME) && $cookieSession != $this->cookie->get(REMEMBER_ME_COOKIE_NAME)) {
                     $cookieSession = $this->cookie->get(REMEMBER_ME_COOKIE_NAME);
-                    $session->set('remember_me_cookie', $cookieSession);
+                    $session->set('rememberMeCookie', $cookieSession);
                     $session->save();
                 }
                 return $cookieSession;
@@ -97,7 +95,7 @@ class AuthenticateUserManager extends Model
         $rem_cookie = '';
         if (!$this->cookie->exists(REMEMBER_ME_COOKIE_NAME)) {
             $this->userSession->getQueryParams();
-            $rem_cookie = $this->userSession->getUniqueId('remember_me_cookie');
+            $rem_cookie = $this->userSession->getUniqueId('rememberMeCookie');
             $this->cookie->set($rem_cookie, REMEMBER_ME_COOKIE_NAME);
         } else {
             $rem_cookie = $this->cookie->get(REMEMBER_ME_COOKIE_NAME);
@@ -110,16 +108,16 @@ class AuthenticateUserManager extends Model
     {
         $sessionToken = '';
         if ($session->count() === 1) {
-            if (!$session->getEntity()->isInitialized('session_token')) {
+            if (!$session->getEntity()->isInitialized('sessionToken')) {
                 if (!$this->cookie->exists(TOKEN_NAME)) {
                     $session->getQueryParams();
-                    $sessionToken = $session->getUniqueId('session_token');
+                    $sessionToken = $session->getUniqueId('sessionToken');
                     $this->cookie->set($sessionToken, TOKEN_NAME);
                 } else {
                     $sessionToken = $this->cookie->get(TOKEN_NAME);
                 }
             } else {
-                $sessionToken = $session->getEntity()->{$session->getEntity()->getGetters('session_token')}();
+                $sessionToken = $session->getEntity()->getSessionToken();
                 if (!$this->cookie->exists(TOKEN_NAME)) {
                     $this->cookie->set($sessionToken, TOKEN_NAME);
                 } else {
@@ -138,36 +136,35 @@ class AuthenticateUserManager extends Model
             }
             if ($session->count() > 1) {
                 $session->getQueryParams();
-                $session->table()->where(['userID' => $this->userID]);
+                $session->table()->where(['userId' => '$this->userID']);
                 $session->delete();
             }
         }
         $session = null;
-
         return $sessionToken;
     }
 
-    private function manageSession(Model $visitor, bool|string $remember_me) : array
+    private function manageSession(VisitorsManager $visitor, bool|string $remember_me) : array
     {
-        $sessionDb = $this->userSession->getDetails($this->getEntity()->{'getUserId'}(), 'user_id');
-        $sessionDb->count() == 1 ? $sessionDb = $sessionDb->assign((array) $sessionDb->get_results()) : '';
+        $sessionDb = $this->userSession->getDetails($this->getEntity()->getUserId(), 'userId');
+        $sessionDb->count() > 0 ? $sessionDb->setEntity($sessionDb->get_results()) : '';
         return [
-            'remember_me_cookie' => $this->rememberMe($remember_me, $sessionDb),
-            'session_token' => $this->sessionToken($sessionDb),
-            'user_cookie' => $visitor->count() > 0 ? $visitor->cookies : '',
-            'user_agent' => $this->session->uagent_no_version(),
-            'user_id' => $this->user_id,
-            'email' => $this->email,
+            'rememberMeCookie' => $this->rememberMe($remember_me, $sessionDb),
+            'sessionToken' => $this->sessionToken($sessionDb),
+            'userCookie' => $visitor->count() > 0 ? $visitor->getEntity()->getCookies() : '',
+            'userAgent' => $this->session->uagent_no_version(),
+            'userId' => $this->getEntity()->getUserId(),
+            'email' => $this->getEntity()->getEmail(),
         ];
     }
 
     private function loginAttemps(string $email) : self
     {
         $this->table()
-            ->leftJoin('login_attempts', ['COUNT|la_id|number'])
-            ->on(['user_id', 'user_id|login_attempts'], ['timestamp|>=|' => [time() - 60 * 60, 'login_attempts']])
+            ->leftJoin('login_attempts', ['COUNT|laId|number'])
+            ->on(['userId', 'userId|login_attempts'], ['timestamp|>=|' => [time() - 60 * 60, 'login_attempts']])
             ->where(['email' => $email . '|users'])
-            ->groupBy(['user_id' => 'users'])
+            ->groupBy(['userId' => 'users'])
             ->return('class')
             ->build();
 

@@ -9,11 +9,10 @@ class View extends AbstractView
     private string $_footer;
     private string $_outputBuffer;
     private Token $token;
-    private ResponseHandler $response;
-    private RequestHandler $request;
     private array $properties = [];
     private string $jsTemplate;
     private string $cssTemplate;
+    private string $icoTemplate;
 
     public function __construct(array $viewAry, FilesSystemInterface $fileSyst)
     {
@@ -28,27 +27,7 @@ class View extends AbstractView
         $this->fileSyst = $fileSyst;
         $this->jsTemplate = $this->fileSyst->get(FILES, 'js.php');
         $this->cssTemplate = $this->fileSyst->get(FILES, 'css.php');
-    }
-
-    public function route(string $route)
-    {
-        $route = $route == DS ? 'home' : $route;
-
-        return HOST . DS . $route;
-    }
-
-    public function addProperties(array $args = []) : void
-    {
-        if (!empty($args)) {
-            foreach ($args as $prop => $value) {
-                $this->properties[$prop] = $value;
-            }
-        }
-    }
-
-    public function getProperty(string $name) : mixed
-    {
-        return isset($this->properties[$name]) ? $this->properties[$name] : null;
+        $this->icoTemplate = $this->fileSyst->get(FILES, 'ico.php');
     }
 
     /**
@@ -75,29 +54,24 @@ class View extends AbstractView
         throw new BaseException("Cette vue n'existe pas", 1);
     }
 
-    /** @inheritDoc */
-    public function start(string $type) : void
+    public function route(string $route)
     {
-        $this->_outputBuffer = $type;
-        ob_start();
+        $route = $route == DS ? 'home' : $route;
+        return HOST . DS . $route;
     }
 
-    /** @inheritDoc */
-    public function content(string $type) : bool|string
+    public function addProperties(array $args = []) : void
     {
-        return match ($type) {
-            'head' => $this->_head ?? '',
-            'body' => $this->_body ?? '',
-            'footer' => $this->_footer ?? '',
-            'html' => $this->_html ?? '',
-            default => false
-        };
+        if (!empty($args)) {
+            foreach ($args as $prop => $value) {
+                $this->properties[$prop] = $value;
+            }
+        }
     }
 
-    /** @inheritDoc */
-    public function end() : void
+    public function getProperty(string $name) : mixed
     {
-        isset($this->_outputBuffer) ? $this->{'_' . $this->_outputBuffer} = ob_get_clean() : '';
+        return isset($this->properties[$name]) ? $this->properties[$name] : null;
     }
 
     /** @inheritDoc */
@@ -121,11 +95,20 @@ class View extends AbstractView
     private function getAsset(string $check, string $path, string $asset, string $ext) : string
     {
         return $this->linkTemplate($asset, match (true) {
-            $check == 'img' => HOST ? HOST . US . IMG . $path : IMG . $asset,
-            $check == 'fonts' => HOST ? HOST . US . FONT . $path : FONT . $asset,
+            $check == 'img' => $this->getUrl($path, $asset, $ext),
+            $check == 'fonts' => HOST ? HOST . FONT . $path : FONT . $asset,
             isset($this->ressources->$asset->$ext) => HOST ? HOST . $this->ressources->$asset->$ext ?? '' : $this->ressources->$asset->$ext ?? '',
             default => ''
         });
+    }
+
+    private function getUrl(string $path, string $asset, string $ext) : string
+    {
+        if ($ext == 'ico') {
+            return IMG . $path;
+        } else {
+            return HOST ? HOST . IMG . $path : IMG . $asset;
+        }
     }
 
     private function linkTemplate(?string $asset = null, string $link = '') : string
@@ -140,10 +123,12 @@ class View extends AbstractView
                 $linkTemplate = isset($this->jsTemplate) ? file_get_contents($this->jsTemplate) : '';
             } elseif (str_starts_with($asset, 'commons') && str_ends_with($link, 'css')) {
                 $linkTemplate = isset($this->jsTemplate) ? file_get_contents($this->jsTemplate) : '';
+            } elseif ($asset == 'img/favicon') {
+                $linkTemplate = isset($this->icoTemplate) ? file_get_contents($this->icoTemplate) : '';
             }
         }
         if (!empty($linkTemplate) && $link !== '') {
-            $linkTemplate = str_replace('{{link}}', $link, $linkTemplate);
+            $linkTemplate = str_replace('{{link}}', $link . (str_contains($link, 'favicon') ? '.ico' : ''), $linkTemplate);
         }
         return $link !== '' ? $linkTemplate : '';
     }
@@ -155,15 +140,35 @@ class View extends AbstractView
         $this->start('html');
         $layout = $this->viewFile('layouts' . DS . $this->_layout);
         if ($layout) {
-            require_once array_pop($layout); //VIEW . strtolower(explode(DS, $this->file_path)[0]) . DS . 'layouts' . DS . $this->_layout . '.php';
+            require_once array_shift($layout);
         }
         $this->end();
         if ($this->webView) {
-            // $this->response->handler()->setContent($this->content('html'))->prepare($this->request->handler())->send();
-            //$this->response->setContent($this->content('html'))->prepare($this->request)->send();
-            return $this->content('html'); //null;
+            return $this->content('html');
         } else {
             return html_entity_decode($this->content('html'));
         }
+    }
+
+    private function start(string $type) : void
+    {
+        $this->_outputBuffer = $type;
+        ob_start();
+    }
+
+    private function end() : void
+    {
+        isset($this->_outputBuffer) ? $this->{'_' . $this->_outputBuffer} = ob_get_clean() : '';
+    }
+
+    private function content(string $type) : bool|string
+    {
+        return match ($type) {
+            'head' => $this->_head ?? '',
+            'body' => $this->_body ?? '',
+            'footer' => $this->_footer ?? '',
+            'html' => $this->_html ?? '',
+            default => false
+        };
     }
 }

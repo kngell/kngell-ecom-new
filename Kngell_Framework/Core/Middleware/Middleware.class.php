@@ -23,7 +23,7 @@ class Middleware
             foreach ($middlewares as $key => $middleware) {
                 if (str_contains($middleware, $key)) {
                     if ($middleware) {
-                        $output[] = $this->$key = Application::diGet($middleware, $contructorArgs);
+                        $output[] = Application::diGet($middleware, $contructorArgs);
                     } else {
                         $output[] = Application::diGet($middleware, $contructorArgs);
                     }
