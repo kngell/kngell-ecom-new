@@ -6,7 +6,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
 {
     /**
      * Main constructor
-     * ====================================================================.
+     * ==================================================.
      * @param EntityManagerInterface $em
      */
     public function __construct(EntityManagerInterface $em)
@@ -110,19 +110,10 @@ class Repository extends AbstractRepository implements RepositoryInterface
         }
     }
 
-    /**
-     * Get All By
-     * ====================================================================.
-     * @param array $selectors
-     * @param array $conditions
-     * @param array $parameters
-     * @param array $options
-     * @return mixed
-     */
-    public function findBy(array $selectors = [], array $conditions = [], array $parameters = [], array $options = []) : mixed
+    public function findBy(?QueryParamsNewInterface $queryParams = null) : mixed
     {
         try {
-            return $this->em->read($selectors, $conditions, $parameters, $options);
+            return $this->em->read($queryParams);
         } catch (\Throwable $th) {
             throw $th;
         }

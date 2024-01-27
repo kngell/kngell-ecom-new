@@ -46,10 +46,13 @@ class Container implements ContainerInterface
      * @param array $args
      * @return mixed
      */
-    public function make(string $abstract, array $args = []) : mixed
+    public function make(string|array $abstract, array $args = []) : mixed
     {
         if ($this->has($abstract)) {
             return $this->services[$abstract];
+        }
+        if (isset($this->bindings[$abstract]) && is_array($this->bindings[$abstract]) && ! empty($this->bindings[$abstract]['args'])) {
+            $args = $this->bindings[$abstract]['args'];
         }
         $concrete = $this->bindings[$abstract]['concrete'] ?? $abstract;
         if ($concrete instanceof Closure || $concrete === $abstract) {
@@ -63,11 +66,12 @@ class Container implements ContainerInterface
         return $object;
     }
 
-    public function bind(string $abstract, Closure | string | null $concrete = null, bool $shared = false): self
+    public function bind(string $abstract, Closure | string | null $concrete = null, bool $shared = false, array $args = []): self
     {
         $this->bindings[$abstract] = [
             'concrete' => $concrete,
             'shared' => $shared,
+            'args' => $args,
         ];
         return $this;
     }
@@ -220,6 +224,8 @@ class Container implements ContainerInterface
                         $classDependencies[] = $args[$dependency->name];
                     } elseif (array_key_exists($key, $args)) {
                         $classDependencies[] = $args[$key];
+                    } elseif (! empty($args)) {
+                        $classDependencies[] = $args;
                     }
                 } else {
                     throw new DependencyHasNoDefaultValueException('Sorry cannot resolve class dependency ' . $dependency->name);
@@ -231,7 +237,7 @@ class Container implements ContainerInterface
                     $classDependencies[] = $args[$dependency->name];
                 } elseif (array_key_exists($key, $args)) {
                     $classDependencies[] = $args[$key];
-                } elseif (($dependency->isOptional() || $dependency->isDefaultValueAvailable()) && empty($args)) {
+                } elseif (($dependency->isOptional() || $dependency->isDefaultValueAvailable()) && empty($args) && (! class_exists($serviceType->getName()))) {
                     $classDependencies[] = $dependency->getDefaultValue();
                 } else {
                     $classDependencies[] = $this->make($serviceType->getName()); //dependency->name;

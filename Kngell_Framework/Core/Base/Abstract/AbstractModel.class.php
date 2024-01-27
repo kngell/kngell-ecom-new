@@ -7,10 +7,10 @@ abstract class AbstractModel
     use ModelGetterAndSetterTrait;
     use ModelTrait;
     protected string $_modelName;
-    protected QueryParams $queryParams;
+    protected QueryParamsNewInterface $queryParams;
     protected RepositoryInterface|FileStorageRepositoryInterface $repository;
     protected MoneyManager $money;
-    protected Entity|CollectionInterface $entity;
+    protected Entity $entity;
     protected ModelHelper $helper;
     // protected SessionInterface $session;
     protected CookieInterface $cookie;
@@ -30,7 +30,7 @@ abstract class AbstractModel
     protected bool $_flatDb;
     protected int $_lasID;
     protected string $_colIndex = '';
-    protected PDOStatement $_statement;
+    protected ?PDOStatement $_statement;
     protected DatabaseConnexionInterface $_con;
 
     public function __construct(string $tableSchema, string $tableSchemaID, bool $flatDb = false)
@@ -50,29 +50,38 @@ abstract class AbstractModel
      */
     abstract public function guardedID() : array;
 
-    public function table(?string $tbl = null, mixed $columns = null, bool $table_recursive = false) : QueryParams
+    public function table(?string $tbl = null, ...$fields) : QueryParamsNewInterface
     {
-        return $this->queryParams = $this->container(QueryParamsInterface::class, [
-            'tableSchema' => $this->getTableSchema(),
-            'entity' => $this->getEntity(),
-        ])->table($tbl, $columns, $table_recursive ? 'table_recursive' : null);
+        return $this->queryParams->setBaseOptions(
+            $tbl ?? $this->_table,
+            $this->entity
+        )->query($tbl, $fields);
     }
 
-    public function tableRecursive(?string $tbl = null, mixed $columns = null) : QueryParams
+    public function query(?string $queryType = null, ?string $tbl = null, ...$params) : QueryParamsNewInterface|QueryParamsInsertInterface|QueryParamsSelectInterface|QueryParamsConditionsInterface
+    {
+        return $this->queryParams->setBaseOptions(
+            $tbl ?? $this->_table,
+            $this->entity
+        )->query($queryType, $params);
+    }
+
+    public function tableRecursive(?string $tbl = null, mixed $columns = null) : QueryParamsNewInterface
     {
         return $this->table($tbl, $columns, true);
     }
 
     public function conditions() : self
     {
-        if ($this->queryParams->hasConditions()) {
-            return $this;
-        }
+        // if ($this->queryParams->hasConditions()) {
+        //     return $this;
+        // }
         $colID = $this->entity->getColId();
         if (! $this->entity->isInitialized($colID)) {
             throw new BaseException('unable to update row!');
         }
-        $this->table()->where([$colID => $this->entity->{$this->entity->getGetters($colID)}()])->build();
+        $this->query()->where([$colID => $this->entity->{$this->entity->getGetters($colID)}()])->build();
+        // $this->table()->where([$colID => $this->entity->{$this->entity->getGetters($colID)}()])->build();
         return $this;
     }
 

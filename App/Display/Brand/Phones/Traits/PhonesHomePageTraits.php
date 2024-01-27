@@ -11,7 +11,7 @@ trait PhonesHomePageTraits
             $template = str_replace('{{route}}', $this->detailsRoute($product), $template);
             $template = str_replace('{{image}}', $media, $template);
             $template = str_replace('{{title}}', $product->title ?? 'Unknown', $template);
-            $template = str_replace('{{price}}', $this->money->getFormatedAmount(strval($product->regular_price)), $template);
+            $template = str_replace('{{price}}', $this->money->getFormatedAmount(strval($product->regularPrice)), $template);
             $template = str_replace('{{ProductForm}}', $this->productForm($product), $template);
             return str_replace('{{brandClass}}', $product->categorie ?? 'Brand', $template);
         }
@@ -27,14 +27,14 @@ trait PhonesHomePageTraits
         $form = $this->frm->form([
             'action' => '',
             'class' => [$formClass],
-        ])->setCsrfKey($formClass . $product->pdt_id ?? 1);
+        ])->setCsrfKey($formClass . $product->pdtId ?? 1);
 
         list($class, $title) = $this->producttitleAndClass($product, $title);
         $template = $this->getTemplate('productFormPath');
         $template = str_replace('{{form_begin}}', $form->begin(), $template);
         $template = str_replace('{{item}}', $form->input([
             HiddenType::class => ['name' => 'itemId'],
-        ])->noLabel()->noWrapper()->value($product->pdt_id)->html(), $template);
+        ])->noLabel()->noWrapper()->value($product->pdtId)->html(), $template);
         $template = str_replace('{{user}}', $form->input([
             HiddenType::class => ['name' => 'userId'],
         ])->noLabel()->noWrapper()->value('1')->html(), $template);
@@ -66,7 +66,7 @@ trait PhonesHomePageTraits
         } elseif ($title !== null && $title == 'Add to Cart') {
             $class = ['btn', 'font-size-14', 'form-control'];
         }
-        if (isset($cartKeys) && in_array($dataRepository->pdt_id, $cartKeys)) {
+        if (isset($cartKeys) && in_array($dataRepository->pdtId, $cartKeys)) {
             if (isset($class) && $title == 'Add to Cart') {
                 $class = array_merge($class, ['btn-success']);
                 $title = 'In the Cart';

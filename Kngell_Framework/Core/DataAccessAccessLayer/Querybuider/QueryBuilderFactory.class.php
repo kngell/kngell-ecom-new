@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 class QueryBuilderFactory
 {
-    protected QueryBuilderInterface $querybuider;
+    private CollectionInterface $queryParams;
 
     /**
      * Main constructor
      * ============================================================.
      *@return void
      */
-    public function __construct(QueryBuilderInterface $querybuider)
+    public function __construct(CollectionInterface $queryParams)
     {
-        $this->querybuider = $querybuider;
+        $this->queryParams = $queryParams;
     }
 
     /**
@@ -23,10 +23,11 @@ class QueryBuilderFactory
      */
     public function create() : QueryBuilderInterface
     {
-        if (!$this->querybuider instanceof QueryBuilderInterface) {
-            throw new QueryBuilderExceptions($this->querybuider . ' is not a valid query builder Object!');
+        $queryBuilder = new QueryBuilder($this->queryParams);
+        if (! $queryBuilder instanceof QueryBuilderInterface) {
+            throw new QueryBuilderExceptions($queryBuilder . ' is not a valid query builder Object!');
         }
 
-        return $this->querybuider;
+        return $queryBuilder;
     }
 }

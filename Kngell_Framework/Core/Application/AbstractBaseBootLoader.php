@@ -164,11 +164,15 @@ abstract class AbstractBaseBootLoader extends Container implements ApplicationIn
 
     protected function registerContainerAliases(array $aliasesGroup = [])
     {
-        if (!empty($aliasesGroup) && is_array($aliasesGroup)) {
+        if (! empty($aliasesGroup) && is_array($aliasesGroup)) {
             foreach ($aliasesGroup as $method => $aliases) {
-                if (is_array($aliases) && !empty($aliases)) {
+                if (is_array($aliases) && ! empty($aliases)) {
                     foreach ($aliases as $obj => $value) {
-                        $this->$method($obj, $value);
+                        if (is_array($value)) {
+                            $this->$method($obj, $value[0], false, $value[1]);
+                        } else {
+                            $this->$method($obj, $value);
+                        }
                     }
                 }
             }

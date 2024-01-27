@@ -25,7 +25,7 @@
             <h5 class="product-name"><?= $product->p_title ?? 'Unknown' ?>
             </h5>
             <h4 class="product-price price"> <span
-                    class="product_regular_price"><?= $this->productManager->get_money()->getAmount($product->p_regular_price) ?? 0 ?></span>
+                    class="product_regularPrice"><?= $this->productManager->get_money()->getAmount($product->p_regularPrice) ?? 0 ?></span>
             </h4>
             <button class="buy-btn">Buy Now</button>
         </div>

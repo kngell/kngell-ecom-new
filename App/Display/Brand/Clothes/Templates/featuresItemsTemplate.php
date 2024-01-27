@@ -13,7 +13,7 @@
    </div>
    <h5 class="product-name">{{title}}
    </h5>
-   <h4 class="product-price price"> <span class="product_regular_price">{{price}}</span>
+   <h4 class="product-price price"> <span class="product_regularPrice">{{price}}</span>
    </h4>
    {{button}}
 </div>

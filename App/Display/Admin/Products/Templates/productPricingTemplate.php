@@ -3,7 +3,7 @@
       <h4>Pricing</h4>
       <div class="row border-bottom mb-3">
          <div class="col-lg-6">
-            {{regular_price}}
+            {{regularPrice}}
          </div>
          <!-- end col -->
          <div class="col-lg-6">

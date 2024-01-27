@@ -16,6 +16,48 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
     }
 
     /**
+     * persist Method
+     * =======================================================================.
+     * @param string $sql
+     * @param array $parameters
+     */
+    public function persist(string $sql = '', array $parameters = []) : mixed
+    {
+        try {
+            $sql = $this->cleanSql($sql);
+            return isset($parameters[0]) && $parameters[0] == 'all' ? $this->prepare($sql)->execute() : $this->prepare($sql)->bindParameters($parameters)->execute();
+        } catch (Throwable $th) {
+            throw $th;
+        }
+    }
+
+    /**
+     * Build Query parametters
+     * =======================================================================.
+     * @param array $conditions
+     * @param array $parameters
+     * @return array
+     */
+    public function buildQueryParameters(array $conditions = [], array $parameters = []): array
+    {
+        return (! empty($parameters) || ! empty($conditions)) ? array_merge($conditions, $parameters) : $parameters;
+    }
+
+    /**
+     * Bind Parameters
+     * ==============================================================.
+     * @inheritDoc
+     */
+    public function bindParameters(array $fields = [], bool $isSearch = false) : bool|self
+    {
+        $type = ($isSearch === false) ? $this->bindValues($fields) : $this->biendSearchValues($fields);
+        if ($type) {
+            return $this;
+        }
+        return false;
+    }
+
+    /**
      *@inheritDoc
      */
     public function prepare(string $sql):self
@@ -59,34 +101,19 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
     }
 
     /**
-     * Bind Parameters
-     * ==============================================================.
-     * @inheritDoc
-     */
-    public function bindParameters(array $fields = [], bool $isSearch = false) : bool|self
-    {
-        $type = ($isSearch === false) ? $this->bindValues($fields) : $this->biendSearchValues($fields);
-        if ($type) {
-            return $this;
-        }
-        return false;
-    }
-
-    /**
      * Biend Values
      * ===============================================================.
      * @param array $fields
      * @return PDOStatement
      */
-    public function bindValues(array $fields = []) : PDOStatement
+    public function bindValues(array $params = []) : PDOStatement
     {
-        if (array_key_exists('values', $fields) && array_key_exists('fields', $fields)) {
-            $i = 0;
-            foreach ($fields['values'] as $values) {
-                foreach ($values as $index => $v) {
-                    $this->bind(':value' . $i . $index, $v);
-                }
-                $i++;
+        $fields = isset($params['where']) ? ArrayUtil::flatten_with_keys($params['where']) : [];
+        $bindArr = (isset($this->bind_arr)) ? ArrayUtil::flatten_with_keys($this->bind_arr) : [];
+        $fields = array_merge($fields, $bindArr);
+        if (! empty($fields)) {
+            foreach ($fields as $key => $value) {
+                $this->bind(':' . $key, $value);
             }
         } else {
             if (! empty($fields)) {
@@ -161,22 +188,6 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
         }
     }
 
-    /**
-     * persist Method
-     * =======================================================================.
-     * @param string $sql
-     * @param array $parameters
-     */
-    public function persist(string $sql = '', array $parameters = []) : mixed
-    {
-        try {
-            $sql = $this->cleanSql($sql);
-            return isset($parameters[0]) && $parameters[0] == 'all' ? $this->prepare($sql)->execute() : $this->prepare($sql)->bindParameters($parameters)->execute();
-        } catch (Throwable $th) {
-            throw $th;
-        }
-    }
-
     public function release(string $sql = '', array $parameters = []) : mixed
     {
         try {
@@ -185,18 +196,6 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
         } catch (Throwable $th) {
             throw $th;
         }
-    }
-
-    /**
-     * Build Query parametters
-     * =======================================================================.
-     * @param array $conditions
-     * @param array $parameters
-     * @return array
-     */
-    public function buildQueryParameters(array $conditions = [], array $parameters = []): array
-    {
-        return (! empty($parameters) || ! empty($conditions)) ? array_merge($conditions, $parameters) : $parameters;
     }
 
     /**
@@ -241,6 +240,15 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
     public function commit() : bool
     {
         return $this->_con->commit();
+    }
+
+    /**
+     * Set the value of bind_arr.
+     */
+    public function setBindArr(array $bind_arr): self
+    {
+        $this->bind_arr = $bind_arr;
+        return $this;
     }
 
     /**

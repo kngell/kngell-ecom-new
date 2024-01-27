@@ -5,11 +5,17 @@ trait ModelTrait
 {
     public function find() : self
     {
-        list($selectors, $conditions, $parameters, $options) = $this->queryParams->params('findBy');
-        if (isset($options['return_mode']) && $options['return_mode'] == 'class' && ! isset($options['class'])) {
-            $options = array_merge($options, ['class' => $this->entity::class]);
+        // list($selectors, $conditions, $parameters, $options) = $this->queryParams->params('findBy');
+        /** @var CollectionInterface */
+        $query = $this->queryParams->get();
+        if ($query->count() > 0) {
+            $options = $query->offsetGet('options');
+            if (isset($options['return_mode']) && $options['return_mode'] == 'class' && ! isset($options['class'])) {
+                $options = array_merge($options, ['class' => $this->entity::class]);
+                $query->offsetSet('options', $options);
+            }
         }
-        $results = $this->repository->findBy($selectors, $conditions, $parameters, $options);
+        $results = $this->repository->findBy($this->getQueryParams());
         $this->setAllReturnedValues($results);
         $results = null;
         return $this;
@@ -196,6 +202,7 @@ trait ModelTrait
                         'tableSchema' => $this->tableSchema,
                         'tableSchemaID' => $this->tableSchemaID,
                         'entity' => $this->entity,
+                        'queryParams' => $this->queryParams,
                     ])->create(),
                     'validator' => $this->container($class, [
                         'validator' => YamlFile::get('validator'),

@@ -4,9 +4,6 @@ declare(strict_types=1);
 class Model extends AbstractModel
 {
     protected string $defaultMedia;
-    // private bool $_softDelete = false;
-    // private bool $_deleted_item = false;
-    // private string $_current_ctrl_method = 'update';
 
     /**
      * Main Constructor
@@ -26,30 +23,6 @@ class Model extends AbstractModel
         }
         return $this;
     }
-
-    // public function uploadFiles(string $dir, ?string $newName = null) : self
-    // {
-    //     $mediakey = $this->getMediakey();
-    //     if(is_null($mediakey)) {
-    //         return $this;
-    //     }
-    //     $files = $this->request->getHttpFiles();
-    //     if($files->count() <= 0 && isset($this->defaultMedia)) {
-    //         $this->set($mediakey, serialize([$this->tableSchema . DS . $this->defaultMedia]));
-    //         return $this;
-    //     }
-    //     $newAry = [];
-    //     foreach ($files->all() as $uploader) {
-    //         $incommingPath = $this->tableSchema . DS . $uploader->getOriginalName();
-    //         if ($uploader->saveFile($dir . $this->tableSchema, $newName)) {
-    //             $newAry[] = $incommingPath;
-    //         }
-    //     }
-    //     list($ToDelete, $ToSave) = $this->filterUpload($newAry, $mediakey);
-    //     $this->set($mediakey, serialize($ToSave));
-    //     $this->deleteFiles($ToDelete);
-    //     return $this;
-    // }
 
     public function deleteFiles(array $files = []) : void
     {

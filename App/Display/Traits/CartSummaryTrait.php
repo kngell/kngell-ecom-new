@@ -18,7 +18,7 @@ trait CartSummaryTrait
     {
         /** @var CacheInterface */
         $cache = Container::getInstance()->make(CacheInterface::class);
-        if (!$cache->exists('userCartTaxes')) {
+        if (! $cache->exists('userCartTaxes')) {
             $categories = array_unique(array_column($userCart->all(), 'cat_id'));
             $cache->set('userCartTaxes', (new TaxesManager())->getTaxSystem($categories));
         }
@@ -48,7 +48,7 @@ trait CartSummaryTrait
             $price = $this->money->getCustomAmt('0', 2);
             foreach ($obj as $product) {
                 if ($product->cartType == 'cart') {
-                    $price = $price->plus($this->money->getCustomAmt(strval($product->regular_price * $product->itemQty), 2));
+                    $price = $price->plus($this->money->getCustomAmt(strval($product->regularPrice * $product->itemQty), 2));
                 }
             }
 
@@ -64,16 +64,16 @@ trait CartSummaryTrait
         foreach ($taxesProducts as $taxeParams) {
             foreach ($taxeParams->taxes->all() as $tax) {
                 if ($tax->status == 'on') {
-                    if (!array_key_exists($tax->t_class, $finalTaxes)) {
+                    if (! array_key_exists($tax->t_class, $finalTaxes)) {
                         $finalTaxes[$tax->t_class] = [];
                     }
-                    if (!array_key_exists('amount', $finalTaxes[$tax->t_class])) {
+                    if (! array_key_exists('amount', $finalTaxes[$tax->t_class])) {
                         $finalTaxes[$tax->t_class]['amount'] = 0;
                     }
-                    if (!array_key_exists($tax->t_name, $finalTaxes[$tax->t_class])) {
+                    if (! array_key_exists($tax->t_name, $finalTaxes[$tax->t_class])) {
                         $finalTaxes[$tax->t_class]['title'] = $tax->t_name;
                     }
-                    if (!array_key_exists($tax->t_name, $finalTaxes[$tax->t_class])) {
+                    if (! array_key_exists($tax->t_name, $finalTaxes[$tax->t_class])) {
                         $finalTaxes[$tax->t_class][$tax->t_name] = $tax->t_name;
                     }
                     $finalTaxes[$tax->t_class]['amount'] += $tax->t_rate * $taxeParams->amount / 100;

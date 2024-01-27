@@ -35,13 +35,15 @@ class CartManager extends Model
     public function getUserCart() : CollectionInterface
     {
         if ($this->cookie->exists(VISITOR_COOKIE_NAME)) {
-            $this->table()
-                ->leftJoin('products', ['pdt_id', 'title', 'regular_price', 'charge_tax', 'media', 'color', 'size'])
-                ->leftJoin('product_categorie', ['cat_id'])
+            $this->query('select')
+                ->leftJoin('products', ['pdtId', 'title', 'regularPrice', 'chargeTax', 'media', 'color', 'size'])
+                ->on(['itemId', 'pdtId'])
+                ->leftJoin('product_categorie', ['catId'])
+                ->on(['pdtId', 'pdtId'])
                 ->leftJoin('categories', ['categorie'])
-                ->on(['itemId', 'pdt_id'], ['pdt_id', 'pdt_id'], ['cat_id', 'cat_id'])
+                ->on(['catId', 'catId'])
                 ->where(['userId' => $this->cookie->get(VISITOR_COOKIE_NAME)])
-                ->groupBy(['pdt_id' => 'products'])
+                ->groupBy('products|pdtId')
                 ->return('object');
 
             return new Collection($this->getAll()->get_results());

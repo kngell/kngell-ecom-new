@@ -58,7 +58,7 @@ class CartSummary extends AbstractFormSteps implements CheckoutFormStepInterface
 
     private function cartSummaryButton(?object $step = null) : string
     {
-        if (!is_null($step) && $step::class === 'PaiementInfos') {
+        if (! is_null($step) && $step::class === 'PaiementInfos') {
             return '<div class="button-pay"><button type="button" class="btn btn-pay">Complete Order</button></div>';
         }
 
@@ -72,7 +72,7 @@ class CartSummary extends AbstractFormSteps implements CheckoutFormStepInterface
         $this->taxesProducts = [];
         foreach ($this->obj as $product) {
             if ($product->cartType == 'cart') {
-                $HT = $product->regular_price * $product->itemQty;
+                $HT = $product->regularPrice * $product->itemQty;
                 $this->taxesProducts[] = $this->filterTaxe($HT, $product, $this->getAllTaxes($this->obj), $product->itemQty);
                 $uCartSummaryContent = str_replace('{{image}}', $this->media($product), $temp);
                 $uCartSummaryContent = str_replace('{{Quantity}}', strval($product->itemQty), $uCartSummaryContent);
@@ -93,8 +93,8 @@ class CartSummary extends AbstractFormSteps implements CheckoutFormStepInterface
     {
         $temp = '';
         /** @var CollectionInterface */
-        $shippingMode = !empty($this->userItems) ? $this->getShippingClassObj($this->shippingClass) : null;
-        if (!is_null($shippingMode)) {
+        $shippingMode = ! empty($this->userItems) ? $this->getShippingClassObj($this->shippingClass) : null;
+        if (! is_null($shippingMode)) {
             $temp = str_replace('{{shipping}}', $this->totalShippingContent($shippingMode), $template);
         }
 

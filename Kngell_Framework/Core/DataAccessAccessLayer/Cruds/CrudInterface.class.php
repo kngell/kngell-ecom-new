@@ -34,15 +34,12 @@ interface CrudInterface
     public function create(array $fields = []): DataMapperInterface;
 
     /**
-     * --------------------------------------------------------------
-     * Read data from data base.
-     * @param array $selectors
-     * @param array $conditions
-     * @param array $params
-     * @param array $options
+     * Read Data from data base.
+     * --------------------------------------------------------------.
+     * @param QueryParamsNewInterface|null $query
      * @return DataMapperInterface
      */
-    public function read(array $selectors = [], array $conditions = [], array $params = [], array $options = []) : DataMapperInterface;
+    public function read(?QueryParamsNewInterface $queryParams = null) : DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------

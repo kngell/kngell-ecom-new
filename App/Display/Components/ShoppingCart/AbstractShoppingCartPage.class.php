@@ -113,15 +113,15 @@ abstract class AbstractShoppingCartPage
     private function shoppingItemHtml(?object $item = null, ?string $template = null) : string
     {
         $temp = '';
-        $HT = $item->regular_price * $item->itemQty;
+        $HT = $item->regularPrice * $item->itemQty;
         $this->taxesProducts[] = $this->filterTaxe($HT, $item, $this->getAllTaxes($this->cartItems), $item->itemQty);
-        if (!is_null($item) && !is_null($template)) {
+        if (! is_null($item) && ! is_null($template)) {
             $temp = str_replace('{{image}}', $this->media($item), $template);
             $temp = str_replace('{{title}}', $item->title, $temp);
             $temp = str_replace('{{categorie}}', $item->categorie, $temp);
             $temp = str_replace('{{itemQtyForm}}', $this->shoppingItemQtyForm($item), $temp);
             $temp = str_replace('{{itemDelItemFrom}}', $this->shoppingItemDelForm($item, 'cart'), $temp);
-            $temp = str_replace('{{price}}', $this->money->getFormatedAmount(strval($item->regular_price * $item->itemQty)), $temp);
+            $temp = str_replace('{{price}}', $this->money->getFormatedAmount(strval($item->regularPrice * $item->itemQty)), $temp);
         }
 
         return $temp;
@@ -130,14 +130,14 @@ abstract class AbstractShoppingCartPage
     private function whishlistItemHtml(?object $item = null, ?string $template = null) : string
     {
         $temp = '';
-        $HT = $item->regular_price * $item->itemQty;
+        $HT = $item->regularPrice * $item->itemQty;
         $this->taxesProducts[] = $this->filterTaxe($HT, $item, $this->getAllTaxes($this->cartItems), $item->itemQty);
-        if (!is_null($item) && !is_null($template)) {
+        if (! is_null($item) && ! is_null($template)) {
             $temp = str_replace('{{image}}', $this->media($item), $template);
             $temp = str_replace('{{title}}', $item->title, $temp);
             $temp = str_replace('{{categorie}}', $item->categorie, $temp);
             $temp = str_replace('{{whishlist_del_frm}}', $this->shoppingItemDelForm($item, 'wishlist'), $temp);
-            $temp = str_replace('{{price}}', $this->money->getFormatedAmount(strval($item->regular_price * $item->itemQty)), $temp);
+            $temp = str_replace('{{price}}', $this->money->getFormatedAmount(strval($item->regularPrice * $item->itemQty)), $temp);
         }
 
         return $temp;
@@ -186,14 +186,14 @@ abstract class AbstractShoppingCartPage
         $form = $this->frm->form([
             'action' => '#',
             'class' => ['delete-cart-item-frm'],
-            'id' => 'delete-cart-item-frm' . $item->pdt_id ?? 1,
+            'id' => 'delete-cart-item-frm' . $item->pdtId ?? 1,
         ]);
         $template = $this->getTemplate('shoppingDelFormPath');
         $template = str_replace('{{form_begin}}', $this->frm->begin(), $template);
 
         $template = str_replace('{{input}}', $form->input([
             HiddenType::class => ['name' => 'itemId'],
-        ])->noLabel()->noWrapper()->value($item->pdt_id)->html(), $template);
+        ])->noLabel()->noWrapper()->value($item->pdtId)->html(), $template);
 
         $template = str_replace('{{buttonSupprimer}}', $form->input([
             ButtonType::class => ['type' => 'submit', 'class' => $btn_class],

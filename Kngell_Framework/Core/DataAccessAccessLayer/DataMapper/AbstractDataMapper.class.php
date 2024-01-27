@@ -36,6 +36,14 @@ abstract class AbstractDataMapper
         return true;
     }
 
+    /**
+     * Get the value of bind_arr.
+     */
+    public function getBindArr() : array
+    {
+        return $this->bind_arr;
+    }
+
     protected function valueType(mixed $value) : int
     {
         try {

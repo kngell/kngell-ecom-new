@@ -23,7 +23,7 @@ class OrdersManager extends Model
                 ->join('order_details')
                 ->leftJoin('products', ['title', 'short_descr', 'media'])
                 ->leftJoin('order_status', ['status'])
-                ->on(['ord_userId|orders', 'userId|users'], ['ord_id|orders', 'od_order_id|order_details'], ['od_product_id|order_details', 'pdt_id|products'], ['ord_status|orders', 'os_id|order_status'])
+                ->on(['ord_userId|orders', 'userId|users'], ['ord_id|orders', 'od_order_id|order_details'], ['od_product_id|order_details', 'pdtId|products'], ['ord_status|orders', 'os_id|order_status'])
                 ->where([$this->_colIndex => $en->getOrdUserId()])
                 ->return('object');
 

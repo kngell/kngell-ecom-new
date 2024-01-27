@@ -92,11 +92,11 @@ class ProductsListPage extends AbstractProductsListPage implements DisplayPagesI
                 $temp = str_replace('{{image}}', $this->media($product, 'products/product-80x80.jpg'), $this->template);
                 $temp = str_replace('{{title}}', $product->title, $temp);
                 $temp = str_replace('{{categorie}}', $product->categorie ?? '', $temp);
-                $temp = str_replace('{{price}}', $this->money->getFormatedAmount(strval($product->regular_price ?? 0)), $temp);
+                $temp = str_replace('{{price}}', $this->money->getFormatedAmount(strval($product->regularPrice ?? 0)), $temp);
                 $temp = str_replace('{{qty}}', strval($product->qty), $temp);
                 $temp = str_replace('{{qty_sold}}', strval($product->qty_sold), $temp);
-                $temp = str_replace('{{form_edit}}', $this->form('edit', $product->pdt_id), $temp);
-                $temp = str_replace('{{form_delete}}', $this->form('delete', $product->pdt_id), $temp);
+                $temp = str_replace('{{form_edit}}', $this->form('edit', $product->pdtId), $temp);
+                $temp = str_replace('{{form_delete}}', $this->form('delete', $product->pdtId), $temp);
                 $productsListHtml .= $temp;
             }
         }

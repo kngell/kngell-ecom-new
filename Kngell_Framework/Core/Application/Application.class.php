@@ -8,7 +8,6 @@ final class Application extends AbstractBaseBootLoader
 
     public function __construct()
     {
-        $this->registerContainerAliases(ContainerAliasses::get());
     }
 
     public function handle(?string $route = null, array $params = []) : ResponseHandler
@@ -34,6 +33,7 @@ final class Application extends AbstractBaseBootLoader
     public function setConst() : self
     {
         BaseConstants::load($this);
+        $this->registerContainerAliases(ContainerAliasses::get());
         return $this;
     }
 

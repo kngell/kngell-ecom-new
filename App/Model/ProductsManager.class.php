@@ -3,7 +3,7 @@
 declare(strict_types=1);
 class ProductsManager extends Model
 {
-    protected string $_colID = 'pdt_id';
+    protected string $_colID = 'pdtId';
     protected string $_table = 'products';
 
     public function __construct()
@@ -13,41 +13,55 @@ class ProductsManager extends Model
 
     public function getProducts(int|string|null $brand = null) : CollectionInterface
     {
-        if ($brand === null) {
-            $this->table()
-                ->leftJoin('product_categorie', ['pdt_id', 'cat_id'])
-                ->leftJoin('categories', ['categorie'])
-                ->leftJoin('brand', ['br_name'])
-                ->leftJoin('order_details', ['COUNT|od_quantity|qty_sold'])
-                ->on(['pdt_id',  'pdt_id'], ['cat_id', 'cat_id'], ['br_id', 'br_id'], ['pdt_id|products', 'od_product_id'])
-                ->groupBy(['pdt_id DESC' => 'product_categorie'])
-                ->return('object');
-        } else {
-            $this->table()
-                ->leftJoin('product_categorie', ['pdt_id', 'cat_id'])
-                ->leftJoin('categories', ['categorie'])
-                ->leftJoin('brand', ['br_name'])
-                ->on(['pdt_id',  'pdt_id'], ['cat_id', 'cat_id'], ['br_id', 'br_id'])
-                ->where(['br_id' => $brand . '|categories'])
-                ->groupBy(['pdt_id DESC' => 'product_categorie'])
-                ->return('object');
-        }
+        // if ($brand === null) {
+        $query = $this->query()
+            ->leftJoin('product_categorie|pc', ['pdtId', 'catId'])
+            ->on(['products|pdtId',  'pc|pdtId'])
+            ->leftJoin('categories|c', ['categorie'])
+            ->on(['pc|catId', 'c|catId'])
+            ->leftJoin('brand|b', ['brName'])
+            ->on(['b|brId', 'c|brId'])
+            ->leftJoin('order_details|od', ['COUNT|od_quantity|qty_sold'])
+            ->on(['products|pdtId', 'od|od_productId'])
+            ->where(['categories|brId' => $brand])
+            ->groupBy('product_categorie|pdtId')
+            ->return('object');
+
+        // $this->table()
+        //     ->leftJoin('product_categorie', ['pdtId', 'cat_id'])
+        //     ->leftJoin('categories', ['categorie'])
+        //     ->leftJoin('brand', ['br_name'])
+        //     ->leftJoin('order_details', ['COUNT|od_quantity|qty_sold'])
+        //     ->on(['pdtId',  'pdtId'], ['cat_id', 'cat_id'], ['br_id', 'br_id'], ['pdtId|products', 'od_product_id'])
+        //     ->groupBy(['pdtId DESC' => 'product_categorie'])
+        //     ->return('object');
+        // } else {
+        //     $this->table()
+        //         ->leftJoin('product_categorie', ['pdtId', 'cat_id'])
+        //         ->leftJoin('categories', ['categorie'])
+        //         ->leftJoin('brand', ['br_name'])
+        //         ->on(['pdtId',  'pdtId'], ['cat_id', 'cat_id'], ['br_id', 'br_id'])
+        //         ->where(['br_id' => $brand . '|categories'])
+        //         ->groupBy(['pdtId DESC' => 'product_categorie'])
+        //         ->return('object');
+        // }
+        // dd((new QueryBuilder($query))->query());
         return new Collection($this->getAll()->get_results());
     }
 
     public function getSingleProduct(string $slug) : ?object
     {
         $this->table()
-            ->leftJoin('product_categorie', ['pdt_id', 'cat_id'])
+            ->leftJoin('product_categorie', ['pdtId', 'cat_id'])
             ->leftJoin('categories', ['categorie'])
             ->leftJoin('brand', ['br_name'])
             ->on(
-                ['pdt_id',  'pdt_id'],
+                ['pdtId',  'pdtId'],
                 ['cat_id', 'cat_id'],
                 ['br_id', 'br_id'],
             )
             ->where(['slug' => $slug . '|products'])
-            ->groupBy(['pdt_id DESC' => 'products'])
+            ->groupBy(['pdtId DESC' => 'products'])
             ->return('object');
         $pdt = $this->getAll();
         if ($pdt->count() === 1) {
@@ -60,7 +74,7 @@ class ProductsManager extends Model
     {
         $id = $this->id($id);
         $this->table()
-            ->leftJoin('product_categorie', ['pdt_id', 'cat_id'])
+            ->leftJoin('product_categorie', ['pdtId', 'cat_id'])
             ->leftJoin('categories', ['categorie'])
             ->leftJoin('brand', ['br_name'])
             ->leftJoin('warehouse_product', ['product_id', 'wh_id'])
@@ -70,17 +84,17 @@ class ProductsManager extends Model
             ->leftJoin('units', ['un_id', 'unit'])
             ->leftJoin('back_border', ['bb_id', 'name'])
             ->on(
-                ['pdt_id',  'pdt_id'],
+                ['pdtId',  'pdtId'],
                 ['cat_id', 'cat_id'],
                 ['br_id', 'br_id'],
-                ['pdt_id|products', 'product_id|warehouse_product'],
+                ['pdtId|products', 'product_id|warehouse_product'],
                 ['wh_id|warehouse_product', 'wh_id|warehouse'],
                 ['company|products', 'comp_id|company'],
                 ['shipping_class|products', 'shc_id|shipping_class'],
                 ['unit_id|products', 'un_id|units'],
                 ['back_border|products', 'bb_id|back_border']
             )
-            ->where(['pdt_id' => $id . '|products'])
+            ->where(['pdtId' => $id . '|products'])
             ->return('object');
         return $this->getAll();
     }
@@ -115,7 +129,7 @@ class ProductsManager extends Model
     private function getSlug(object $en) : string
     {
         $slug = StringUtil::strToUrl($en->getTitle());
-        if (!$en->isInitialized('slug')) {
+        if (! $en->isInitialized('slug')) {
             while ((new self)->getDetails($slug, 'slug')->count() > 0) :
                 $slug = StringUtil::strToUrl($slug . '-' . rand(0, 99999));
             endwhile;

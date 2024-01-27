@@ -41,7 +41,7 @@ abstract class AbstractProductsListPage
         // $this->select2Fields = $this->select2Fields;
     }
 
-    protected function form(?string $type = null, int|string $id = null) : string
+    protected function form(?string $type = null, int|string|null $id = null) : string
     {
         $frm = $this->frm->form([
             'action' => '#',
@@ -54,7 +54,7 @@ abstract class AbstractProductsListPage
         ]);
         $template = str_replace('{{form_begin}}', $frm->begin(), $this->frmTemplate);
         $template = str_replace('{{input}}', $frm->input([
-            HiddenType::class => ['name' => 'pdt_id'],
+            HiddenType::class => ['name' => 'pdtId'],
         ])->value($id)->noLabel()->noWrapper()->html(), $template);
         list($btnContent, $btnAttr, $btnType) = $this->btnContent($type);
         $template = str_replace('{{button}}', $this->frm->input([

@@ -57,10 +57,10 @@ class Collection implements CollectionInterface
     /**
      * Checks whether a given key exists within the collection.
      *
-     * @param string $key
+     * @param mixed $key
      * @return bool
      */
-    public function has(string $key): bool
+    public function has(mixed $key): bool
     {
         return array_key_exists($key, $this->items) && isset($this->items[$key]);
     }
@@ -237,7 +237,7 @@ class Collection implements CollectionInterface
      */
     public function remove(string $key): void
     {
-        if (!$this->has($key)) {
+        if (! $this->has($key)) {
             return;
         }
         unset($this->items[$key]);
@@ -366,6 +366,11 @@ class Collection implements CollectionInterface
         return $this->first($this->items, $callback, $default);
     }
 
+    public function last() : mixed
+    {
+        return end($this->items);
+    }
+
     /**
      * Get the collection of items as a plain array.
      *
@@ -450,7 +455,7 @@ class Collection implements CollectionInterface
 
     public function flat($array)
     {
-        if (!is_array($array)) {
+        if (! is_array($array)) {
             return false;
         }
         $result = [];

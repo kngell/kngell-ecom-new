@@ -232,7 +232,7 @@ class Form_rules
                 'min' => 2,
                 'max' => 255,
             ],
-            'regular_price' => [
+            'regularPrice' => [
                 'display' => 'Price',
                 'is_numeric' => true,
             ],

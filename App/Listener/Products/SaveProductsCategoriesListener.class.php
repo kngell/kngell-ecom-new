@@ -12,7 +12,7 @@ class SaveProductsCategoriesListener implements ListenerInterface
         $params = $event->getParams();
         $params[$this->field] = [
             'name' => $this->field,
-            'pdt' => 'pdt_id',
+            'pdt' => 'pdtId',
             'rel' => 'cat_id',
         ];
         $savefield = new SaveProductsExternalFieldsListener(

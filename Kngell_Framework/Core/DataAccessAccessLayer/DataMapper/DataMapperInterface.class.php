@@ -7,7 +7,7 @@ interface DataMapperInterface
     // public function setCredentials(array $credentials) : self;
 
     /**
-     * --------------------------------------------------------------------------------------------------
+     * ------------------------------------
      * Prepare the query string.
      * @param string $sql
      * @return self
@@ -16,7 +16,7 @@ interface DataMapperInterface
 
     /**
      * Bind params.
-     * -------------------------------------------------------------------------------------------------.
+     * -----------------------------------.
      * @param mixed $param
      * @param mixed $value
      * @param [type] $type
@@ -26,7 +26,7 @@ interface DataMapperInterface
     public function bind(mixed $param, mixed $value, $type = null);
 
     /**
-     * --------------------------------------------------------------------------------------------------
+     * -----------------------------------------
      * combinaition method wich combines bind type and values.
      *@param array $fields
      *@param bool $isSearch
@@ -35,28 +35,28 @@ interface DataMapperInterface
     public function bindParameters(array $fields = [], bool $isSearch = false) : bool|self;
 
     /**
-     * --------------------------------------------------------------------------------------------------
+     * -----------------------------------------
      * Return number of rows.
      * @return int
      */
     public function numrow(): int;
 
     /**
-     * --------------------------------------------------------------------------------------------------
+     * --------------------------------------------
      * Execute prepare statement.
      * @return void
      */
     public function execute(): mixed;
 
     /**
-     * --------------------------------------------------------------------------------------------------
+     * --------------------------------------------
      * Return sigle object result.
      *@return object
      */
     public function result(): Object;
 
     /**
-     * --------------------------------------------------------------------------------------------------
+     * ---------------------------------------------
      * Return all.
      * @param array $options
      * @return self
@@ -64,7 +64,7 @@ interface DataMapperInterface
     public function results(array $options = [], string $method = '') : self;
 
     /**
-     * --------------------------------------------------------------------------------------------------
+     * ----------------------------------------------
      * Get las insert ID.
      * @return int
      * @throws throwable
@@ -94,4 +94,6 @@ interface DataMapperInterface
     public function get_results() : mixed;
 
     public function getQuery(): PDOStatement;
+
+    public function setBindArr(array $bind_arr): self;
 }

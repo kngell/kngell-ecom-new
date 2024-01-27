@@ -55,9 +55,7 @@ class ClothesHomePage extends AbstractBrandPage implements DisplayPagesInterface
         $text = array_map('trim', explode('|', $slider->slider_text));
         $temp = str_replace('{{text_left}}', $text[0], $temp);
         $temp = str_replace('{{text_right}}', $text[1], $temp);
-        $temp = str_replace('{{btn_text}}', $slider->slider_btn_text, $temp);
-
-        return $temp;
+        return str_replace('{{btn_text}}', $slider->slider_btn_text, $temp);
     }
 
     private function brandSection() : string
@@ -90,7 +88,7 @@ class ClothesHomePage extends AbstractBrandPage implements DisplayPagesInterface
                     $temp = str_replace('{{route}}', 'details' . DS . 'single_clothes' . DS . $product->slug, $this->featureItem);
                     $temp = str_replace('{{image}}', $this->media($product), $temp);
                     $temp = str_replace('{{title}}', $product->title ?? 'Unknown', $temp);
-                    $temp = str_replace('{{price}}', $this->money->getFormatedAmount(strval($product->regular_price == null ? 0 : $product->regular_price)), $temp);
+                    $temp = str_replace('{{price}}', $this->money->getFormatedAmount(strval($product->regularPrice == null ? 0 : $product->regularPrice)), $temp);
                     $temp = str_replace('{{button}}', $this->clothesButton(), $temp);
                     $html .= $temp;
                 }

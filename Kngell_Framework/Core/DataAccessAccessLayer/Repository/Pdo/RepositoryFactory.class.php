@@ -41,14 +41,14 @@ class RepositoryFactory
 
     public function initializeDataAccessManager()
     {
-        return Application::diget(DataAccessLayerManager::class, [
-            'dataMapperEnvConfig' => Application::diget(DataMapperEnvironmentConfig::class, [
-                'credentials' => YamlFile::get('database'),
-            ]),
-            'tableSchema' => $this->tableSchema,
-            'tableSchemaID' => $this->tableSchemaID,
-            'entity' => $this->entity,
-            'options' => [],
-        ])->initialize();
+        return Application::diget(
+            DataAccessLayerManager::class,
+            [
+                'tableSchema' => $this->tableSchema,
+                'tableSchemaID' => $this->tableSchemaID,
+                'entity' => $this->entity,
+                'options' => [],
+            ]
+        )->initialize();
     }
 }

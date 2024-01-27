@@ -100,13 +100,11 @@ class VisitorsManager extends Model
 
     private function getVisitorInfos(string $ip) : self
     {
-        $query_data = $this->table()->where([
-            'cookies' => $this->cookie->get(VISITOR_COOKIE_NAME),
-            'ipAddress|in' => [[$ip, '2', '3'], 'visitors'],
-        ])
-            ->return('class')
-            ->build();
-        return $this->getAll($query_data);
+        $this->query()
+            ->where(['cookies' => $this->cookie->get(VISITOR_COOKIE_NAME)])
+            ->whereIn('ipAddress', [$ip, '2', '3'])
+            ->return('class');
+        return $this->getAll();
     }
 
     private function updateVisitorInfos() : self

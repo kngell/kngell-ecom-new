@@ -23,22 +23,23 @@ class HomeController extends Controller
         }
         $params = [
             'customQuery' => null,
-            'mainTable' => [
-                'name' => 'visitors',
-                'selectors' => ['aaaa', 'bbbb'],
+            'tables' => [
+                'mainTable' => 'visitors|v',
+                'joinTables' => ['visitors|v', 'table1|t1', 'table2|t2'],
+                'selectors' => ['v|aaaa', 'v|bbbb', 't1|xYZ', 't2|HSF'],
             ],
             'joinRules' => [
                 0 => [
-
                     'table' => 'table1',
                     'selectors' => [],
+                    'rule' => 'INNER JOIN',
                     'on' => [
                         0 => [
                             'operator' => '=',
                             'tbl1' => 'taba',
                             'tbl2' => 'tblx',
                             'type' => 'expression',
-                            'link' => ' AND ',
+                            'link' => 'AND',
                             'braceOpen' => '(',
                             'braceClose' => '',
                             'rule' => ['a' => 'b'],
@@ -48,7 +49,7 @@ class HomeController extends Controller
                             'tbl1' => 'tab1',
                             'tbl2' => 'tbl2',
                             'type' => 'expression',
-                            'link' => ' OR ',
+                            'link' => 'OR',
                             'braceOpen' => '',
                             'braceClose' => ')',
                             'rule' => ['c' => 'd'],
@@ -71,13 +72,14 @@ class HomeController extends Controller
 
                     'table' => 'table2',
                     'selectors' => [],
+                    'rule' => 'INNER JOIN',
                     'on' => [
                         0 => [
                             'operator' => '=',
                             'tbl1' => 'taba2',
                             'tbl2' => 'tblx2',
                             'type' => 'expression',
-                            'link' => ' OR ',
+                            'link' => 'OR',
                             'braceOpen' => '',
                             'braceClose' => '',
                             'rule' => ['a' => 'b'],
@@ -102,7 +104,7 @@ class HomeController extends Controller
                     'tbl1' => 'tabq',
                     'tbl2' => '',
                     'type' => 'value',
-                    'link' => ' OR ',
+                    'link' => 'OR',
                     'braceOpen' => '(',
                     'braceClose' => '',
                     'rule' => ['x' => 140],
@@ -119,14 +121,7 @@ class HomeController extends Controller
                 ],
             ],
             'groupBy' => [
-                0 => [
-                    'tbl' => 'tbl1',
-                    'fields' => ['f1', 'f2'],
-                ],
-                2 => [
-                    'tbl' => 'tblm',
-                    'fields' => ['p1', 'm2'],
-                ],
+                'tbl1.f1', 'tbl1.f2', 'tblm.p1', 'tblm.p2',
             ],
             'havingConditions' => [
                 0 => [
@@ -149,9 +144,15 @@ class HomeController extends Controller
                 'offset' => 4,
             ],
         ];
-        $arrParams = new Collection($params);
-        $query = (new QuerySelect($arrParams))->query();
-
+        /** @var SettingsManager */
+        $model = $this->model(SettingsManager::class);
+        // $paramInsert = $model->testInsert();
+        // dd($paramInsert);
+        $arrParams = $model->testNewQuery();
+        // dd($arrParams);
+        $q = new QueryBuilder($arrParams);
+        $query = $q->query();
+        dd($query, $q->getParams(), $q->getBindAry());
         $this->pageTitle('Modile Phones - Best Aparels Online Store');
         $this->view()->addProperties(['name' => 'Home Page']);
         return $this->render('phones' . DS . 'index', $this->displayPhones(

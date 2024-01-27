@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 class EntityManager implements EntityManagerInterface
 {
+    private Entity $entity;
+
     /**
      * Main constructor
      * =====================================================================.
@@ -25,9 +27,15 @@ class EntityManager implements EntityManagerInterface
         return $this->crud->create($fields);
     }
 
-    public function read(array $selectors = [], array $conditions = [], array $params = [], array $options = []): DataMapperInterface
+    /**
+     * @inheritDoc
+     *
+     * @param ?QueryParamsNewInterface $query = null|null $query
+     * @return DataMapperInterface
+     */
+    public function read(?QueryParamsNewInterface $query = null): DataMapperInterface
     {
-        return $this->crud->read($selectors, $conditions, $params, $options);
+        return $this->crud->read($query);
     }
 
     public function release(array $selectors = [], array $conditions = [], array $params = [], array $options = []): mixed

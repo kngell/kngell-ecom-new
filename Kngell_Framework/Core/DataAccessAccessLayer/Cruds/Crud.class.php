@@ -49,26 +49,16 @@ class Crud extends AbstractCrud implements CrudInterface
         }
     }
 
-    /**
-     * =====================================================================
-     * Select data from data base
-     * =====================================================================.
-     *@inheritDoc
-     */
-    public function read(array $selectors = [], array $conditions = [], array $params = [], array $options = []) : DataMapperInterface
+    public function read(?QueryParamsNewInterface $queryParams = null) : DataMapperInterface
     {
         try {
-            $arg = [
-                'table' => $this->getSchema(),
-                'type' => 'select',
-                'selectors' => $selectors,
-                'conditions' => $conditions,
-                'params' => $params,
-                'extras' => $options,
-                'recursive_query' => array_key_exists('recursive', $options) ? $this->recursive_query($options) : '',
-            ];
-            $query = $this->queryBuilder->buildQuery($arg)->select();
-            $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($arg['conditions'], $params));
+            $query = $this->queryBuilder->setQueryParams($queryParams)->query();
+            $this->dataMapper->setBindArr($this->queryBuilder->getBindAry());
+            $options = $queryParams->getQueryParams()['options'];
+            $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters(
+                $this->queryBuilder->getParams(),
+                ['options' => $options]
+            ));
             if ($this->dataMapper->numrow() > 0) {
                 return $this->dataMapper->results($options, __FUNCTION__);
             }

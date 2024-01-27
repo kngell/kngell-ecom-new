@@ -27,8 +27,8 @@ abstract class AbstractNavigation
     {
         $settings = $this->getTemplate('settingsPath');
         if (isset($this->settings) && ! empty($this->settings)) {
-            $settings = str_replace('{{address}}', $this->settings->offsetGet('site_address'), $settings);
-            return str_replace('{{phone}}', $this->settings->offsetGet('site_phone'), $settings);
+            $settings = str_replace('{{address}}', $this->settings->offsetGet('site_address') ?? '', $settings);
+            return str_replace('{{phone}}', $this->settings->offsetGet('site_phone') ?? '', $settings);
         }
 
         return '';

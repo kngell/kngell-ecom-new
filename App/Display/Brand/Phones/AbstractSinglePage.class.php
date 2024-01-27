@@ -45,8 +45,8 @@ abstract class AbstractSinglePage
         $template = str_replace('{{proceedToBuyForm}}', $this->productForm($p, 'Proceed to buy'), $template);
         $template = str_replace('{{addToCartForm}}', $this->productForm($p, 'Add to Cart'), $template);
         $template = str_replace('{{comparePrice}}', $this->money->getFormatedAmount($p->compare_price), $template);
-        $template = str_replace('{{regularPrice}}', $this->money->getFormatedAmount($p->regular_price), $template);
-        $template = str_replace('{{savings}}', $this->money->getFormatedAmount(strval($p->compare_price - $p->regular_price)), $template);
+        $template = str_replace('{{regularPrice}}', $this->money->getFormatedAmount($p->regularPrice), $template);
+        $template = str_replace('{{savings}}', $this->money->getFormatedAmount(strval($p->compare_price - $p->regularPrice)), $template);
         $template = str_replace('{{imageUser}}', ImageManager::asset_img('users/avatar.png'), $template);
         return str_replace('{{imageUser2}}', ImageManager::asset_img('users/default-female-avatar.jpg'), $template);
     }

@@ -51,7 +51,7 @@
                     <div class="col-sm-2 text-right cart-row__price">
                         <div class="price_wrapper">
                             <span
-                                class="product_price"><?=$product->get_money()->getAmount($product->p_regular_price * $product->itemQty)?></span>
+                                class="product_price"><?=$product->get_money()->getAmount($product->p_regularPrice * $product->itemQty)?></span>
                         </div>
                     </div>
                 </div>

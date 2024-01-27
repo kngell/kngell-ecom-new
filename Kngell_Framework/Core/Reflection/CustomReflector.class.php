@@ -9,7 +9,7 @@ class CustomReflector implements CustomReflectorInterface
 
     final public static function getInstance() : CustomReflectorInterface
     {
-        if (!isset(static::$instance)) {
+        if (! isset(static::$instance)) {
             static::$instance = new static();
         }
         return static::$instance;
@@ -17,7 +17,7 @@ class CustomReflector implements CustomReflectorInterface
 
     public function reflectionInstance(string $obj) : ReflectionClass
     {
-        if (!isset($this->reflect)) {
+        if (! isset($this->reflect)) {
             return $this->reflect = new ReflectionClass($obj);
         }
         if ($this->reflect->getName() !== $obj) {
@@ -33,11 +33,13 @@ class CustomReflector implements CustomReflectorInterface
 
     public function isInitialized(string $field, Object $class) : bool
     {
-        $rp = $this->reflectionInstance($class::class)->getProperty($field);
-        if ($rp->isInitialized($class)) {
-            return true;
+        $r = $this->reflectionInstance($class::class);
+        if ($r->hasProperty($field)) {
+            $rp = $r->getProperty($field);
+            if ($rp->isInitialized($class)) {
+                return true;
+            }
         }
-
         return false;
     }
 

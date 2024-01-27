@@ -17,7 +17,7 @@ final class ContainerAliasses
         return [
             'QueryParamsInterface' => QueryParams::class,
             'View' => View::class,
-            'CommentsInterface' => Comments::class,
+            // 'CommentsInterface' => Comments::class,
             'ClientFormBuilder' => ClientFormBuilder::class,
             'DisplayPhonesInterface' => PhonesHomePage::class,
             'FilesManagerInterface' => ImageManager::class,
@@ -32,6 +32,8 @@ final class ContainerAliasses
             'CustomReflectorInterface' => CustomReflector::class,
             'FormBuilder' => FormBuilder::class,
             'PaymentGatewayInterface' => PaymentServicesFactory::class,
+            'QueryParamsNewInterface' => QueryParamsNew::class,
+            'DisplayPagesInterface' => PhonesHomePage::class,
         ];
     }
 
@@ -43,7 +45,10 @@ final class ContainerAliasses
             'DataAccessLayerManager' => DataAccessLayerManager::class,
             'CrudInterface' => Crud::class,
             'MailerInterface' => Mailer::class,
-            'DataMapperEnvironmentConfig' => DataMapperEnvironmentConfig::class,
+            'DatabaseEnvironmentConfig' => [
+                DatabaseEnvironmentConfig::class,
+                YamlFile::get('database'),
+            ],
             'DataMapperInterface' => DataMapper::class,
             'QueryBuilderInterface' => QueryBuilder::class,
         ];
@@ -70,10 +75,7 @@ final class ContainerAliasses
             'LoggerHandlerInterface' => NativeLoggerHandler::class,
             'LoggerInterface' => Logger::class,
             'LoggerFactory' => LoggerFactory::class,
-            'LoginForm' => LoginForm::class,
-            'RegisterForm' => RegisterForm::class,
-            'DispatcherInterface' => Dispatcher::class,
-            'DatabaseConnexionInterface' => DatabaseConnexion::class,
+            'DatabaseConnexionInterface' => PDOConnexion::class,
         ];
     }
 }

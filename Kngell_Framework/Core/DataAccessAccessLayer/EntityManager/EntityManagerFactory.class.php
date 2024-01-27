@@ -23,10 +23,9 @@ class EntityManagerFactory
         string $tableSchema,
         string $tableSchemaID,
         array $options,
-        DataMapperEnvironmentConfig $dataMapperEnvConfig,
         QueryBuilderInterface $queryBuilder
     ) : EntityManagerInterface {
-        $dataMapper = $this->dataMapperFactory->create($dataMapperEnvConfig);
+        $dataMapper = $this->dataMapperFactory->create();
         $crud = $this->crudFactory->create(
             $dataMapper,
             $queryBuilder,

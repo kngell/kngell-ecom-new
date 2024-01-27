@@ -55,5 +55,13 @@ interface QueryBuilderInterface
 
     public function buildQuery(array $args = []) : self;
 
-    public function baseQuery() : array;
+    public function baseQuery() : string;
+
+    public function setQueryParams(?QueryParamsNewInterface $queryParams): self;
+
+    public function query() : string;
+
+    public function getBindAry(): array;
+
+    public function getParams(): array;
 }

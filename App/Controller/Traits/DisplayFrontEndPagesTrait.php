@@ -81,7 +81,7 @@ trait DisplayFrontEndPagesTrait
             'userCart' => $this->getUserCart(),
             'shippingClass' => $this->getShippingClass(),
             'pmtMode' => function () {
-                if (!$this->cache->exists($this->cachedFiles['paiement_mode'])) {
+                if (! $this->cache->exists($this->cachedFiles['paiement_mode'])) {
                     $this->cache->set($this->cachedFiles['paiement_mode'], $this->model(PaymentModeManager::class)->all());
                 }
 
@@ -93,7 +93,7 @@ trait DisplayFrontEndPagesTrait
 
     protected function displayPhones(int $brand = 2, ?string $cache = null) : array
     {
-        return $this->container(DisplayPhonesInterface::class, [
+        return $this->container(DisplayPagesInterface::class, [
             'products' => $this->getProducts(brand: $brand, cache: $cache),
             'userCart' => $this->container(DisplayUserCart::class, [
                 'userCart' => $this->getUserCart(),

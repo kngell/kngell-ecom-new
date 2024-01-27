@@ -20,13 +20,9 @@ class DataMapperFactory
      * @param string $dataMapperEnvConfigObject
      *@return DataMapperInterface
      */
-    public function create(DataMapperEnvironmentConfig $dataMapperEnvConfig) : DataMapperInterface
+    public function create() : DataMapperInterface
     {
-        $dataMapperObject = Application::diget(DataMapperInterface::class, [
-            '_con' => Application::diget(DatabaseConnexionInterface::class, [
-                'credentials' => $dataMapperEnvConfig->getCredentials('mysql'),
-            ]),
-        ]);
+        $dataMapperObject = Application::diget(DataMapperInterface::class);
         if (! $dataMapperObject instanceof DataMapperInterface) {
             throw new DataMapperExceptions(DataMapperInterface::class . ' is not a valid database connexion Object!');
         }

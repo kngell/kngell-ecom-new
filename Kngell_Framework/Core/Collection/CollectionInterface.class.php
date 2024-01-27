@@ -13,13 +13,15 @@ interface CollectionInterface extends Countable, IteratorAggregate, ArrayAccess
 
     public function first(callable|null $callback = null, $default = null) : mixed;
 
+    public function last() : mixed;
+
     /**
      * Checks whether a given key exists within the collection.
      *
-     * @param string $key
+     * @param mixed $key
      * @return bool
      */
-    public function has(string $key): bool;
+    public function has(mixed $key): bool;
 
     /**
      * Returns all the keys of the collection items.

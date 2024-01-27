@@ -14,7 +14,7 @@
             <span><i class="fa-solid fa-star-half-stroke"></i></span>
         </div>
         <div class="price py-2">
-            <span class="product_regular_price">{{price}}</span>
+            <span class="product_regularPrice">{{price}}</span>
         </div>
         {{ProductForm}}
     </div>

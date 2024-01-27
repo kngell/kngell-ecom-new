@@ -7,9 +7,9 @@ interface DatabaseConnexionInterface
     /**
      * DataBase open
      * -------------------------------------------------.
-     * @return PDO
+     * @return self
      */
-    public function open(): PDO;
+    public function open(): self;
 
     /**
      * Data Base close
@@ -27,4 +27,6 @@ interface DatabaseConnexionInterface
     public function rollBack() : bool;
 
     public function commit() : bool;
+
+    public function getConnection() : PDO;
 }

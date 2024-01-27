@@ -230,7 +230,6 @@ class QueryParams extends AbstractQueryParams
         if (isset($params) && ! empty($params)) {
             $this->query_params[$name] = $params;
         }
-
         return $this;
     }
 }

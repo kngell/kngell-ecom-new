@@ -4,15 +4,9 @@ declare(strict_types=1);
 
 class DataAccessLayerManager
 {
-    // private string $tableSchema;
-    // private string $tableSchemaID;
-    // private array $options;
-    // private DataMapperEnvironmentConfig $dataMapperEnvConfig;
-    // private Entity $entity;
-
     /**
      * Main contructor
-     *=====================================================================.
+     *====================================================.
      * @param DataMapperEnvironmentConfig $datamapperEnvConfig
      * @param string $tableSchema
      * @param string $tableSchemaID
@@ -21,7 +15,6 @@ class DataAccessLayerManager
         private string $tableSchema,
         private string $tableSchemaID,
         private array $options,
-        private DataMapperEnvironmentConfig $dataMapperEnvConfig,
         private Entity $entity,
         private EntityManagerFactory $entityManagerFactory,
         private QueryBuilderInterface $queryBuilder
@@ -30,7 +23,6 @@ class DataAccessLayerManager
         $this->tableSchemaID = $tableSchemaID;
         $this->options = $options;
         $this->entity = $entity;
-        $this->dataMapperEnvConfig = $dataMapperEnvConfig;
     }
 
     /**
@@ -44,7 +36,6 @@ class DataAccessLayerManager
             $this->tableSchema,
             $this->tableSchemaID,
             $this->options,
-            $this->dataMapperEnvConfig,
             $this->queryBuilder
         );
     }

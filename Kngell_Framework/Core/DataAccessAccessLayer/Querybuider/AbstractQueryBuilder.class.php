@@ -26,16 +26,21 @@ abstract class AbstractQueryBuilder
         'params' => [],
         'custom' => '',
     ];
-
     /** @var array */
     protected const QUERY_TYPES = ['insert', 'select', 'update', 'delete', 'custom', 'search', 'join', 'show', 'delete'];
+    protected ?QueryParamsInsertInterface $queryParams = null;
     /** @var array */
     protected array $key;
 
     /** @var string */
     protected string $sql = '';
 
-    public function baseQuery() : array
+    public function __construct(?QueryParamsInsertInterface $queryParams)
+    {
+        $this->queryParams = $queryParams;
+    }
+
+    protected function baseQuery() : array
     {
         list($sql, $query) = match (true) {
             array_key_exists('join_rules', $this->key['extras']) => $this->recursiveQuery($this->join($this->key['selectors'], $this->key['extras'])),
@@ -60,19 +65,21 @@ abstract class AbstractQueryBuilder
     protected function mainQuery() : string
     {
         $sql = '';
-        if (! array_key_exists('sql', $this->key['extras'])) {
-            if (strpos($this->key['table'], 'SELECT') !== false) {
-                $sql = $this->key['table'];
-            } else {
-                $selectors = $this->selectors();
-                if (isset($this->key['aggregate']) && $this->key['aggregate']) {
-                    $sql = "SELECT {$this->key['aggregate']}({$this->key['aggregate_field']}) FROM {$this->key['table']}";
+        if ($this->queryP) {
+            if (! array_key_exists('sql', $this->key['extras'])) {
+                if (strpos($this->key['table'], 'SELECT') !== false) {
+                    $sql = $this->key['table'];
                 } else {
-                    $sql = "SELECT {$selectors} FROM {$this->key['table']}";
+                    $selectors = $this->selectors();
+                    if (isset($this->key['aggregate']) && $this->key['aggregate']) {
+                        $sql = "SELECT {$this->key['aggregate']}({$this->key['aggregate_field']}) FROM {$this->key['table']}";
+                    } else {
+                        $sql = "SELECT {$selectors} FROM {$this->key['table']}";
+                    }
                 }
+            } else {
+                $sql = $this->key['extras']['sql'];
             }
-        } else {
-            $sql = $this->key['extras']['sql'];
         }
 
         return $sql;
@@ -145,7 +152,6 @@ abstract class AbstractQueryBuilder
                 $sql .= 'p.' . $recursive['field'] . ' FROM ' . $this->key['table'] . ' p ';
                 $sql .= 'INNER JOIN cte ON p.' . $recursive['parentID'] . '= cte.' . $recursive['id'] . ')';
                 $sql .= 'SELECT COUNT(' . $recursive['field'] . ') AS ' . $recursive['AS'] . ' FROM cte;';
-
                 return [$q, $sql];
             }
             $aryIndex = [];
@@ -157,7 +163,6 @@ abstract class AbstractQueryBuilder
             $sql = $query . ' ' . 'INNER JOIN cte ON ';
             $sql .= $aryIndex[0] . '.' . $recursive['parentID'] . ' = cte' . '.' . $recursive['id'] . ') ';
             $sql .= 'SELECT * FROM cte;';
-
             return [$q, $sql];
         }
         return [$q, ''];

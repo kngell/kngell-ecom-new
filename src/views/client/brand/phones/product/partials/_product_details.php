@@ -76,13 +76,13 @@
                     <tr class="font-rale font-size-14">
                         <td>Deal Price :</td>
                         <td class="font-size-20 text-danger">
-                            $<span><?= $this->getProperty('pm')->getMoney()->getAmount($p->regular_price) ?? 0 ?></span><small
+                            $<span><?= $this->getProperty('pm')->getMoney()->getAmount($p->regularPrice) ?? 0 ?></span><small
                                 class="text-dark font-size-12">&nbsp;&nbsp;inclusive of
                                 all
                                 taxes</small>
                         </td>
                     </tr>
-                    <?php $save = $p->compare_price - $p->regular_price?>
+                    <?php $save = $p->compare_price - $p->regularPrice?>
                     <tr class="font-rale font-size-14">
                         <td>You Save : </td>
                         <td><span

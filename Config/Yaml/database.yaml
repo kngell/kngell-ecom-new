@@ -1,9 +1,14 @@
-driver:
-  mysql:
-    dsn: mysql:host=127.0.0.1;dbname=kngell_eshopping;charset=utf8mb4
-    dbUser: user001
-    dbPass: kngell169kngellBT170kngell&169
-  pgsql:
-    dsn: mysql:host=localhost;dbname=kngellshopping;charset=utf8mb4
-    dbUser: root
-    dbPass: ""
+pdo:
+  driver: mysql
+  host: 127.0.0.1
+  db_name: kngell_eshopping
+  db_username: user001
+  db_user_password: kngell169kngellBT170kngell&169
+  charset: utf8mb4
+  default_fetch: PDO::FETCH_OBJ
+mysqli:
+  host: 127.0.0.1
+  db_name: kngell_eshopping
+  db_username: user001
+  db_user_password: kngell169kngellBT170kngell&169
+  default_fetch: MYSQLI_ASSOC
