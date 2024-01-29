@@ -24,7 +24,7 @@ class SettingsManager extends Model
     public function testNewQuery()
     {
         if (! isset($this->queryParams)) {
-            $this->queryParams = Application::diGet(QueryParamsNewInterface::class);
+            $this->queryParams = Application::diGet(QueryParamsInterface::class);
         }
         $q = $this->query()->select('visitors|v', ['v|aaaa', 'v|bbbb'], 'v|uuuu')
             ->where('abc|parti', 'ppaci|ppat1507')

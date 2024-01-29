@@ -216,4 +216,6 @@ interface CollectionInterface extends Countable, IteratorAggregate, ArrayAccess
     public function getWithDefault(string $key, mixed $defaultValue) : mixed;
 
     public function get(mixed $key): mixed;
+
+    public function replace(mixed $newValues, mixed $oldValue) : void;
 }

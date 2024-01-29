@@ -215,6 +215,7 @@ class Container implements ContainerInterface
         /** @var ReflectionParameter $dependency */
         foreach ($reflectionDependencies as $key => $dependency) {
             $serviceType = $dependency->getType(); // ReflectionType|null
+
             if (! $serviceType instanceof ReflectionNamedType || $serviceType->isBuiltin()) {
                 if ($dependency->isDefaultValueAvailable() || ! empty($args)) {
                     if ($dependency->isDefaultValueAvailable() && ! array_key_exists($dependency->name, $args)) {
@@ -237,14 +238,31 @@ class Container implements ContainerInterface
                     $classDependencies[] = $args[$dependency->name];
                 } elseif (array_key_exists($key, $args)) {
                     $classDependencies[] = $args[$key];
-                } elseif (($dependency->isOptional() || $dependency->isDefaultValueAvailable()) && empty($args) && (! class_exists($serviceType->getName()))) {
-                    $classDependencies[] = $dependency->getDefaultValue();
+                } elseif (($dependency->isOptional() || $dependency->isDefaultValueAvailable()) && empty($args)) {
+                    $class = $this->getClassName($serviceType->getName());
+                    if (! class_exists($class)) {
+                        $classDependencies[] = $dependency->getDefaultValue();
+                    } else {
+                        $classDependencies[] = $this->make($serviceType->getName());
+                    }
                 } else {
                     $classDependencies[] = $this->make($serviceType->getName()); //dependency->name;
                 }
             }
         }
         return $classDependencies;
+    }
+
+    private function getClassName(string $expectedClass) : string
+    {
+        if ($this->has($expectedClass)) {
+            return $this->services[$expectedClass];
+        }
+        if (isset($this->bindings[$expectedClass]) && is_array($this->bindings[$expectedClass])) {
+            return $this->bindings[$expectedClass]['concrete'];
+        } else {
+            return $expectedClass;
+        }
     }
 
     /**

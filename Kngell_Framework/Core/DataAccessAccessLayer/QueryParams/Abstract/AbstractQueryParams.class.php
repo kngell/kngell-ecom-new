@@ -2,16 +2,18 @@
 
 declare(strict_types=1);
 
-abstract class AbstractQueryParamsNew
+abstract class AbstractQueryParams
 {
     use QueryParamsTrait;
 
+    protected MainQuery $query;
     protected QueryParamsHelper $helper;
     protected StatementFactory $stmtFactory;
     protected SelectStatement $select;
-    protected TableStatement $table;
-    protected TableStatement $from;
-    protected TableStatement $join;
+    protected QueryStatement $table;
+    protected QueryStatement $raw;
+    protected QueryStatement $from;
+    protected QueryStatement $join;
     protected ConditionStatement $where;
     protected ConditionStatement $on;
     protected ConditionStatement $having;
@@ -36,11 +38,13 @@ abstract class AbstractQueryParamsNew
     protected bool $selectStatus = false;
     protected bool $fromStatus = false;
 
-    public function __construct(QueryParamsHelper $helper, Token $token, StatementFactory $stFactory)
+    public function __construct(MainQuery $query, QueryParamsHelper $helper, Token $token, StatementFactory $stFactory)
     {
+        $this->query = $query;
         $this->helper = $helper;
         $this->token = $token;
         $this->stmtFactory = $stFactory;
+        $this->query->setLevel(0);
     }
 
     protected function inNotinConditions(array $conditions) : array
@@ -86,7 +90,7 @@ abstract class AbstractQueryParamsNew
             $this->{$stmt} = $this->stmtFactory->createStatement($method);
         }
         $statementString = $this->{$stmt}::class;
-        $this->{$method}->add($this->stmtFactory->getStatementObj($statementString, $this->method));
+        $this->{$method}->add($this->stmtFactory->getStatementObj($statementString, $this->method, $this->query));
         $this->{$method}->getChildren()->last()->add(
             $this->stmtFactory->createParameters($method, $this->params, $this->method)
         );
@@ -114,13 +118,13 @@ abstract class AbstractQueryParamsNew
         $this->params = $this->parseFields($this->params);
         $results = [];
         /** @var AbstractQueryStatement */
-        $stmtParent = $method == 'on' ? $this->{$statement}->getChildren()->last() : $this->{$statement};
+        $stmtParent = $method == 'on' ? $this->{$statement}->getChildren()->last() : $this->query; //{$statement};
         $statementObj = $this->stmtFactory->getStatementObj($this->{$method}::class, $this->method, $stmtParent);
 
         foreach ($this->params as $key => $condition) {
             if ($condition instanceof Closure) {
                 /** @var self */
-                $queryParams = new QueryParamsNew($this->helper, $this->token, $this->stmtFactory);
+                $queryParams = new QueryParams($this->query, $this->helper, $this->token, $this->stmtFactory);
                 $queryParams->setCurrentTable($this->currentTable);
                 $queryParams->setAlias($alias);
                 $queryParams->setTableAlias($this->tableAlias);

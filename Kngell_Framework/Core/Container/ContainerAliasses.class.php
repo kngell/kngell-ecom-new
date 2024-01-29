@@ -32,7 +32,7 @@ final class ContainerAliasses
             'CustomReflectorInterface' => CustomReflector::class,
             'FormBuilder' => FormBuilder::class,
             'PaymentGatewayInterface' => PaymentServicesFactory::class,
-            'QueryParamsNewInterface' => QueryParamsNew::class,
+            'QueryParamsInterface' => QueryParams::class,
             'DisplayPagesInterface' => PhonesHomePage::class,
         ];
     }

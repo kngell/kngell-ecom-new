@@ -30,10 +30,10 @@ class EntityManager implements EntityManagerInterface
     /**
      * @inheritDoc
      *
-     * @param ?QueryParamsNewInterface $query = null|null $query
+     * @param ?QueryParamsInterface $query = null|null $query
      * @return DataMapperInterface
      */
-    public function read(?QueryParamsNewInterface $query = null): DataMapperInterface
+    public function read(?QueryParamsInterface $query = null): DataMapperInterface
     {
         return $this->crud->read($query);
     }

@@ -14,6 +14,7 @@ abstract class AbstractQueryStatement implements QueryStatementInterface
     protected ?string $method;
     protected string $braceOpen = '';
     protected string $braceClose = '';
+    protected string $statement;
 
     public function __construct(?CollectionInterface $children = null, ?QueryParamsHelper $helper = null, ?string $method = null)
     {
@@ -163,6 +164,15 @@ abstract class AbstractQueryStatement implements QueryStatementInterface
         $this->method = $method;
 
         return $this;
+    }
+
+    protected function statement(string|int $stmt) : string|int
+    {
+        if (is_string($stmt)) {
+            $r = explode($this->statement, $stmt);
+            return implode('', $r);
+        }
+        return $stmt;
     }
 
     protected function link() : string

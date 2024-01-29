@@ -10,9 +10,9 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
      * Set Database connection
      * ===================================================================.
      */
-    public function __construct(DatabaseConnexionInterface $_con)
+    public function __construct(DatabaseConnexionInterface $dbCon)
     {
-        parent::__construct($_con);
+        parent::__construct($dbCon);
     }
 
     /**
@@ -62,7 +62,7 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
      */
     public function prepare(string $sql):self
     {
-        $this->_query = $this->_con->open()->prepare($sql);
+        $this->_query = $this->dbCon->open()->getConnection()->prepare($sql);
         return $this;
     }
 
@@ -219,27 +219,27 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
 
     public function beginTransaction() : bool
     {
-        return $this->_con->beginTransaction();
+        return $this->dbCon->beginTransaction();
     }
 
     public function exec(string $sql) : int|false
     {
-        return $this->_con->exec($sql);
+        return $this->dbCon->exec($sql);
     }
 
     public function inTransaction() : bool
     {
-        return $this->_con->inTransaction();
+        return $this->dbCon->inTransaction();
     }
 
     public function rollBack() : bool
     {
-        return $this->_con->rollBack();
+        return $this->dbCon->rollBack();
     }
 
     public function commit() : bool
     {
-        return $this->_con->commit();
+        return $this->dbCon->commit();
     }
 
     /**

@@ -6,16 +6,16 @@ abstract class AbstractDataMapper
 {
     use DataMapperGetSetTrait;
 
-    protected DatabaseConnexionInterface $_con;
+    protected DatabaseConnexionInterface $dbCon;
     protected PDOStatement $_query;
     protected $bind_arr = [];
     protected int $_lastID;
     protected int $_count = 0;
     protected $_results;
 
-    public function __construct(DatabaseConnexionInterface $_con)
+    public function __construct(DatabaseConnexionInterface $dbCon)
     {
-        $this->_con = $_con;
+        $this->dbCon = $dbCon;
     }
 
     public function isEmpty(mixed $value, ?string $errorMsg = null) : bool

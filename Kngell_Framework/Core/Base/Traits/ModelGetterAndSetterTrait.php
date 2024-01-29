@@ -208,7 +208,7 @@ trait ModelGetterAndSetterTrait
         return $this;
     }
 
-    public function getQueryParams() : QueryParamsNewInterface
+    public function getQueryParams() : QueryParamsInterface
     {
         return $this->queryParams;
     }

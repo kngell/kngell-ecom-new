@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class TableParameters extends AbstractQueryStatement
+class QueryParameters extends AbstractQueryStatement
 {
     private array $params = [];
 

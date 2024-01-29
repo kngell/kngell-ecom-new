@@ -2,11 +2,18 @@
 
 declare(strict_types=1);
 
-class TableStatement extends AbstractQueryStatement
+class GroupAndSortStatement extends AbstractQueryStatement
 {
+    protected string $statement;
+
     public function __construct(?CollectionInterface $children = null, ?QueryParamsHelper $helper = null, ?string $method = null)
     {
         parent::__construct($children, $helper, $method);
+        $this->statement = match (true) {
+            $this->method == 'groupBy' => ' GROUP BY ',
+            $this->method == 'orderBy' => ' ORDER BY ',
+            default => '',
+        };
     }
 
     public function proceed(): array
@@ -15,11 +22,10 @@ class TableStatement extends AbstractQueryStatement
             $childs = $this->children->all();
             $r = '';
             foreach ($childs as $child) {
-                $sep = $child->getMethod() == 'on' ? ' ON ' : '';
-                list($join, $params, $bind) = $child->proceed();
-                $r .= $sep . $join;
+                $gs = $child->proceed();
+                $r .= implode(',', $gs[0]);
             }
         }
-        return [$r, $params, $bind];
+        return [[$this->statement . $this->statement($r)], [], []];
     }
 }

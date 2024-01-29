@@ -15,6 +15,6 @@ class CounterParameters extends AbstractQueryStatement
 
     public function proceed(): array
     {
-        return [$this->params['params']];
+        return [$this->params['params'], [], []];
     }
 }

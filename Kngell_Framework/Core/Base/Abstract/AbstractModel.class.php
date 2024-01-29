@@ -7,7 +7,7 @@ abstract class AbstractModel
     use ModelGetterAndSetterTrait;
     use ModelTrait;
     protected string $_modelName;
-    protected QueryParamsNewInterface $queryParams;
+    protected QueryParamsInterface $queryParams;
     protected RepositoryInterface|FileStorageRepositoryInterface $repository;
     protected MoneyManager $money;
     protected Entity $entity;
@@ -50,7 +50,7 @@ abstract class AbstractModel
      */
     abstract public function guardedID() : array;
 
-    public function table(?string $tbl = null, ...$fields) : QueryParamsNewInterface
+    public function table(?string $tbl = null, ...$fields) : QueryParamsInterface
     {
         return $this->queryParams->setBaseOptions(
             $tbl ?? $this->_table,
@@ -58,7 +58,7 @@ abstract class AbstractModel
         )->query($tbl, $fields);
     }
 
-    public function query(?string $queryType = null, ?string $tbl = null, ...$params) : QueryParamsNewInterface|QueryParamsInsertInterface|QueryParamsSelectInterface|QueryParamsConditionsInterface
+    public function query(?string $queryType = null, ?string $tbl = null, ...$params) : QueryParamsInterface
     {
         return $this->queryParams->setBaseOptions(
             $tbl ?? $this->_table,
@@ -66,7 +66,7 @@ abstract class AbstractModel
         )->query($queryType, $params);
     }
 
-    public function tableRecursive(?string $tbl = null, mixed $columns = null) : QueryParamsNewInterface
+    public function tableRecursive(?string $tbl = null, mixed $columns = null) : QueryParamsInterface
     {
         return $this->table($tbl, $columns, true);
     }

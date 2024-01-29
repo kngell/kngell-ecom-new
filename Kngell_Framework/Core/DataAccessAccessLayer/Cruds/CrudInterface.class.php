@@ -36,10 +36,10 @@ interface CrudInterface
     /**
      * Read Data from data base.
      * --------------------------------------------------------------.
-     * @param QueryParamsNewInterface|null $query
+     * @param QueryParamsInterface|null $query
      * @return DataMapperInterface
      */
-    public function read(?QueryParamsNewInterface $queryParams = null) : DataMapperInterface;
+    public function read(?QueryParamsInterface $queryParams = null) : DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------

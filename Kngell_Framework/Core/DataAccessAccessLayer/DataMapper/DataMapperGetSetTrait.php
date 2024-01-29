@@ -65,7 +65,7 @@ trait DataMapperGetSetTrait
      */
     public function getCon(): DatabaseConnexionInterface
     {
-        return $this->_con;
+        return $this->dbCon;
     }
 
     /**

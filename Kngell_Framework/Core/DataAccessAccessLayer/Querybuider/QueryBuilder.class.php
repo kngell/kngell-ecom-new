@@ -9,9 +9,9 @@ class QueryBuilder implements QueryBuilderInterface
     private array $recursiveQuery;
     private array $params = [];
     private array $bindAry = [];
-    private ?QueryParamsNewInterface $queryParams;
+    private ?QueryParamsInterface $queryParams;
 
-    public function __construct(?QueryParamsNewInterface $queryParams)
+    public function __construct(?QueryParamsInterface $queryParams)
     {
         // parent::__construct($queryParams);
         $this->queryParams = $queryParams;
@@ -161,7 +161,7 @@ class QueryBuilder implements QueryBuilderInterface
     /**
      * Set the value of queryParams.
      */
-    public function setQueryParams(?QueryParamsNewInterface $queryParams): self
+    public function setQueryParams(?QueryParamsInterface $queryParams): self
     {
         $this->queryParams = $queryParams;
 

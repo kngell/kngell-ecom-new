@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class CounterStatement extends AbstractQueryStatement
+class QueryStatement extends AbstractQueryStatement
 {
     public function __construct(?CollectionInterface $children = null, ?QueryParamsHelper $helper = null, ?string $method = null)
     {
@@ -13,10 +13,13 @@ class CounterStatement extends AbstractQueryStatement
     {
         if ($this->children->count() > 0) {
             $childs = $this->children->all();
+            $r = '';
             foreach ($childs as $child) {
-                [$param] = $child->proceed();
+                // $sep = $child->getMethod() == 'on' ? ' ON ' : '';
+                list($join, $params, $bind) = $child->proceed();
+                $r .= $join;
             }
         }
-        return [$param] ?? [];
+        return [$r, $params, $bind];
     }
 }

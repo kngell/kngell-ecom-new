@@ -30,7 +30,7 @@ class PDOConnexion extends AbstractConnection implements DatabaseConnexionInterf
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci',
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET CHARACTER SET UTF8mb4',
             PDO::ATTR_PERSISTENT => true,
-            PDO::ATTR_DEFAULT_FETCH_MODE => $this->credentials['default_fetch'],
+            PDO::ATTR_DEFAULT_FETCH_MODE => constant($this->credentials['default_fetch']),
             PDO::ATTR_EMULATE_PREPARES => false,
             PDO::MYSQL_ATTR_FOUND_ROWS => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -74,12 +74,12 @@ class PDOConnexion extends AbstractConnection implements DatabaseConnexionInterf
     protected function parseCredentials(): array
     {
         $dsn = sprintf(
-            '%s:host=%s;%s;dbname=%s;charset=%s',
+            '%s:host=%s;%sdbname=%s%s',
             $this->credentials['driver'],
             $this->credentials['host'],
-            $this->credentials['driver'],
-            isset($this->credentials['port']) ? 'port=' . $this->credentials['port'] : '',
-            $this->credentials['charset'],
+            isset($this->credentials['port']) ? 'port=' . $this->credentials['port'] . ';' : '',
+            $this->credentials['db_name'],
+            isset($this->credentials['charset']) ? ';charset=' . $this->credentials['charset'] : '',
         );
         return [$dsn, $this->credentials['db_username'], $this->credentials['db_user_password']];
     }

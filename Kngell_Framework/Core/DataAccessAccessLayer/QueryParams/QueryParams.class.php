@@ -2,234 +2,281 @@
 
 declare(strict_types=1);
 
-class QueryParams extends AbstractQueryParams
+class QueryParams extends AbstractQueryParams implements QueryParamsInterface
 {
-    public function __construct(string $tableSchema, ?object $entity = null)
+    private const SELECT_FLOW = ['select', 'from', 'join', 'where', 'groupBy', 'orderBy', 'limit', 'offset'];
+
+    public function __construct(MainQuery $query, QueryParamsHelper $helper, Token $token, StatementFactory $stFactory)
     {
-        parent::__construct($tableSchema, $entity);
+        parent::__construct($query, $helper, $token, $stFactory);
     }
 
-    public function table(?string $tbl = null, mixed $columns = null) : self
+    public function rawQuery(string $query): self
     {
-        $this->reset();
-        $tbl = $this->parseTable($tbl);
-        $this->query_params['table_join'] = [$tbl != null ? $tbl : $this->tableSchema => $columns != null ? $columns : ['*']];
-        $this->addTableToOptions($tbl);
+        $this->statementProcessing([
+            'tbl' => $tbl ?? $this->currentTable, 'alias' => $this->alias,
+        ], __FUNCTION__, 'raw');
         return $this;
     }
 
-    public function query(string $sql) : self
+    public function select(?string $tbl = null, ...$selectors) : self
     {
-        $this->query_params['custom'] = $sql;
-        return $this;
-    }
-
-    public function params(?string $repositoryMethod = null) : array
-    {
-        $this->getSelectors();
-        return match ($repositoryMethod) {
-            'findOneBy' => [$this->query_params['conditions'] ?? [],  $this->query_params['options'] ?? []],
-            'findBy','findBySearch' => [$this->query_params['selectors'] ?? [], $this->query_params['conditions'] ?? [], $this->query_params['parameters'] ?? [], $this->query_params['options'] ?? []],
-            'delete','update' => [$this->query_params['conditions'] ?? []],
-            'delete','update' => [$this->query_params['conditions'] ?? []],
-        };
-    }
-
-    public function join(?string $tbl = null, mixed $columns = null, string $joinType = 'INNER JOIN') : self
-    {
-        $tbl = $this->parseTable($tbl);
-        $this->key('table_join');
-        if (! array_key_exists($tbl, $this->query_params['table_join'])) {
-            $this->query_params['table_join'] += [$tbl != null ? $tbl : $this->tableSchema => $columns != null ? $columns : ['*']];
-            $this->key('options');
-            $this->query_params['options']['join_rules'][] = $joinType;
-            $this->addTableToOptions($tbl);
-
-            return $this;
+        $this->queryParams['queryType'] = 'select';
+        list($alias, $tbl) = $this->tableAlias($tbl ?? $this->currentTable);
+        $this->selectStatus = true;
+        $this->statementProcessing([
+            'table' => $tbl,
+            'alias' => $alias,
+            'selectors' => $selectors,
+        ], __FUNCTION__, 'select');
+        if (! $this->fromStatus) {
+            $this->from();
         }
-        throw new Exception('Cannot join the same table ' . $tbl);
+        return $this;
     }
 
-    public function leftJoin(?string $tbl = null, mixed $columns = null) : self
+    public function table(?string $tbl = null) : self
     {
-        return $this->join($tbl, $columns, 'LEFT JOIN');
+        return $this;
     }
 
-    public function rightJoin(?string $tbl = null, mixed $columns = null) : self
+    public function from(?string $tbl = null) : self
     {
-        return $this->join($tbl, $columns, 'RIGHT JOIN');
+        $this->fromStatus = true;
+        $this->statementProcessing([
+            'tbl' => $tbl ?? $this->currentTable, 'alias' => $this->alias,
+        ], __FUNCTION__, 'from');
+        return $this;
     }
 
-    public function on(...$params) : self
+    public function join(?string $tbl = null, ...$selectors) : self
     {
-        $this->key('options');
-        $tableIndex = 0;
-        foreach ($params as $key => $join_params) {
-            if (is_array($join_params) && ! empty($join_params)) {
-                foreach ($join_params as $k => $arg) {
-                    if (is_array($arg)) {
-                        $this->getParams($k, $arg);
-                    } else {
-                        $this->getJoinOptions($k, $arg, $key, $k + $tableIndex);
-                    }
+        if (null == $tbl) {
+            throw new BadQueryArgumentException('No Join table to Define!');
+        }
+        if (! $this->selectStatus) {
+            $this->select();
+        }
+        if (! $this->fromStatus) {
+            $this->from();
+        }
+        list($alias, $tbl) = $this->tableAlias($tbl);
+        $this->joinTable = $tbl;
+        $this->statementProcessing([
+            'table' => $tbl,
+            'alias' => $alias,
+            'selectors' => $selectors,
+            'rule' => $this->onRule,
+        ], 'select', 'select');
+        $this->statementProcessing(
+            [
+                'tbl' => $tbl,
+                'alias' => $alias,
+                'joinRule' => $this->onRule,
+            ],
+            __FUNCTION__,
+            'join'
+        );
+        $this->onRule = 'INNER JOIN';
+        return $this;
+    }
+
+    public function leftJoin(?string $tbl = null, ...$selectors) : self
+    {
+        $this->onRule = 'LEFT JOIN';
+        return $this->join($tbl, $selectors);
+    }
+
+    public function rightJoin(?string $tbl = null, ...$selectors) : self
+    {
+        $this->onRule = 'RIGHT JOIN';
+        return $this->join($tbl, $selectors);
+    }
+
+    public function on(...$onConditions) : self
+    {
+        $args = func_get_args();
+        $this->conditionsProcessing($args, __FUNCTION__, $this->joinTable, $this->alias);
+        return $this;
+    }
+
+    public function where(...$conditions) : self
+    {
+        $args = func_get_args();
+        $this->conditionsProcessing($args, __FUNCTION__, $this->currentTable, $this->alias);
+        return $this;
+    }
+
+    public function orWhere(...$conditions) : self
+    {
+        return $this->where($conditions, __FUNCTION__);
+    }
+
+    public function andWhere(...$conditions) : self
+    {
+        return $this->where($conditions, __FUNCTION__);
+    }
+
+    public function whereIn(...$conditions) : self
+    {
+        $conditions = $this->inNotinConditions($conditions);
+        return $this->where($conditions, __FUNCTION__);
+    }
+
+    public function whereNotIn(...$conditions) : self
+    {
+        $conditions = $this->inNotinConditions($conditions);
+        return $this->where($conditions, __FUNCTION__);
+    }
+
+    public function having(...$havingConditions) : self
+    {
+        $args = func_get_args();
+        $this->conditionsProcessing($args, __FUNCTION__, $this->currentTable, $this->alias);
+        return $this;
+    }
+
+    public function havingNotIn(...$havingConditions) : self
+    {
+        if (count($havingConditions) == 2) {
+            $conditions = array_merge([$havingConditions[0]], $havingConditions[1]);
+            return $this->having($conditions, __FUNCTION__);
+        }
+        throw new BadQueryArgumentException('Bad Not In Argumenets or clause');
+    }
+
+    public function groupBy(...$groupByParams) : self
+    {
+        $this->statementProcessing(
+            [
+                'params' => $groupByParams,
+                'tblAlias' => $this->tableAlias,
+            ],
+            __FUNCTION__,
+            'groupBy'
+        );
+        return $this;
+    }
+
+    public function orderBy(...$orderByParams) : self
+    {
+        $this->statementProcessing(
+            [
+                'params' => $orderByParams,
+                'tblAlias' => $this->tableAlias,
+            ],
+            __FUNCTION__,
+            'orderBy'
+        );
+        return $this;
+    }
+
+    public function limit(int|null $limit = null) : self
+    {
+        $this->statementProcessing(
+            [
+                'params' => $limit,
+                'tblAlias' => $this->tableAlias,
+            ],
+            __FUNCTION__,
+            'limit'
+        );
+        return $this;
+    }
+
+    public function offset(int|null $offset = null) : self
+    {
+        $this->statementProcessing(
+            [
+                'params' => $offset,
+                'tblAlias' => $this->tableAlias,
+            ],
+            __FUNCTION__,
+            'offset'
+        );
+        return $this;
+    }
+
+    public function insert(?string $tbl = null, ...$params) : self
+    {
+        $this->queryParams['queryType'] = 'insert';
+        list($alias, $tbl) = $this->tableAlias($tbl ?? $this->currentTable);
+        $this->method = __FUNCTION__;
+        $this->key('table');
+        $this->queryParams['insert']['table'] = $tbl;
+        $this->queryParams['insert']['tablealias'] = $alias;
+        if (isset($params)) {
+            return $this->parseFieldsValuesForInsert($params);
+        }
+        return $this;
+    }
+
+    public function get() : CollectionInterface
+    {
+        return new Collection($this->queryParams);
+    }
+
+    public function build() : self
+    {
+        if (! $this->selectStatus) {
+            $this->select();
+        }
+        if (! $this->fromStatus) {
+            $this->from();
+        }
+        if ($this->queryParams['queryType'] == 'select') {
+            foreach (self::SELECT_FLOW as $flow) {
+                if (isset($this->{$flow})) {
+                    $this->query->add($this->{$flow});
                 }
-                $tableIndex++;
             }
         }
-        return $this;
-    }
-
-    public function getLock(string $field, mixed $value) : self
-    {
-        $this->query_params['options']['lock_field'] = $field;
-        $this->query_params['options']['lock_value'] = $value;
-        return $this;
-    }
-
-    public function doRelease(string $field) : self
-    {
-        $this->query_params['options']['doRelease'] = $field;
-        return $this;
-    }
-
-    public function where(array $conditions, ?string $op = null, ?string $whereType = null) : self
-    {
-        if (isset($conditions) && ! empty($conditions)) {
-            foreach ($conditions as $key => $value) {
-                $whereParams = $this->whereParams($conditions, $key, $value);
-                if (is_string($key)) {
-                    if (! is_null($whereType)) {
-                        list($key, $tbl) = $this->getField($key);
-                        $key = $key . '|' . 'IN';
-                        $whereParams['tbl'] = $tbl == '' ? $this->tableSchema : $tbl;
-                    }
-                    list($whereParams['field'], $whereParams['operator']) = $this->fieldOperator($key);
-                    list($whereParams['value'], $table) = $this->fieldValue($whereParams['value'], $whereParams['operator'], $whereType);
-                    $whereParams['tbl'] = ! array_key_exists('tbl', $whereParams) && ! empty($table) ? $table : $whereParams['tbl'];
-                    is_null($op) ? $this->query_params['conditions'] += $this->condition($whereParams) : $this->query_params['conditions'][$op] += $this->condition($whereParams);
-                    $this->conditionBreak = [];
-                } else {
-                    $this->conditionBreak = $whereParams;
-                }
-            }
-            return $this;
-        }
-    }
-
-    public function whereIn(array $conditions, ?string $op = null) : self
-    {
-        return $this->where($conditions, null, 'IN');
-        // if (isset($conditions) && !empty($conditions)) {
-        //     foreach ($conditions as $key => $value) {
-        //         $whereParams = $this->whereParams($conditions, $key, $value);
-        //         if (is_string($key)) {
-        //             list($whereParams['field'], $whereParams['operator']) = $this->fieldOperator($key);
-        //             is_null($op) ? $this->query_params['conditions'] += $this->condition($whereParams) : $this->query_params['conditions'][$op] += $this->condition($whereParams);
-        //             $this->conditionBreak = [];
-        //         } else {
-        //             $this->conditionBreak = $whereParams;
-        //         }
-        //     }
-        //     return $this;
-        // }
-    }
-
-    public function and(array $cond, string $op = 'and') : self
-    {
-        if (isset($cond) && ! empty($cond)) {
-            if (! array_key_exists($op, $this->query_params['conditions'])) {
-                $this->query_params['conditions'][$op] = [];
-            }
-
-            return $this->where($cond, $op);
-        }
-    }
-
-    public function or(array $cond) : self
-    {
-        return $this->and($cond, 'or');
-    }
-
-    public function build() : array
-    {
-        return $this->query_params;
-    }
-
-    public function groupBy(...$groupByAry) : self
-    {
-        $this->key('options');
-        foreach ($groupByAry as $param) {
-            if (is_string($param)) {
-                $this->query_params['options']['group_by'][] = $param;
-            } elseif (is_array($param)) {
-                $this->query_params['options']['group_by'][] = $param[key($param)] . '.' . key($param);
-            }
-        }
-
-        return $this;
-    }
-
-    public function orderBy(array $orderByAry) : self
-    {
-        $this->key('options');
-        foreach ($orderByAry as $tbl => $field) {
-            $tbl = is_numeric($tbl) ? $this->query_params['options']['table'][0] : $tbl;
-            if (str_contains($field, '|')) {
-                $parts = explode('|', $field);
-                if (is_array($parts)) {
-                    $this->query_params['options']['orderby'][] = is_numeric($tbl) ? $this->current_table . '.' . $parts[0] . ' ' . $parts[1] : $tbl . '.' . $parts[0] . ' ' . $parts[1];
-                }
-            } else {
-                $this->query_params['options']['orderby'][] = $tbl . '.' . $field;
-            }
-        }
-
+        [$query,$params,$bind_arr] = $this->query->proceed();
         return $this;
     }
 
     public function return(string $str) : self
     {
         $this->key('options');
-        $this->query_params['options']['return_mode'] = $str;
+        $this->queryParams['options']['return_mode'] = $str;
+        return $this->build();
+    }
+
+    public function setBaseOptions(string $tbl, Entity $entity) : self
+    {
+        $this->currentTable = $tbl;
         return $this;
     }
 
-    public function parameters(array $params) : self
+    public function query(?string $queryType = null, ...$params) : self|CollectionInterface
     {
-        if (! array_key_exists('parameters', $this->query_params)) {
-            $this->query_params['parameters'] = [];
+        $params = ArrayUtil::flatten_with_keys($params);
+        switch ($queryType) {
+            case 'select':
+                return $this->select(null, $params);
+                break;
+
+            case 'insert':
+                return $this->insert($this->currentTable, $params)
+                    ->parseFieldsValuesForInsert($params);
+                break;
+            default:
+                return $this;
+                break;
         }
-
-        return $this->aryParams($params, 'parameters');
     }
 
-    public function recursiveQuery(self $query_recursive)
+    protected function key(?string $key = null, ?string $baseKey = null) : void
     {
-        list($selectors, $conditions, $parameters, $options) = $query_recursive->params('findBy');
-        $this->query_params['options']['recursive'] = $query_recursive->build();
-        $this->query_params['options']['recursive']['selectors'] = $selectors;
-        $this->query_params['options']['recursive']['conditions'] = $conditions;
-        $this->query_params['options']['recursive']['parameters'] = $parameters;
-        $this->query_params['options']['recursive']['options'] = $options;
-
-        return $this;
-    }
-
-    public function recursive(string $parentID, string $id, array $tbl_recursive = []) : self
-    {
-        $this->key('options');
-        $this->query_params['options']['recursive']['parentID'] = $parentID;
-        $this->query_params['options']['recursive']['id'] = $id;
-        $this->recursiveCount();
-
-        return $this;
-    }
-
-    private function aryParams(array $params, string $name) : self
-    {
-        if (isset($params) && ! empty($params)) {
-            $this->query_params[$name] = $params;
+        if ($baseKey !== null) {
+            if (! array_key_exists($baseKey, $this->queryParams)) {
+                $this->queryParams[$baseKey] = [];
+            }
+            if (! array_key_exists($key, $this->queryParams[$baseKey])) {
+                $this->queryParams[$baseKey][$key] = [];
+            }
+        } elseif (! array_key_exists($key, $this->queryParams)) {
+            $this->queryParams[$key] = [];
         }
-        return $this;
     }
 }

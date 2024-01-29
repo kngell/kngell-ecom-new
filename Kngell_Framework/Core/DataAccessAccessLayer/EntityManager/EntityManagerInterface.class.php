@@ -29,10 +29,10 @@ interface EntityManagerInterface
     /**
      * Read Data from Database
      * ---------------------------------------------------------------.
-     * @param QueryParamsNewInterface|null $query
+     * @param QueryParamsInterface|null $query
      * @return DataMapperInterface
      */
-    public function read(?QueryParamsNewInterface $query = null): DataMapperInterface;
+    public function read(?QueryParamsInterface $query = null): DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------

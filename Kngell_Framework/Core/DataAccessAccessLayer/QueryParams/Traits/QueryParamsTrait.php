@@ -43,7 +43,7 @@ trait QueryParamsTrait
     /**
      * Get the value of from.
      */
-    public function getFrom(): TableStatement
+    public function getFrom(): QueryStatement
     {
         return $this->from;
     }
@@ -51,7 +51,7 @@ trait QueryParamsTrait
     /**
      * Set the value of from.
      */
-    public function setFrom(TableStatement $from): self
+    public function setFrom(QueryStatement $from): self
     {
         $this->from = $from;
 
@@ -61,7 +61,7 @@ trait QueryParamsTrait
     /**
      * Get the value of join.
      */
-    public function getJoin(): TableStatement
+    public function getJoin(): QueryStatement
     {
         return $this->join;
     }
@@ -69,7 +69,7 @@ trait QueryParamsTrait
     /**
      * Set the value of join.
      */
-    public function setJoin(TableStatement $join): self
+    public function setJoin(QueryStatement $join): self
     {
         $this->join = $join;
 

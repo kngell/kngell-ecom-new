@@ -49,7 +49,7 @@ class Crud extends AbstractCrud implements CrudInterface
         }
     }
 
-    public function read(?QueryParamsNewInterface $queryParams = null) : DataMapperInterface
+    public function read(?QueryParamsInterface $queryParams = null) : DataMapperInterface
     {
         try {
             $query = $this->queryBuilder->setQueryParams($queryParams)->query();

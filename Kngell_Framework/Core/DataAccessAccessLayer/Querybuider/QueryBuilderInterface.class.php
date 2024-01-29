@@ -57,7 +57,7 @@ interface QueryBuilderInterface
 
     public function baseQuery() : string;
 
-    public function setQueryParams(?QueryParamsNewInterface $queryParams): self;
+    public function setQueryParams(?QueryParamsInterface $queryParams): self;
 
     public function query() : string;
 

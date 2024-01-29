@@ -232,15 +232,21 @@ class Collection implements CollectionInterface
     /**
      * Remove the item from the collection.
      *
-     * @param string $key
+     * @param string|int $key
      * @return void
      */
-    public function remove(string $key): void
+    public function remove(string|int $key): void
     {
         if (! $this->has($key)) {
             return;
         }
         unset($this->items[$key]);
+    }
+
+    public function replace(mixed $newValues, mixed $oldValue) : void
+    {
+        $key = $this->getKeyByValue($oldValue);
+        $this->items[$key] = $newValues;
     }
 
     public function clear(string $key): void
@@ -262,11 +268,17 @@ class Collection implements CollectionInterface
 
     public function removeByValue(mixed $value) : void
     {
+        $key = $this->getKeyByValue($value);
+        $this->remove($key);
+    }
+
+    public function getKeyByValue(mixed $value) : string
+    {
         $key = array_search($value, $this->items, true);
         if ($key === false) {
             throw new BaseException('Cannot remove the value');
         }
-        $this->remove($key);
+        return $key;
     }
 
     /**

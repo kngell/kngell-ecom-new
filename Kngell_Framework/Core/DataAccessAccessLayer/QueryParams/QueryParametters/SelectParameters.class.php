@@ -15,7 +15,7 @@ class SelectParameters extends AbstractQueryStatement
     public function proceed(): array
     {
         $selectors = isset($this->params['selectors']) ? $this->params['selectors'] : [];
-        return $this->selectors($selectors);
+        return [$this->selectors($selectors), [], []];
     }
 
     private function selectors(array $selectors) : array

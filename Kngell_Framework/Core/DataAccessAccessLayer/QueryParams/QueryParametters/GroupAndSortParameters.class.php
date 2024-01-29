@@ -15,9 +15,9 @@ class GroupAndSortParameters extends AbstractQueryStatement
     public function proceed(): array
     {
         return match ($this->method) {
-            'groupBy' => $this->groupBy(),
-            'orderBy' => $this->orderBy(),
-            default => ''
+            'groupBy' => [$this->groupBy(), [], []],
+            'orderBy' => [$this->orderBy(), [], []],
+            default => []
         };
     }
 

@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-interface QueryParamsNewInterface
+interface QueryParamsInterface
 {
+    public function rawQuery(string $query) : self;
+
     public function select(?string $tbl = null, ...$selectors) : self;
 
     public function from(?string $tbl = null) : self;
@@ -52,51 +54,51 @@ interface QueryParamsNewInterface
 
     public function getSelect(): SelectStatement;
 
-    public function setSelect(SelectStatement $select): AbstractQueryParamsNew;
+    public function setSelect(SelectStatement $select): AbstractQueryParams;
 
-    public function getFrom(): TableStatement;
+    public function getFrom(): QueryStatement;
 
-    public function setFrom(TableStatement $from): AbstractQueryParamsNew;
+    public function setFrom(QueryStatement $from): AbstractQueryParams;
 
-    public function getJoin(): TableStatement;
+    public function getJoin(): QueryStatement;
 
-    public function setJoin(TableStatement $join): AbstractQueryParamsNew;
+    public function setJoin(QueryStatement $join): AbstractQueryParams;
 
     public function getWhere(): ConditionStatement;
 
-    public function setWhere(ConditionStatement $where): AbstractQueryParamsNew;
+    public function setWhere(ConditionStatement $where): AbstractQueryParams;
 
     public function getOn(): ConditionStatement;
 
-    public function setOn(ConditionStatement $on): AbstractQueryParamsNew;
+    public function setOn(ConditionStatement $on): AbstractQueryParams;
 
     public function getHaving(): ConditionStatement;
 
-    public function setHaving(ConditionStatement $having): AbstractQueryParamsNew;
+    public function setHaving(ConditionStatement $having): AbstractQueryParams;
 
     public function getGroupBy(): GroupAndSortStatement;
 
-    public function setGroupBy(GroupAndSortStatement $groupBy): AbstractQueryParamsNew;
+    public function setGroupBy(GroupAndSortStatement $groupBy): AbstractQueryParams;
 
     public function getOrderBy(): GroupAndSortStatement;
 
-    public function setOrderBy(GroupAndSortStatement $orderBy): AbstractQueryParamsNew;
+    public function setOrderBy(GroupAndSortStatement $orderBy): AbstractQueryParams;
 
     public function getLimit(): CounterStatement;
 
-    public function setLimit(CounterStatement $limit): AbstractQueryParamsNew;
+    public function setLimit(CounterStatement $limit): AbstractQueryParams;
 
     public function getOffset(): CounterStatement;
 
-    public function setOffset(CounterStatement $offset): AbstractQueryParamsNew;
+    public function setOffset(CounterStatement $offset): AbstractQueryParams;
 
     public function getQueryParams(): array;
 
-    public function setQueryParams(array $queryParams): AbstractQueryParamsNew;
+    public function setQueryParams(array $queryParams): AbstractQueryParams;
 
     public function getCurrentTable(): string;
 
-    public function setCurrentTable(string $currentTable): AbstractQueryParamsNew;
+    public function setCurrentTable(string $currentTable): AbstractQueryParams;
 
     public function getTableAlias(): array;
 }

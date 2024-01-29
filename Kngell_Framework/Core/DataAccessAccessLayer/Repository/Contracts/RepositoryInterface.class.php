@@ -49,10 +49,10 @@ interface RepositoryInterface
     /**
      * Read Data from database.
      * --------------------------------------------------------.
-     * @param QueryParamsNewInterface|null $queryParams
+     * @param QueryParamsInterface|null $queryParams
      * @return mixed
      */
-    public function findBy(?QueryParamsNewInterface $queryParams = null) : mixed;
+    public function findBy(?QueryParamsInterface $queryParams = null) : mixed;
 
     // array $selectors = [], array $conditions = [], array $parameters = [], array $options = []
     /**

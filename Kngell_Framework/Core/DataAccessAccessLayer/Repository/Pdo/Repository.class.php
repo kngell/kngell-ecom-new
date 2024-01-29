@@ -110,7 +110,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
         }
     }
 
-    public function findBy(?QueryParamsNewInterface $queryParams = null) : mixed
+    public function findBy(?QueryParamsInterface $queryParams = null) : mixed
     {
         try {
             return $this->em->read($queryParams);

@@ -25,7 +25,7 @@ class StatementFactory
                 $statement = CounterStatement::class;
                 break;
             case in_array(strtolower($method), ['join', 'from', 'table']):
-                $statement = TableStatement::class;
+                $statement = QueryStatement::class;
                 break;
             default:
                 throw new BadQueryArgumentException('Bad SQL request! please revisit your request');
@@ -65,7 +65,7 @@ class StatementFactory
                 $statementParams = CounterParameters::class;
                 break;
             case in_array(strtolower($type), ['join', 'from', 'table']):
-                $statementParams = TableParameters::class;
+                $statementParams = QueryParameters::class;
                 break;
             default:
                 throw new BadQueryArgumentException('Bad SQL request! please revisit your request');

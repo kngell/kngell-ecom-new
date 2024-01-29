@@ -5,7 +5,7 @@ request: RequestHandler
 response: ResponseHandler
 token: Token
 money: MoneyManager
-queryParams: QueryParamsNewInterface
+queryParams: QueryParamsInterface
 helper: ModelHelper
 repository: RepositoryFactory
 validator: Validator

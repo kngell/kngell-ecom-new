@@ -4,11 +4,23 @@ declare(strict_types=1);
 
 class ConditionStatement extends AbstractQueryStatement
 {
-    private string $statement = '';
+    protected string $statement;
 
     public function __construct(?CollectionInterface $children = null, ?QueryParamsHelper $helper = null, ?string $method = null)
     {
         parent::__construct($children, $helper, $method);
+        $this->statement = match (true) {
+            in_array($this->method, ['on']) => ' ON ',
+            in_array($this->method, [
+                'where',
+                'orWhere',
+                'whereNotIn',
+                'whereIn',
+                'andWhere',
+            ]) => ' WHERE ',
+            in_array($this->method, ['having', 'havingNotIn']) => ' HAVING ',
+            default => ''
+        };
     }
 
     public function proceed(?self $conditionObj = null): array
@@ -27,6 +39,6 @@ class ConditionStatement extends AbstractQueryStatement
             $parametters[] = ! empty($params) ? $params : [];
             $bindArray[] = $bindArr;
         }
-        return [$this->braceOpen . $r . $this->braceClose, $parametters, $bindArray];
+        return [$this->statement . $this->braceOpen . $this->statement($r) . $this->braceClose, $parametters, $bindArray];
     }
 }
