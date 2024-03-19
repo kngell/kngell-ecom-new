@@ -4,22 +4,31 @@ declare(strict_types=1);
 
 class Entity extends AbstractEntity
 {
-    /**
-     * Sanitize
-     * =========================================================.
-     * @param array $dirtyData
-     */
-    public function sanitize(array $dirtyData) : void
-    {
-        if (empty($dirtyData)) {
-            throw new BaseInvalidArgumentException('No data was submitted');
-        }
-        if (is_array($dirtyData)) {
-            foreach ($this->cleanData($dirtyData) as $key => $value) {
-                $this->$key = $value;
-            }
-        }
-    }
+    // /**
+    //  * Sanitize
+    //  * =========================================================.
+    //  * @param array $dirtyData
+    //  */
+    // public function sanitize(array $dirtyData) : void
+    // {
+    //     if (empty($dirtyData)) {
+    //         throw new BaseInvalidArgumentException('No data was submitted');
+    //     }
+    //     if (is_array($dirtyData)) {
+    //         foreach ($this->cleanData($dirtyData) as $key => $value) {
+    //             $this->$key = $value;
+    //         }
+    //     }
+    // }
+
+    // public function getEntityData() : array
+    // {
+    //     $data = [];
+    //     foreach ($this->getInitializedAttributes() as $key => $value) {
+    //         $data[$key] = $value;
+    //     }
+    //     return $data;
+    // }
 
     public function getFieldValue(string $field) : mixed
     {
@@ -35,6 +44,11 @@ class Entity extends AbstractEntity
     public function isInitialized(string $field) : bool
     {
         return $this->reflectionClass()->isInitialized($this->regenerateField($field), $this);
+    }
+
+    public function count() : int
+    {
+        return count($this->getInitializedAttributes());
     }
 
     public function getColId(string $withDocComment = 'id') :  string
@@ -66,7 +80,7 @@ class Entity extends AbstractEntity
                 } else {
                     if ($output) {
                         if ($rp->getType()->getName() === 'string') {
-                            $properties[$field] = $this->htmlDecode($rp->getValue($this));
+                            $properties[$field] = $rp->getValue($this);
                         } else {
                             $properties[$field] = $rp->getValue($this);
                         }
@@ -101,7 +115,7 @@ class Entity extends AbstractEntity
         return (object) $this->getInitializedAttributes();
     }
 
-    public function assign(array $params) : self
+    public function assign(array $params) : self|bool
     {
         $attrs = $this->getAllAttributes();
         if (count($params) < count($attrs)) {
@@ -112,30 +126,69 @@ class Entity extends AbstractEntity
         return $this;
     }
 
-    /**
-     * Get Html Decode texte
-     * ====================================================================================.
-     * @param string $str
-     * @return string
-     */
-    public function htmlDecode(?string $str) : ?string
+    public function getIdCondition() : array|bool
     {
-        return !empty($str) ? htmlspecialchars_decode(html_entity_decode($str), ENT_QUOTES) : '';
+        $colId = $this->getColId();
+        if ($this->isInitialized($colId)) {
+            return [$colId => $this->getFieldValue($colId)];
+            // if ($this->disablePrimaryKey()) {
+            // }
+        }
+        return false;
     }
 
-    public function getContentOverview(string $content):string
-    {
-        // $headercontent = preg_match_all('|<h[^>]+>(.*)</h[^>]+>|iU', htmlspecialchars_decode($content, ENT_NOQUOTES), $headings);
-        return substr(strip_tags($this->htmlDecode($content)), 0, 200) . '...';
-    }
+    // /**
+    //  * Get Html Decode texte
+    //  * ====================================================================================.
+    //  * @param string $str
+    //  * @return string
+    //  */
+    // public function htmlDecode(?string $str) : ?string
+    // {
+    //     return ! empty($str) ? htmlspecialchars_decode(html_entity_decode($str), ENT_QUOTES) : '';
+    // }
+
+    // public function getContentOverview(string $content):string
+    // {
+    //     // $headercontent = preg_match_all('|<h[^>]+>(.*)</h[^>]+>|iU', htmlspecialchars_decode($content, ENT_NOQUOTES), $headings);
+    //     return substr(strip_tags($this->htmlDecode($content)), 0, 200) . '...';
+    // }
 
     public function delete(?string $field = null) : self
     {
         $reflectionProperty = $this->reflectionInstance()->getProperty($field);
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this, null);
-
         return $this;
+    }
+
+    public function isPropertiesSet() : bool
+    {
+        $properties = $this->getInitializedAttributes();
+        return ! empty($properties);
+    }
+
+    public function empty() : self
+    {
+        $attrs = $this->getInitializedAttributes();
+        foreach ($attrs as $attr) {
+            $this->delete($attr);
+        }
+        return $this;
+    }
+
+    public function disablePrimaryKey() : self|bool
+    {
+        $colID = $this->getColId();
+        if (! $this->isInitialized($colID)) {
+            return $this;
+        }
+        try {
+            $p = $this->reflectionClass()->reflectionObj($this)->getMethod('delete')->invokeArgs($this, [$colID]);
+            return $this;
+        } catch (\Throwable $th) {
+            return false;
+        }
     }
 
     /**

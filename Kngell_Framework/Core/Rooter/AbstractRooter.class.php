@@ -66,7 +66,7 @@ abstract class AbstractRooter
         return false;
     }
 
-    protected function controllerObject(string $controllerString) : Controller
+    protected function controllerObject(string $controllerString) : AbstractController
     {
         if (! class_exists($controllerString)) {
             throw new BadControllerExeption('Controller ' . $controllerString . ' does not exists.', 404);

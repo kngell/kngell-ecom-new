@@ -115,7 +115,7 @@ class Cart_Manager {
             .replaceWith(response.msg.cartItems);
           phpPlugin.header
             .find("#wishlist_items_count")
-            .replaceWith(response.msg.whishlistItmes);
+            .replaceWith(response.msg.whishlistItems);
         }
       });
     });
@@ -146,7 +146,7 @@ class Cart_Manager {
             .replaceWith(response.msg.cartItems);
           phpPlugin.header
             .find("#wishlist_items_count")
-            .replaceWith(response.msg.whishlistItmes);
+            .replaceWith(response.msg.whishlistItems);
         }
       });
     });

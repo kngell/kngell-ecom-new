@@ -169,7 +169,7 @@ abstract class AbstractBaseBootLoader extends Container implements ApplicationIn
                 if (is_array($aliases) && ! empty($aliases)) {
                     foreach ($aliases as $obj => $value) {
                         if (is_array($value)) {
-                            $this->$method($obj, $value[0], false, $value[1]);
+                            $method == 'bind' ? $this->$method($obj, $value[0], false, $value[1]) : $this->$method($obj, $value[0], $value[1]);
                         } else {
                             $this->$method($obj, $value);
                         }

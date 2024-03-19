@@ -207,6 +207,8 @@ interface CollectionInterface extends Countable, IteratorAggregate, ArrayAccess
 
     public function valueExists(mixed $value) : bool;
 
+    public function getObjectWithValue(string $id, mixed $value) : array;
+
     public function isEmpty() : bool;
 
     public function addAll(array $parameters) : self;

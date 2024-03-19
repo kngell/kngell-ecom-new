@@ -14,7 +14,7 @@
             <span class="deal-price" id="deal-price">{{totalHT}}</span>
             </span>
          </div>
-         <p class="transition">dont : </p>
+         <p class="transition">Taxes : </p>
          <ul class="cart-resume">
             {{taxResumeHtml}}
          </ul>

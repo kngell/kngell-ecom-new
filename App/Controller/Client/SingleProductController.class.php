@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-class SingleProductController extends Controller
+class SingleProductController extends HttpController
 {
     /**
      * IndexPage
@@ -12,7 +12,11 @@ class SingleProductController extends Controller
     protected function detailsPage(array $data = []) : ResponseHandler
     {
         $slug = array_pop($data);
-        return $this->render('phones' . DS . 'details', $this->showParams($slug));
+        $this->pageTitle('Modile Phones - ' . $slug);
+        $this->view()->addProperties(['name' => $slug]);
+        $page = new SingleProductDecorator($this->page(), $slug);
+        $page = new TopSalesDecorator($page);
+        return $this->render('phones' . DS . 'details', $page->get()->display());
     }
 
     protected function singleClothesPage(array $data = []) : void

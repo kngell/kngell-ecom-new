@@ -35,15 +35,26 @@ class Crud extends AbstractCrud implements CrudInterface
     /**
      *@inheritDoc
      */
-    public function create(array $fields = []): DataMapperInterface
+    public function create(?QueryParamsInterface $queryParams = null): DataMapperInterface
     {
         try {
-            $arg = ['table' => $this->getSchema(), 'type' => 'insert', 'fields' => $fields];
-            $query = $this->queryBuilder->buildQuery($arg)->insert();
-            $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($fields));
+            [$query,$params,$bind_arr] = $queryParams->getQuery()->proceed();
+            $this->dataMapper->setBindArr($bind_arr);
+            $options = $queryParams->getOptions();
+            $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters(
+                $params
+            ));
             if ($this->dataMapper->numrow() > 0) {
-                return $this->dataMapper->results([], __FUNCTION__);
+                return $this->dataMapper->results($options, __FUNCTION__);
             }
+            return $this->dataMapper;
+
+            // $arg = ['table' => $this->getSchema(), 'type' => 'insert', 'fields' => $fields];
+            // $query = $this->queryBuilder->buildQuery($arg)->insert();
+            // $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($fields));
+            // if ($this->dataMapper->numrow() > 0) {
+            //     return $this->dataMapper->results([], __FUNCTION__);
+            // }
         } catch (Throwable $th) {
             throw $th;
         }
@@ -52,12 +63,11 @@ class Crud extends AbstractCrud implements CrudInterface
     public function read(?QueryParamsInterface $queryParams = null) : DataMapperInterface
     {
         try {
-            $query = $this->queryBuilder->setQueryParams($queryParams)->query();
-            $this->dataMapper->setBindArr($this->queryBuilder->getBindAry());
+            [$query,$params,$bind_arr] = $queryParams->getQuery()->proceed();
+            $this->dataMapper->setBindArr($bind_arr);
             $options = $queryParams->getQueryParams()['options'];
             $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters(
-                $this->queryBuilder->getParams(),
-                ['options' => $options]
+                $params
             ));
             if ($this->dataMapper->numrow() > 0) {
                 return $this->dataMapper->results($options, __FUNCTION__);
@@ -113,18 +123,21 @@ class Crud extends AbstractCrud implements CrudInterface
      * =====================================================================.
      *@inheritDoc
      */
-    public function update(array $fields = [], array $conditions = []): DataMapperInterface
+    public function update(?QueryParamsInterface $queryParams = null): DataMapperInterface
     {
         try {
-            $arg = [
-                'table' => $this->getSchema(),
-                'type' => 'update',
-                'fields' => $fields,
-                'where' => $conditions,
-            ];
-            $query = $this->queryBuilder->buildQuery($arg)->update();
-            $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($conditions, $fields));
-            return $this->dataMapper->results([], __FUNCTION__);
+            [$query,$params,$bind_arr] = $queryParams->getQuery()->proceed();
+            $this->dataMapper->setBindArr($bind_arr);
+            $options = $queryParams->getOptions();
+            $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters(
+                $params
+            ));
+            if ($this->dataMapper->numrow() > 0) {
+                return $this->dataMapper->results($options, __FUNCTION__);
+            }
+            // $query = $this->queryBuilder->buildQuery($arg)->update();
+            // $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($conditions, $fields));
+            // return $this->dataMapper->results([], __FUNCTION__);
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -135,17 +148,22 @@ class Crud extends AbstractCrud implements CrudInterface
      * =====================================================================.
      *@inheritDoc
      */
-    public function delete(array $conditions = []): DataMapperInterface
+    public function delete(?QueryParamsInterface $queryParams = null): DataMapperInterface
     {
         try {
-            $arg = [
-                'table' => $this->getSchema(),
-                'type' => 'delete',
-                'conditions' => $conditions,
-            ];
-            $query = $this->queryBuilder->buildQuery($arg)->delete();
-            $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($conditions));
-            return $this->dataMapper->results([], __FUNCTION__);
+            [$query,$params,$bind_arr] = $queryParams->getQuery()->proceed();
+            $this->dataMapper->setBindArr($bind_arr);
+            $options = $queryParams->getOptions();
+            $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters(
+                $params
+            ));
+            if ($this->dataMapper->numrow() > 0) {
+                return $this->dataMapper->results($options, __FUNCTION__);
+            }
+
+            // $query = $this->queryBuilder->buildQuery($arg)->delete();
+            // $this->dataMapper->persist($query, $this->dataMapper->buildQueryParameters($conditions));
+            // return $this->dataMapper->results([], __FUNCTION__);
         } catch (\Throwable $th) {
             throw $th;
         }

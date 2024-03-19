@@ -90,7 +90,7 @@ class PhonesHomePage extends AbstractBrandPage implements DisplayPagesInterface
         $brandButton = $this->categoriesButton();
         $specialTemplate = $this->getTemplate('specialPricePath');
         $productTemplate = $this->getTemplate('specialPriceTemplate');
-        $specialTemplate = str_replace('{{brandButton}}', !empty($brandButton) ? implode('', $brandButton) : '', $specialTemplate);
+        $specialTemplate = str_replace('{{brandButton}}', ! empty($brandButton) ? implode('', $brandButton) : '', $specialTemplate);
         $productTemplate = str_replace('{{singleProductTemplate}}', $this->getTemplate('productTemplatePath'), $productTemplate);
 
         return $this->iteratedOutput($specialTemplate, $productTemplate);

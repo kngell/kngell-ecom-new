@@ -32,7 +32,7 @@ final class ContainerAliasses
             'CustomReflectorInterface' => CustomReflector::class,
             'FormBuilder' => FormBuilder::class,
             'PaymentGatewayInterface' => PaymentServicesFactory::class,
-            'QueryParamsInterface' => QueryParams::class,
+            'QueryParamsInterfaceNew' => QueryParamsNew::class,
             'DisplayPagesInterface' => PhonesHomePage::class,
         ];
     }
@@ -76,6 +76,10 @@ final class ContainerAliasses
             'LoggerInterface' => Logger::class,
             'LoggerFactory' => LoggerFactory::class,
             'DatabaseConnexionInterface' => PDOConnexion::class,
+            'ModelFactory' => [
+                ModelFactory::class,
+                YamlFile::get('model_properties'),
+            ],
         ];
     }
 }

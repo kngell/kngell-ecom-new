@@ -4,75 +4,31 @@ declare(strict_types=1);
 
 class StatementFactory
 {
-    public function __construct(private QueryParamsHelper $helper)
+    public static function create(string $method, string $baseMethod, string $queryType, AbstractQueryStatement $parent) : AbstractQueryStatement
     {
-    }
-
-    public function createStatement(string $method) : AbstractQueryStatement
-    {
-        $statement = null;
-        switch (true) {
-            case str_contains(strtolower($method), 'select'):
-                $statement = SelectStatement::class;
-                break;
-            case in_array(strtolower($method), ['where', 'on', 'having']):
-                $statement = ConditionStatement::class;
-                break;
-            case in_array(strtolower($method), ['groupby', 'orderby']):
-                $statement = GroupAndSortStatement::class;
-                break;
-            case in_array(strtolower($method), ['limit', 'offset']):
-                $statement = CounterStatement::class;
-                break;
-            case in_array(strtolower($method), ['join', 'from', 'table']):
-                $statement = QueryStatement::class;
-                break;
-            default:
-                throw new BadQueryArgumentException('Bad SQL request! please revisit your request');
-                break;
-        }
+        $statement = StatementType::get($baseMethod)->name;
         if (null !== $statement) {
             /** @var AbstractQueryStatement */
-            $statement = new $statement(new Collection(), $this->helper, $method);
-            $statement->getLevel() == false ? $statement->setLevel(0) : '';
+            $statement = new $statement($method, $baseMethod, $queryType);
+            $statement->getLevel() == false ? $statement->setLevel($parent->getLevel() + 1) : '';
             return $statement;
         }
     }
 
-    public function getStatementObj(?string $statementString, ?string $method = null, ?AbstractQueryStatement $parent = null) : AbstractQueryStatement
+    public function getStatementObj(?string $type = null, ?string $method = null, ?string $baseMethod = null, ?AbstractQueryStatement $parent = null) : AbstractQueryStatement
     {
-        if (class_exists($statementString)) {
-            $obj = new $statementString(new Collection, $this->helper, $method);
-            null !== $parent ? $obj->setLevel($parent->getLevel() + 1) : '';
-            return $obj;
-        }
+        $statement = StatementType::get($type)->name;
+        $obj = new $statement($method, $baseMethod);
+        null !== $parent ? $obj->setLevel($parent->getLevel() + 1) : '';
+        return $obj;
     }
 
-    public function createParameters(string $type, $params, $method) : AbstractQueryStatement
+    public function createParameters(string $type, array $params, string $method, string $basemethod, string $queryType) : AbstractQueryStatement
     {
-        $statementParams = null;
-        switch (true) {
-            case str_contains(strtolower($type), 'select'):
-                $statementParams = SelectParameters::class;
-                break;
-            case in_array(strtolower($type), ['where', 'on', 'having']):
-                $statementParams = ConditionParameters::class;
-                break;
-            case in_array(strtolower($type), ['groupby', 'orderby']):
-                $statementParams = GroupAndSortParameters::class;
-                break;
-            case in_array(strtolower($type), ['limit', 'offset']):
-                $statementParams = CounterParameters::class;
-                break;
-            case in_array(strtolower($type), ['join', 'from', 'table']):
-                $statementParams = QueryParameters::class;
-                break;
-            default:
-                throw new BadQueryArgumentException('Bad SQL request! please revisit your request');
-                break;
-        }
+        $statement = StatementType::get($type);
+        $statementParams = $statement->parameters($statement->value);
         if (null !== $statementParams) {
-            return new $statementParams($params, $method, new Collection(), $this->helper);
+            return new $statementParams($params, $method, $basemethod, $queryType);
         }
     }
 }

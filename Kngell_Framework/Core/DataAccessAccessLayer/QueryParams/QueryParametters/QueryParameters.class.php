@@ -2,34 +2,33 @@
 
 declare(strict_types=1);
 
-class QueryParameters extends AbstractQueryStatement
+class QueryParameters extends AbstractStatementParameters
 {
-    private array $params = [];
-
-    public function __construct(array $params = [], ?string $method = null, ?CollectionInterface $children = null, ?QueryParamsHelper $helper = null)
+    public function __construct(array $params = [], ?string $method = null, ?string $baseMethod = null, ?string $queryType = null)
     {
-        $this->params = $params;
-        parent::__construct($children, $helper, $method);
+        parent::__construct($params, $method, $baseMethod, $queryType);
+        isset($this->params['tbl']) ? $this->tbl = $this->params['tbl'] : '';
+        isset($this->params['alias']) ? $this->alias = $this->params['alias'] : '';
+        isset($this->params['cte']) ? $this->cte = $this->params['cte'] : '';
     }
 
     public function proceed(): array
     {
-        $res = '';
-        $tbl = isset($this->params['tbl']) ? $this->params['tbl'] : '';
-        $alias = isset($this->params['alias']) ? $this->params['alias'] : '';
-        $prefix = $this->prefix();
-        if ($alias !== '' && $tbl !== '') {
-            $res = $prefix . $tbl . ' AS ' . $alias;
+        $alias = '';
+        $this->alias = $this->tableAlias($this->tbl);
+        if (in_array($this->queryType, ['SELECT', 'UPDATECTE'])) {
+            $alias = ' AS ' . $this->alias;
         }
-        return [$res, [], []];
+        $this->query = $this->table() . $alias;
+        return [$this->query, $this->parameters, $this->bind_arr];
     }
 
-    private function prefix() : string
-    {
-        return match (true) {
-            $this->method == 'from' => ' FROM ',
-            $this->method == 'join' => ' ' . $this->params['joinRule'] . ' ',
-            default => '',
-        };
-    }
+    // private function table() : string
+    // {
+    //     if (isset($this->tbl)) {
+    //         $parts = explode('|', $this->tbl);
+    //         return $parts[0];
+    //     }
+    //     throw new BadQueryArgumentException('No table define');
+    // }
 }

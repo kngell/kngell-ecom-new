@@ -3,14 +3,15 @@
 declare(strict_types=1);
 class DeleteCacheFileListener implements ListenerInterface
 {
-    public function handle(EventsInterface $event): iterable
+    public function handle(EventsInterface $event): ?iterable
     {
         /** @var UserCartController */
         $object = $event->getObject();
-        if ($object->getCache()->exists($object->getCachedFiles()['user_cart'])) {
-            $object->getCache()->delete($object->getCachedFiles()['user_cart']);
+        $cache = $object->getUserCart()->getCache();
+        $cachedFiles = $object->getUserCart()->getCachedFiles();
+        if ($cache->exists($cachedFiles['user_cart'])) {
+            $cache->delete($cachedFiles['user_cart']);
         }
-
-        return [];
+        return null;
     }
 }

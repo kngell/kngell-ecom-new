@@ -4,101 +4,76 @@ declare(strict_types=1);
 
 abstract class AbstractController
 {
-    use DatabaseCacheTrait;
-    use DisplayFrontEndPagesTrait;
-    use DisplayBackendPagesTrait;
-    use ControllerTrait;
-    use ControllerGettersAndSettersTrait;
-
-    protected Token $token;
+    protected View $view;
     protected RequestHandler $request;
     protected ResponseHandler $response;
-    protected ControllerHelper $helper;
-    protected SessionInterface $session;
-    protected CookieInterface $cookie;
     protected CacheInterface $cache;
-    protected EventDispatcherInterface $dispatcher;
-    // protected CommentsInterface $comment;
-    protected array $customProperties = [];
-    protected array $middlewares = [];
-    protected View $view_instance;
-    /** @var array */
-    protected array $callBeforeMiddlewares = [];
-    /** @var array */
-    protected array $callAfterMiddlewares = [];
-    protected string $viewPath;
-    protected array $cachedFiles;
-    protected array $activeCacheFile = [];
+    protected Token $token;
+    protected ?EventDispatcherInterface $dispatcher;
+    protected ?ControllerHelper $helper;
+    protected array $arguments = [];
     protected array $routeParams = [];
     protected array $frontEndComponents = [];
-    protected array $select2Field = [];
-    protected string $previousPage;
-    protected array $arguments = [];
+    protected array $callBeforeMiddlewares = [];
+    protected array $callAfterMiddlewares = [];
+    protected array $middlewares = [];
+    protected string $viewPath;
 
-    public function __construct(array $params)
+    public function __construct()
     {
-        $this->properties($params);
-    }
-    // public function getComment() : CommentsInterface
-    // {
-    //     return $this->comment;
-    // }
-
-    protected function registerMiddleware(BaseMiddleWare $middleware) : void
-    {
-        $this->middlewares[] = $middleware;
     }
 
-    protected function registerBeforeMiddleware(array $middlewares = []) : void
+    /**
+     * Get the value of response.
+     */
+    public function getResponse(): ResponseHandler
     {
-        foreach ($middlewares as $name => $middleware) {
-            $this->callBeforeMiddlewares[$name] = $middleware;
-        }
+        return $this->response;
     }
 
-    protected function callBeforeMiddlewares(): array
+    /**
+     * Set the value of response.
+     */
+    public function setResponse(ResponseHandler $response): self
     {
-        return array_merge($this->defineCoreMiddeware(), $this->callBeforeMiddlewares);
-    }
-
-    protected function defineCoreMiddeware(): array
-    {
-        return [
-            'Error404' => Error404::class,
-            // 'ShowCommentsMiddlewares' => ShowCommentsMiddlewares::class,
-            'CheckUserLoggedInMiddleware' => CheckUserLoggedInMiddleware::class,
-            'SelectPathMiddleware' => SelectPathMiddleware::class,
-
-        ];
-    }
-
-    protected function resetView() : self
-    {
-        $this->isValidView();
-        $this->view_instance->reset();
+        $this->response = $response;
 
         return $this;
     }
 
-    protected function siteTitle(?string $title = null) : View
+    public function isInitialized(string $field) : bool
     {
-        $this->isValidView();
-
-        return $this->view_instance->siteTitle($title);
+        $rp = CustomReflector::getInstance()->reflectionObj($this)->getProperty($field);
+        if ($rp->isInitialized($this)) {
+            return true;
+        }
+        return false;
     }
 
-    protected function throwViewException(): void
+    abstract public function get() : ?AbstractHTMLComponent;
+
+    protected function view() : View
     {
-        if (null === $this->view_instance) {
-            throw new BaseLogicException('You can not use the render method if the build in template engine is not available.');
+        $this->createView();
+        return $this->view;
+    }
+
+    protected function createView() : void
+    {
+        if (! isset($this->view)) {
+            $this->view = Application::diGet(View::class, [
+                'viewAry' => [
+                    'token' => $this->token,
+                    'viewPath' => $this->viewPath,
+                ],
+            ]);
         }
     }
 
-    protected function isValidView() : bool
+    protected function dispatcher() : ?EventDispatcherInterface
     {
-        if ($this->view_instance === null) {
-            throw new BaseLogicException('You cannot use the render method if the View is not available !');
+        if (! isset($this->dispatcher)) {
+            return Application::diGet(DispatcherFactory::class)->create();
         }
-        return true;
     }
 }

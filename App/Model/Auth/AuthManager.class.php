@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-class AuthManager extends Model
+class AuthManager extends Model_old
 {
     public static $currentLoggedInUser = null;
     private $_isLoggedIn = false;
@@ -20,7 +20,7 @@ class AuthManager extends Model
 
     public static function user() : string
     {
-        $session = Container::getInstance()->make(SessionInterface::class);
+        $session = Application::diGet(SessionInterface::class);
         if ($session->exists(CURRENT_USER_SESSION_NAME)) {
             return $session->get(CURRENT_USER_SESSION_NAME)['firstName'];
         }

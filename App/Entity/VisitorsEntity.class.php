@@ -478,24 +478,6 @@ class VisitorsEntity extends Entity
     }
 
     /**
-     * Get the value of timezone.
-     */
-    public function getTimezone(): ?string
-    {
-        return $this->timezone;
-    }
-
-    /**
-     * Set the value of timezone.
-     */
-    public function setTimezone(?string $timezone): self
-    {
-        $this->timezone = $timezone;
-
-        return $this;
-    }
-
-    /**
      * Get the value of utcOffset.
      */
     public function getUtcOffset(): ?string
@@ -617,6 +599,24 @@ class VisitorsEntity extends Entity
     public function setCountry(?string $country): self
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of timezone.
+     */
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    /**
+     * Set the value of timezone.
+     */
+    public function setTimezone(?string $timezone): self
+    {
+        $this->timezone = $timezone;
 
         return $this;
     }

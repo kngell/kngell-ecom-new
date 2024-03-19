@@ -3,19 +3,15 @@
 declare(strict_types=1);
 class QueryParamsHelper
 {
-    public function isClosure(array $whereCondition) : bool|Closure
+    public function normalize(array $conditions = [], ?string $method = null) : array
     {
-        $closure = current($this->leveledUp($whereCondition));
-        if ($closure instanceof Closure) {
-            return $closure;
+        if (null !== $method && ! str_ends_with($method, 'In')) {
+            // if (! in_array($method, ['set'])) {
+            $conditions = $this->parseCondition($conditions);
+            return $this->assocToSequencials($conditions);
+            // }
         }
-        return false;
-    }
-
-    public function normalize(array $conditions) : array
-    {
-        $conditions = $this->parseCondition($conditions);
-        return $this->assocToSequencials($conditions);
+        return $conditions;
     }
 
     public function assocToSequencials(array $conditions) : array
@@ -43,10 +39,15 @@ class QueryParamsHelper
     {
         $newArray = [];
         $narr = [];
+        if (is_array($conditions) && count($conditions) == 1 && ArrayUtil::isAssoc($conditions)) {
+            $newArray[0] = key($conditions);
+            $newArray[1] = $conditions[key($conditions)];
+            return $newArray;
+        }
         foreach ($conditions as $key => $condition) {
             $next = next($conditions);
             if (! is_array($condition)) {
-                $narr[] = $condition;
+                $narr[] = is_string($condition) ? strval($condition) : $condition;
                 if ($next != false && is_array($next)) {
                     $newArray[] = $narr;
                     $narr = [];

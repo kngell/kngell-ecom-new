@@ -53,7 +53,7 @@ abstract class AbstractNavigation
     protected function menu() : string
     {
         $menu = array_filter($this->menu->all(), function ($item) {
-            return $item != 'log_reg_menu';
+            return $item != 'menu_admin_user';
         }, ARRAY_FILTER_USE_KEY);
         $menu_html = '';
         if (is_array($menu) && count($menu) > 0) {
@@ -65,14 +65,12 @@ abstract class AbstractNavigation
                 $menu_html .= $this->menuItem($name, $link, $active);
             }
         }
-
         return $menu_html;
     }
 
     protected function getTemplate(string $path) : string
     {
         $this->isFileexists($this->paths->offsetGet($path));
-
         return file_get_contents($this->paths->offsetGet($path));
     }
 
@@ -86,7 +84,7 @@ abstract class AbstractNavigation
     {
         $menu = $this->getTemplate('menuConnexionPath');
         $menu = str_replace('{{user}}', AuthManager::user(), $menu);
-        $drop = $this->menu->offsetGet('log_reg_menu');
+        $drop = $this->menu->offsetGet('menu_admin_user');
         $menu_html = '';
         if (is_array($drop) && count($drop) > 0) {
             foreach ($drop as $key => $value) {
@@ -100,7 +98,6 @@ abstract class AbstractNavigation
                 }
             }
         }
-
         return str_replace('{{dropdownMenu}}', $menu_html, $menu);
     }
 

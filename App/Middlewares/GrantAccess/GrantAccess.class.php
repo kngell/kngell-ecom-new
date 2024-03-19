@@ -23,7 +23,7 @@ class GrantAccess
 
     final public static function getInstance() : mixed
     {
-        if (!isset(static::$instance)) {
+        if (! isset(static::$instance)) {
             static::$instance = new static();
         }
 
@@ -39,7 +39,7 @@ class GrantAccess
             if (is_array($val)) {
                 $sub = [];
                 foreach ($val as $k => $v) {
-                    if ($k == 'separator' && !empty($sub)) {
+                    if ($k == 'separator' && ! empty($sub)) {
                         $sub[$k] = '';
                         continue;
                     }
@@ -47,7 +47,7 @@ class GrantAccess
                         $sub[$k] = $finalVal;
                     }
                 }
-                if (!empty($sub)) {
+                if (! empty($sub)) {
                     $menuAry[$key] = $sub;
                 }
             } else {
@@ -81,7 +81,7 @@ class GrantAccess
         // Checck for denied
         foreach ($current_user_acls as $level) {
             $denied = $this->acl[$level]['denied'];
-            if (!empty($denied) && array_key_exists($controller, $denied) && in_array($method, $denied[$controller])) {
+            if (! empty($denied) && array_key_exists($controller, $denied) && in_array($method, $denied[$controller])) {
                 $grantAccess = false;
                 break;
             }
@@ -96,8 +96,8 @@ class GrantAccess
             $session_values = $this->session->get(CURRENT_USER_SESSION_NAME);
             if (array_key_exists('verified', $session_values)) {
                 if ($session_values['verified'] > 0) {
-                    if (array_key_exists('Confirmez votre compte', $acl['log_reg_menu'])) {
-                        unset($acl['log_reg_menu']['Confirmez votre compte']);
+                    if (array_key_exists('Confirmez votre compte', $acl['menu_admin_user'])) {
+                        unset($acl['menu_admin_user']['Confirmez votre compte']);
                     }
                 }
             }

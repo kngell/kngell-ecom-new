@@ -24,7 +24,7 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
     public function persist(string $sql = '', array $parameters = []) : mixed
     {
         try {
-            $sql = $this->cleanSql($sql);
+            // $sql = $this->cleanSql($sql);
             return isset($parameters[0]) && $parameters[0] == 'all' ? $this->prepare($sql)->execute() : $this->prepare($sql)->bindParameters($parameters)->execute();
         } catch (Throwable $th) {
             throw $th;
@@ -108,9 +108,7 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
      */
     public function bindValues(array $params = []) : PDOStatement
     {
-        $fields = isset($params['where']) ? ArrayUtil::flatten_with_keys($params['where']) : [];
-        $bindArr = (isset($this->bind_arr)) ? ArrayUtil::flatten_with_keys($this->bind_arr) : [];
-        $fields = array_merge($fields, $bindArr);
+        $fields = array_merge($params, $this->bind_arr);
         if (! empty($fields)) {
             foreach ($fields as $key => $value) {
                 $this->bind(':' . $key, $value);
@@ -191,7 +189,7 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
     public function release(string $sql = '', array $parameters = []) : mixed
     {
         try {
-            $sql = $this->cleanSql($sql);
+            // $sql = $this->cleanSql($sql);
             return $this->prepare($sql)->bindParameters($parameters);
         } catch (Throwable $th) {
             throw $th;
@@ -208,14 +206,14 @@ class DataMapper extends AbstractDataMapper implements DataMapperInterface
         }
     }
 
-    public function cleanSql(string $sql)
-    {
-        $sqlArr = explode('&', $sql);
-        if (isset($sqlArr) & count($sqlArr) > 1) {
-            $this->bind_arr = unserialize($sqlArr[1]);
-        }
-        return $sqlArr[0];
-    }
+    // public function cleanSql(string $sql)
+    // {
+    //     $sqlArr = explode('&', $sql);
+    //     if (isset($sqlArr) & count($sqlArr) > 1) {
+    //         $this->bind_arr = unserialize($sqlArr[1]);
+    //     }
+    //     return $sqlArr[0];
+    // }
 
     public function beginTransaction() : bool
     {

@@ -36,8 +36,8 @@ trait DataMapperGetSetTrait
     public function setLastID(): self
     {
         try {
-            if ($this->_con->open()) {
-                $lastID = $this->_con->open()->lastInsertId();
+            if ($this->dbCon->open()) {
+                $lastID = $this->dbCon->open()->lastInsertId();
                 if (! empty($lastID)) {
                     $this->_lastID = intval($lastID);
                 }
@@ -61,7 +61,7 @@ trait DataMapperGetSetTrait
     }
 
     /**
-     * Get the value of _con.
+     * Get the value of dbCon.
      */
     public function getCon(): DatabaseConnexionInterface
     {

@@ -2,27 +2,28 @@
 
 declare(strict_types=1);
 
-class ControllerFactory
+class ControllerFactory extends AbstractBaseFactory
 {
-    public function __construct(private string $controllerString, private array $routeParams, private array $controllerProperties)
-    {
+    public function __construct(
+        private string $controllerString,
+        private array $routeParams,
+        private array $controllerProperties,
+    ) {
     }
 
-    public function create() : Controller
+    public function create() : AbstractController
     {
-        $controllerObject = Application::diGet($this->controllerString, [
-            'params' => $this->getControllerParams(),
-        ]);
-        if (!$controllerObject instanceof Controller) {
+        $controllerObject = Application::diGet($this->controllerString);
+        if (! $controllerObject instanceof AbstractController) {
             throw new BadControllerExeption($this->controllerString . ' is not a valid Controller');
         }
-        return $controllerObject;
+        return $this->initProperties($controllerObject, $this->controllerParams());
     }
 
-    private function getControllerParams() : array
+    private function controllerParams() : array
     {
         return array_merge($this->controllerProperties, [
-            'cachedFiles' => YamlFile::get('cache_files_list'),
+            // 'cachedFiles' => YamlFile::get('cache_files_list'),
             'routeParams' => $this->routeParams,
             'viewPath' => $this->viewPath(),
         ]);

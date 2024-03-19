@@ -2,36 +2,38 @@
 
 declare(strict_types=1);
 
-class GroupAndSortParameters extends AbstractQueryStatement
+class GroupAndSortParameters extends AbstractStatementParameters
 {
-    private array $params = [];
-
-    public function __construct(array $params = [], ?string $method = null, ?CollectionInterface $children = null, ?QueryParamsHelper $helper = null)
+    public function __construct(array $params = [], ?string $method = null, ?string $baseMethod = null, ?string $queryType = null)
     {
-        $this->params = $params;
-        parent::__construct($children, $helper, $method);
+        parent::__construct($params, $method, $baseMethod, $queryType);
+        $this->tbl = $this->params['tbl'];
+        isset($this->params['alias']) ? $this->alias = $this->params['alias'] : '';
     }
 
     public function proceed(): array
     {
-        return match ($this->method) {
+        list($r, $this->parameters, $this->bind_arr) = match ($this->method) {
             'groupBy' => [$this->groupBy(), [], []],
             'orderBy' => [$this->orderBy(), [], []],
-            default => []
+            default => ['', [], []]
         };
+        $this->query = implode(', ', $r);
+        return [$this->query, $this->parameters, $this->bind_arr];
     }
 
     private function orderBy() : array
     {
         $ob = [];
-        foreach ($this->helper->normalize($this->params['params']) as $tbl => $params) {
-            if (is_array($params)) {
+        $params = $this->helper->normalize($this->params['data'], $this->method);
+        foreach ($params as $tbl => $param) {
+            if (is_array($param)) {
                 $parts = [];
-                $parts = explode('|', $params[0]);
+                $parts = explode('|', $param[0]);
                 if (count($parts) == 2) {
-                    $ob[] = $parts[0] . '.' . $parts[1] . ' ' . $params[1];
+                    $ob[] = $parts[0] . '.' . $parts[1] . ' ' . $param[1];
                 } else {
-                    $ob[] = $params[0] . ' ' . $params[1];
+                    $ob[] = $param[0] . ' ' . $param[1];
                 }
             }
         }
@@ -41,26 +43,44 @@ class GroupAndSortParameters extends AbstractQueryStatement
     private function groupBy() : array
     {
         $gb = [];
-        $params = ArrayUtil::flatten_with_keys($this->params['params']);
-        foreach ($params as $tbl => $params) {
+        $params = $this->params['data'];
+        $params = $this->normalizeCounters($params);
+
+        foreach ($params as $tbl => $param) {
             if (is_numeric($tbl)) {
-                $parts = explode('|', $params);
-                if (count($parts) == 2) {
-                    $alias = $this->tblAlias($parts[0]);
-                    $gb[] = (! $alias ? $parts[0] : $alias) . '.' . $parts[1];
-                } else {
-                    $gb[] = $parts[0];
-                }
+                $gb[] = $param;
             } else {
-                $gb[] = $tbl . '.' . $params;
+                $gb[] = $tbl . '.' . $param;
             }
         }
         return $gb;
     }
 
+    private function normalizeCounters(array $params) : array
+    {
+        $newParams = [];
+        foreach ($params as $key => $param) {
+            if (is_array($param) && count($param) == 1) {
+                $newParams[key($param)] = $param[key($param)];
+            } elseif (is_string($param)) {
+                $parts = explode('|', $param);
+                if (count($parts) == 2) {
+                    $newParams[$parts[0]] = $parts[1];
+                } elseif (count($parts) == 1) {
+                    $newParams[] = $param;
+                } else {
+                    throw new BadQueryArgumentException("Bad parameters for {$this->method}");
+                }
+            } else {
+                throw new BadQueryArgumentException("Bad parameters for {$this->method}");
+            }
+        }
+        return $newParams;
+    }
+
     private function tblAlias(string $table) : string|bool
     {
-        $tblAlias = $this->params['tblAlias'];
+        $tblAlias = $this->params['tbl_alias'];
         foreach ($tblAlias as $tbl => $alias) {
             if ($table == $tbl) {
                 return $alias;

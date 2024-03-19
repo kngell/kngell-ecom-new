@@ -71,6 +71,11 @@ class PDOConnexion extends AbstractConnection implements DatabaseConnexionInterf
         return isset($this->con) ? $this->con : false;
     }
 
+    public function lastInsertId() : string|false
+    {
+        return $this->con->lastInsertId();
+    }
+
     protected function parseCredentials(): array
     {
         $dsn = sprintf(

@@ -15,14 +15,12 @@ class DataAccessLayerManager
         private string $tableSchema,
         private string $tableSchemaID,
         private array $options,
-        private Entity $entity,
         private EntityManagerFactory $entityManagerFactory,
         private QueryBuilderInterface $queryBuilder
     ) {
         $this->tableSchema = $tableSchema;
         $this->tableSchemaID = $tableSchemaID;
         $this->options = $options;
-        $this->entity = $entity;
     }
 
     /**

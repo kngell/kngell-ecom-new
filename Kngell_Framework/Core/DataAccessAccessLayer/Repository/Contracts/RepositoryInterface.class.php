@@ -4,35 +4,29 @@ declare(strict_types=1);
 
 interface RepositoryInterface
 {
-    public function entity(Entity $entity) : self;
-
     /**
      * Create or inert into a database
-     * --------------------------------------------------------------------------------------------------.
-     * @param array $fields
+     * ---------------------------------------------------------.
      * @return DataMapperInterface
      */
-    public function create(array $fields = []) : DataMapperInterface;
+    public function create() : DataMapperInterface;
 
     /**
      * Update
-     * --------------------------------------------------------------------------------------------------.
-     * @param array $fields
-     * @param array $conditions
+     * --------------------------------------------------------.
      * @return DataMapperInterface|null
      */
-    public function update(array $conditions) : ?DataMapperInterface;
+    public function update() : ?DataMapperInterface;
 
     /**
      * Delete from database
-     * --------------------------------------------------------------------------------------------------.
-     * @param array $conditions
-     * @return DataMapperInterface
+     * -------------------------------------------------------.
+     * @return mixed
      */
-    public function delete(array $conditions = []) : DataMapperInterface;
+    public function delete() : DataMapperInterface;
 
     /**
-     * --------------------------------------------------------------------------------------------------
+     * --------------------------------------------------------
      * Find by ID.
      * @param int $id
      * @return DataMapperInterface
@@ -41,7 +35,7 @@ interface RepositoryInterface
 
     /**
      * Find All.
-     * --------------------------------------------------------------------------------------------------.
+     * --------------------------------------------------------.
      * @return array
      */
     public function findAll() : mixed;
@@ -49,15 +43,13 @@ interface RepositoryInterface
     /**
      * Read Data from database.
      * --------------------------------------------------------.
-     * @param QueryParamsInterface|null $queryParams
      * @return mixed
      */
-    public function findBy(?QueryParamsInterface $queryParams = null) : mixed;
+    public function findBy() : mixed;
 
-    // array $selectors = [], array $conditions = [], array $parameters = [], array $options = []
     /**
      * Find One by
-     *--------------------------------------------------------------------------------------------------.
+     *-----------------------------------------------------.
      * @param array $conditions
      * @param array $options
      * @return mixed
@@ -66,7 +58,7 @@ interface RepositoryInterface
 
     /**
      * Find Object
-     *--------------------------------------------------------------------------------------------------.
+     *-----------------------------------------------------.
      * @param array $conditions
      * @param array $selectors
      * @return object
@@ -75,7 +67,7 @@ interface RepositoryInterface
 
     /**
      * Search data
-     *--------------------------------------------------------------------------------------------------.
+     *-----------------------------------------------------.
      * @param array $selectors
      * @param array $conditions
      * @param array $parameters
@@ -86,7 +78,7 @@ interface RepositoryInterface
 
     /**
      * Find by Id and Delete
-     *--------------------------------------------------------------------------------------------------.
+     *------------------------------------------------------.
      * @param array $conditions
      * @return bool
      */
@@ -94,7 +86,7 @@ interface RepositoryInterface
 
     /**
      * Find by id and update
-     *--------------------------------------------------------------------------------------------------.
+     *------------------------------------------------------.
      * @param array $fields
      * @param int $id
      * @return bool
@@ -103,7 +95,7 @@ interface RepositoryInterface
 
     /**
      * find and return self for chanability
-     *--------------------------------------------------------------------------------------------------.
+     *------------------------------------------------------.
      * @param int $id
      * @param array $selectors
      * @return self

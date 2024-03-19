@@ -29,9 +29,9 @@ class Container implements ContainerInterface
     /**
      * Get container instance
      * ===============================================.
-     * @return mixed
+     * @return Application
      */
-    public static function getInstance() : mixed
+    public static function getInstance() : Application
     {
         if (! isset(static::$instance)) {
             static::$instance = new static();
@@ -69,16 +69,27 @@ class Container implements ContainerInterface
     public function bind(string $abstract, Closure | string | null $concrete = null, bool $shared = false, array $args = []): self
     {
         $this->bindings[$abstract] = [
-            'concrete' => $concrete,
+            'concrete' => $concrete !== null ? $concrete : $abstract,
             'shared' => $shared,
             'args' => $args,
         ];
         return $this;
     }
 
-    public function singleton(string $abstract, Closure | string | null $concrete = null): self
+    public function bindParameters(string $abstract, array $args, ?string $argName = null) : self
     {
-        return $this->bind($abstract, $concrete, true);
+        if ($this->isBound($abstract)) {
+            $this->bindings[$abstract]['args'] = $args;
+        } else {
+            $this->bind($abstract, null, false, []);
+            null !== $argName ? $this->bindings[$abstract]['args'][$argName] = $args : $this->bindings[$abstract]['args'] = $args;
+        }
+        return $this;
+    }
+
+    public function singleton(string $abstract, Closure | string | null $concrete = null, array $args = []): self
+    {
+        return $this->bind($abstract, $concrete, true, $args);
     }
 
     /**
@@ -89,10 +100,9 @@ class Container implements ContainerInterface
      */
     public function get(string $id) : mixed
     {
-        if (! $this->has($id)) {
-            throw new ComponentNotFoundException(sprintf('Could not found Component name : %s', $id));
+        if ($this->has($id)) {
+            return $this->services[$id];
         }
-        return $this->services[$id];
     }
 
     public static function setInstance(?Application $container = null)
@@ -140,10 +150,31 @@ class Container implements ContainerInterface
                isset($this->services[$abstract]);
     }
 
+    public function remove(string $abstract) : bool
+    {
+        if ($this->isBound($abstract)) {
+            unset($this->bindings[$abstract]);
+            return true;
+        }
+        return false;
+    }
+
     public function flush(): void
     {
         $this->bindings = [];
         $this->services = [];
+    }
+
+    public function getClass(string $expectedClass) : mixed
+    {
+        if ($this->has($expectedClass)) {
+            return $this->services[$expectedClass];
+        }
+        if (isset($this->bindings[$expectedClass]) && is_array($this->bindings[$expectedClass])) {
+            return $this->bindings[$expectedClass]['concrete'];
+        } else {
+            return $expectedClass;
+        }
     }
 
     /**
@@ -218,7 +249,8 @@ class Container implements ContainerInterface
 
             if (! $serviceType instanceof ReflectionNamedType || $serviceType->isBuiltin()) {
                 if ($dependency->isDefaultValueAvailable() || ! empty($args)) {
-                    if ($dependency->isDefaultValueAvailable() && ! array_key_exists($dependency->name, $args)) {
+                    $class = $this->getClass($dependency->name);
+                    if ($dependency->isDefaultValueAvailable() && ! array_key_exists($dependency->name, $args) && is_string($class) && ! class_exists($class)) {
                         $classDependencies[] = $dependency->getDefaultValue();
                     }
                     if (array_key_exists($dependency->name, $args)) {
@@ -239,8 +271,8 @@ class Container implements ContainerInterface
                 } elseif (array_key_exists($key, $args)) {
                     $classDependencies[] = $args[$key];
                 } elseif (($dependency->isOptional() || $dependency->isDefaultValueAvailable()) && empty($args)) {
-                    $class = $this->getClassName($serviceType->getName());
-                    if (! class_exists($class)) {
+                    $class = $this->getClass($serviceType->getName());
+                    if (is_string($class) && ! class_exists($class)) {
                         $classDependencies[] = $dependency->getDefaultValue();
                     } else {
                         $classDependencies[] = $this->make($serviceType->getName());
@@ -251,18 +283,6 @@ class Container implements ContainerInterface
             }
         }
         return $classDependencies;
-    }
-
-    private function getClassName(string $expectedClass) : string
-    {
-        if ($this->has($expectedClass)) {
-            return $this->services[$expectedClass];
-        }
-        if (isset($this->bindings[$expectedClass]) && is_array($this->bindings[$expectedClass])) {
-            return $this->bindings[$expectedClass]['concrete'];
-        } else {
-            return $expectedClass;
-        }
     }
 
     /**

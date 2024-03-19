@@ -175,7 +175,6 @@ trait ControllerGettersAndSettersTrait
     public function setUrl(string $url) : self
     {
         $this->url = $url;
-
         return $this;
     }
 
@@ -289,7 +288,6 @@ trait ControllerGettersAndSettersTrait
     protected function pageTitle(?string $page = null)
     {
         $this->isValidView();
-
         return $this->view_instance->pageTitle($page);
     }
 

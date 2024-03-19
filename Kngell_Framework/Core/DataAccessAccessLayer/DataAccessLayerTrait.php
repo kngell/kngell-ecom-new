@@ -19,7 +19,6 @@ trait DataAccessLayerTrait
                     $arraySingle[] = $val;
                 }
             }
-
             return $arraySingle;
         }
     }
@@ -36,7 +35,6 @@ trait DataAccessLayerTrait
         foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($array)) as $value) {
             $flatArray[] = $value;
         }
-
         return $flatArray;
     }
 }

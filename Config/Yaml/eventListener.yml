@@ -44,6 +44,11 @@ UserCartChangeEvent:
     priority: 1
   - callback: DisplayUserCartListener
     priority: 0
+ShoppingCartChangeEvent:
+  - callback: DeleteCacheFileListener
+    priority: 1
+  - callback: DisplayShoppingCartListener
+    priority: 0
 CustomerAddressChangeEvent:
   - callback: UpdateCustomerSessionAddressListener
     priority: 1

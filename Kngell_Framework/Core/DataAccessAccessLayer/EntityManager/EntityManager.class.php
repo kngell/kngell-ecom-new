@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 class EntityManager implements EntityManagerInterface
 {
-    private Entity $entity;
-
     /**
      * Main constructor
      * =====================================================================.
      * @param CrudInterface $crud
      * @return void
      */
-    public function __construct(private CrudInterface $crud)
+    public function __construct(private QueryParamsInterface $query, private CrudInterface $crud)
     {
         $this->crud = $crud;
     }
@@ -22,20 +20,19 @@ class EntityManager implements EntityManagerInterface
         return $this->crud->lastID();
     }
 
-    public function create(array $fields = []): DataMapperInterface
+    public function create(): DataMapperInterface
     {
-        return $this->crud->create($fields);
+        return $this->crud->create($this->query);
     }
 
     /**
      * @inheritDoc
      *
-     * @param ?QueryParamsInterface $query = null|null $query
      * @return DataMapperInterface
      */
-    public function read(?QueryParamsInterface $query = null): DataMapperInterface
+    public function read(): DataMapperInterface
     {
-        return $this->crud->read($query);
+        return $this->crud->read($this->query);
     }
 
     public function release(array $selectors = [], array $conditions = [], array $params = [], array $options = []): mixed
@@ -43,14 +40,14 @@ class EntityManager implements EntityManagerInterface
         return $this->crud->release($selectors, $conditions, $params, $options);
     }
 
-    public function update(array $fields = [], array $conditions = []): DataMapperInterface
+    public function update(): DataMapperInterface
     {
-        return $this->crud->update($fields, $conditions);
+        return $this->crud->update($this->query);
     }
 
-    public function delete(array $conditions = []): DataMapperInterface
+    public function delete(): DataMapperInterface
     {
-        return $this->crud->delete($conditions);
+        return $this->crud->delete($this->query);
     }
 
     public function search(array $selectors = [], array $searchconditions = []) : mixed

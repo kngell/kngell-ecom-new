@@ -61,17 +61,9 @@
                        Kngell</a>
                  </p>
               </div>
-              <?php if (isset($this->settings) && !empty($this->settings)) :?>
-              <div class="social col-lg-4 col-md-6 col-12">
-                 <a target="_new" href=" <?=$this->settings->facebook_link?>"><i class="fab fa-facebook-f"></i></a>
-                 <a target="_new" href="<?=$this->settings->twitter_link?>"><i class="fab fa-twitter"></i></a>
-                 <a target="_new" href="<?=$this->settings->linkedin_link?>"><i class="fab fa-linkedin-in"></i></a>
-              </div>
-              <?php endif; ?>
+              <?= $socialsMedia ?? ''?>
            </div>
         </div>
-
-
      </div>
   </footer>
   <!-- End footer -->

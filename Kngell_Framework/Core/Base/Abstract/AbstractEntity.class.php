@@ -24,6 +24,11 @@ abstract class AbstractEntity
         return CustomReflector::getInstance()->reflectionInstance($this::class);
     }
 
+    public function table() : string
+    {
+        return strtolower(StringUtil::separate(trim(str_replace('Entity', '', $this::class))));
+    }
+
     protected function getOriginalField(mixed $field)
     {
         return strtolower($this->CamelCaseToUnderscore($field));
@@ -46,19 +51,20 @@ abstract class AbstractEntity
         return CustomReflector::getInstance();
     }
 
-    protected function assingParams(array $attrs, array $params) : self
+    protected function assingParams(array $attrs, array $params) : self|bool
     {
         foreach ($params as $field => $value) {
             $field = $this->regenerateField($field);
             if (is_string($field) && in_array($field, $attrs)) {
                 $this->updateEntity($field, $value);
+            } else {
+                return false;
             }
         }
-
         return $this;
     }
 
-    protected function assingEntity(array $attrs, array $params) :  self
+    protected function assingEntity(array $attrs, array $params) :  self|bool
     {
         foreach ($attrs as $attr) {
             $attr = $this->getOriginalField($attr);
@@ -66,9 +72,10 @@ abstract class AbstractEntity
                 $value = $params[$attr];
                 $attr = $this->regenerateField($attr);
                 $this->updateEntity($attr, $value);
+            } else {
+                return false;
             }
         }
-
         return $this;
     }
 
@@ -97,7 +104,7 @@ abstract class AbstractEntity
 
     private function CamelCaseToSeparator($value, $separator = ' ')
     {
-        if (!is_scalar($value) && !is_array($value)) {
+        if (! is_scalar($value) && ! is_array($value)) {
             return $value;
         }
         if (defined('PREG_BAD_UTF8_OFFSET_ERROR') && preg_match('/\pL/u', 'a') == 1) {

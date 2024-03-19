@@ -9,7 +9,7 @@ class DataMapperFactory
      * ================================================================.
      *@return void
      */
-    public function __construct()
+    public function __construct(private DataMapperInterface $dataMapperObject)
     {
     }
 
@@ -22,10 +22,9 @@ class DataMapperFactory
      */
     public function create() : DataMapperInterface
     {
-        $dataMapperObject = Application::diget(DataMapperInterface::class);
-        if (! $dataMapperObject instanceof DataMapperInterface) {
+        if (! $this->dataMapperObject instanceof DataMapperInterface) {
             throw new DataMapperExceptions(DataMapperInterface::class . ' is not a valid database connexion Object!');
         }
-        return $dataMapperObject;
+        return $this->dataMapperObject;
     }
 }

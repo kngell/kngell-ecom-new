@@ -29,7 +29,6 @@ class DisplayAuthSystem extends AbstractAuthSystem implements DisplayPagesInterf
     private function registerBox() : string
     {
         $Box = $this->getTemplate('registerboxPath');
-
         return str_replace('{{registerForm}}', $this->registerForm(), $Box);
     }
 

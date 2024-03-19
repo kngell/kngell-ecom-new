@@ -28,10 +28,10 @@ interface CrudInterface
     /**
      * --------------------------------------------------------------
      * Insert in data base successfully or not.
-     * @param array $fields
+     * @param QueryParamsInterface|null $query
      * @return DataMapperInterface
      */
-    public function create(array $fields = []): DataMapperInterface;
+    public function create(?QueryParamsInterface $queryParams = null): DataMapperInterface;
 
     /**
      * Read Data from data base.
@@ -44,19 +44,18 @@ interface CrudInterface
     /**
      * ---------------------------------------------------------------
      * Update data.
-     * @param array $fields
-     * @param array $conditions
+     * @param QueryParamsInterface|null $query
      * @return DataMapperInterface
      */
-    public function update(array $fields = [], array $conditions = []) : DataMapperInterface;
+    public function update(?QueryParamsInterface $queryParams = null) : DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------
      * Delete data.
-     * @param array $conditions
+     * @param QueryParamsInterface|null $query
      * @return DataMapperInterface
      */
-    public function delete(array $conditions = []) :DataMapperInterface;
+    public function delete(?QueryParamsInterface $queryParams = null) :DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------

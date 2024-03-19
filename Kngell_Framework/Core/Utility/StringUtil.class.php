@@ -25,6 +25,11 @@ final class StringUtil
         return $text;
     }
 
+    public static function countChar(string $string, string $char) : int
+    {
+        return substr_count($string, $char);
+    }
+
     /**
      * Convert a string into words, to use for labels and menu names.
      *
@@ -76,7 +81,7 @@ final class StringUtil
      */
     public static function capitalize($string, bool $full = false): bool|string
     {
-        if (!empty($string)) {
+        if (! empty($string)) {
             // transliterate
             $text = self::translateString($string);
             $text = $full ? strtoupper($text) : ucwords($text);
@@ -102,7 +107,7 @@ final class StringUtil
     public static function separate(string $str)
     {
         $separator = '_';
-        if (!is_scalar($str) && !is_array($str)) {
+        if (! is_scalar($str) && ! is_array($str)) {
             return $str;
         }
         if (defined('PREG_BAD_UTF8_OFFSET_ERROR') && preg_match('/\pL/u', 'a') == 1) {
@@ -137,12 +142,12 @@ final class StringUtil
     public static function isBlank(string $str) : bool
     {
         $str = trim($str);
-        return !isset($str) || $str === '';
+        return ! isset($str) || $str === '';
     }
 
     public static function getLastCharacter(string $str) : string
     {
-        return !self::isBlank($str) ? substr($str, -1) : '';
+        return ! self::isBlank($str) ? substr($str, -1) : '';
     }
 
     public static function addTrailingChar(string $char, string $str) : string
@@ -170,7 +175,7 @@ final class StringUtil
      */
     public static function htmlDecode(string $str) : string
     {
-        return !empty($str) ? htmlspecialchars_decode(html_entity_decode($str), ENT_QUOTES) : '';
+        return ! empty($str) ? htmlspecialchars_decode(html_entity_decode($str), ENT_QUOTES) : '';
     }
 
     private static function translateString(string $string): string

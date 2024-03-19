@@ -21,35 +21,30 @@ interface EntityManagerInterface
     /**
      * --------------------------------------------------------------
      * Insert in data base successfully or not.
-     * @param array $fields
      * @return DataMapperInterface
      */
-    public function create(array $fields = []): DataMapperInterface;
+    public function create(): DataMapperInterface;
 
     /**
      * Read Data from Database
      * ---------------------------------------------------------------.
-     * @param QueryParamsInterface|null $query
      * @return DataMapperInterface
      */
-    public function read(?QueryParamsInterface $query = null): DataMapperInterface;
+    public function read(): DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------
      * Update data.
-     * @param array $fields
-     * @param array $conditions
      * @return DataMapperInterface
      */
-    public function update(array $fields = [], array $conditions = []) : DataMapperInterface;
+    public function update() : DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------
      * Delete data.
-     * @param array $conditions
      * @return DataMapperInterface
      */
-    public function delete(array $conditions = []) :DataMapperInterface;
+    public function delete() :DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------

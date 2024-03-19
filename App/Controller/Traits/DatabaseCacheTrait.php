@@ -7,14 +7,14 @@ trait DatabaseCacheTrait
     public function getCachedData(?string $fileName = null, array $cm = [], array $params = [], int $time = 20) : Object
     {
         $cacheFile = $this->cachedFiles[$fileName] ?? $fileName;
-        if ((!is_array($cm) || !is_array($params)) || empty($cm)) {
+        if ((! is_array($cm) || ! is_array($params)) || empty($cm)) {
             throw new BaseInvalidArgumentException('Paramètres collecte des données invalides', 1);
         }
-        if (!$this->cache->exists($cacheFile)) {
-            $this->cache->set($cacheFile, call_user_func_array($cm, !empty($params) ? $params : []), $time);
+        if (! $this->cache->exists($cacheFile)) {
+            $this->cache->set($cacheFile, call_user_func_array($cm, ! empty($params) ? $params : []), $time);
         }
         if ($this->session->exists(ACTIVE_CACHE_FILES)) {
-            if (!in_array($cacheFile, $this->session->get(ACTIVE_CACHE_FILES))) {
+            if (! in_array($cacheFile, $this->session->get(ACTIVE_CACHE_FILES))) {
                 $activeCacheFile = $this->session->get(ACTIVE_CACHE_FILES);
                 $activeCacheFile[] = $cacheFile;
                 $this->session->set(ACTIVE_CACHE_FILES, $activeCacheFile);

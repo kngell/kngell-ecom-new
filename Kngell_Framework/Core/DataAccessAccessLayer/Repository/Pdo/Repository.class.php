@@ -14,22 +14,15 @@ class Repository extends AbstractRepository implements RepositoryInterface
         parent::__construct($em);
     }
 
-    public function entity(Entity|CollectionInterface $entity) : self
-    {
-        $this->entity = $entity;
-        return $this;
-    }
-
     /**
      * Create new entrie
-     * ====================================================================.
-     * @param array $fields
+     * ===================================================.
      * @return DataMapperInterface
      */
-    public function create(array $fields = []) : DataMapperInterface
+    public function create() : DataMapperInterface
     {
         try {
-            return $this->em->create($this->fields());
+            return $this->em->create();
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -37,23 +30,22 @@ class Repository extends AbstractRepository implements RepositoryInterface
 
     /**
      * Delete from data base
-     * ====================================================================.
-     * @param array $conditions
+     * ==================================================.
      * @return DataMapperInterface|null
      */
-    public function delete(array $conditions = []) : DataMapperInterface
+    public function delete() : DataMapperInterface
     {
         try {
-            return $this->em->delete($conditions);
+            return $this->em->delete();
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function update(array $conditions) : ?DataMapperInterface
+    public function update() : ?DataMapperInterface
     {
         try {
-            return $this->em->update($this->fields($conditions), $conditions);
+            return $this->em->update();
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -61,7 +53,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
 
     /**
      * Find by ID
-     * ====================================================================.
+     * =====================================================.
      * @param int $id
      * @return DataMapperInterface
      */
@@ -78,7 +70,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
 
     /**
      * Find One element by
-     *====================================================================.
+     *====================================================.
      * @param array $conditions
      * @param array $options
      * @return mixed
@@ -98,7 +90,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
 
     /**
      * Get All
-     * ====================================================================.
+     * ====================================================.
      * @return array
      */
     public function findAll(): mixed
@@ -110,10 +102,10 @@ class Repository extends AbstractRepository implements RepositoryInterface
         }
     }
 
-    public function findBy(?QueryParamsInterface $queryParams = null) : mixed
+    public function findBy() : mixed
     {
         try {
-            return $this->em->read($queryParams);
+            return $this->em->read();
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -131,7 +123,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
 
     /**
      * Search Data
-     *====================================================================.
+     *=======================================================.
      * @param array $selectors
      * @param array $conditions
      * @param array $parameters
@@ -150,7 +142,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
 
     /**
      * Find data and delete it
-     * ====================================================================.
+     * =======================================================.
      * @param array $conditions
      * @return bool
      */
@@ -173,7 +165,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
 
     /**
      * Find and Update
-     * ====================================================================.
+     * ==================================================.
      * @param array $fields
      * @param int $id
      * @return bool
@@ -197,7 +189,7 @@ class Repository extends AbstractRepository implements RepositoryInterface
 
     /**
      * Find and retur self
-     *====================================================================.
+     *====================================================.
      * @param int $id
      * @param array $selectors
      * @return RepositoryInterface

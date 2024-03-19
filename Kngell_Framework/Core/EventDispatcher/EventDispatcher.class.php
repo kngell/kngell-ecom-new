@@ -18,9 +18,6 @@ class EventDispatcher extends AbstractEventDispatcher implements EventDispatcher
         foreach ($listeners as ['callback' => $listener]) {
             /** @var ListenerInterface */
             $obj = $this->listener->listnerCanBeInstantiated(class: $listener);
-            /*
-             * @var mixed
-             */
             $eventResults->result = $obj->handle(event: $event);
             $eventResults->listener = $listener;
             if ($debug) {

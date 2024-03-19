@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class ShoppingCartController extends Controller
+class ShoppingCartController extends HttpController
 {
     public function __construct(array $params = [])
     {
@@ -17,9 +17,8 @@ class ShoppingCartController extends Controller
      */
     protected function indexPage(array $data = []) : ResponseHandler
     {
-        // $this->setLayout('clothes');
-        // echo $this->route_params;
+        $page = new ShoppingCartDecorator($this->page());
         $this->pageTitle('Shopping Cart');
-        return $this->render('shoppingCart' . DS . 'shoppingCart', $this->displayShoppingCart());
+        return $this->render('shoppingCart' . DS . 'shoppingCart', $page->get()->display());
     }
 }

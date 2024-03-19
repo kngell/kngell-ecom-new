@@ -65,6 +65,13 @@ class Collection implements CollectionInterface
         return array_key_exists($key, $this->items) && isset($this->items[$key]);
     }
 
+    public function getObjectWithValue(string $id, mixed $value) : array
+    {
+        return array_values(
+            array_filter($this->items, fn ($item) => $item->$id === $value)
+        );
+    }
+
     /**
      * Returns all the keys of the collection items.
      *
@@ -375,7 +382,8 @@ class Collection implements CollectionInterface
      */
     public function first(callable|null $callback = null, $default = null) : mixed
     {
-        return $this->first($this->items, $callback, $default);
+        // return $this-first($this->items, $callback, $default);
+        return ! empty($this->items) ? $this->items[0] : [];
     }
 
     public function last() : mixed

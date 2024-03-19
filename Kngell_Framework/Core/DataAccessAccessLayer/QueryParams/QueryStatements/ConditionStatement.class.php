@@ -6,39 +6,62 @@ class ConditionStatement extends AbstractQueryStatement
 {
     protected string $statement;
 
-    public function __construct(?CollectionInterface $children = null, ?QueryParamsHelper $helper = null, ?string $method = null)
+    public function __construct(?string $method = null, ?string $baseMethod = null, ?string $queryType = null)
     {
-        parent::__construct($children, $helper, $method);
-        $this->statement = match (true) {
-            in_array($this->method, ['on']) => ' ON ',
-            in_array($this->method, [
-                'where',
-                'orWhere',
-                'whereNotIn',
-                'whereIn',
-                'andWhere',
-            ]) => ' WHERE ',
-            in_array($this->method, ['having', 'havingNotIn']) => ' HAVING ',
-            default => ''
-        };
+        parent::__construct($method, $baseMethod, $queryType);
+        $this->statement = ConditionType::get($this->method);
     }
 
     public function proceed(?self $conditionObj = null): array
     {
         $childs = $this->children->all();
-        $this->braceOpen = count($childs) > 1 ? '(' : '';
-        $this->braceClose = count($childs) > 1 ? ')' : '';
-        $r = '';
-        $parametters = [];
-        $bindArray = [];
+        $this->useBrace();
         foreach ($childs as $key => $child) {
             $nextChild = next($childs);
+            $this->tablesSet($child);
             list($condition, $params, $bindArr) = $child->proceed();
+            $this->tablesGet($child);
             $link = count($childs) > 1 && $nextChild ? $nextChild->link() : '';
-            $r .= $condition . $link;
-            $parametters[] = ! empty($params) ? $params : [];
-            $bindArray[] = $bindArr;
+            $this->query .= $condition . $link;
+            $this->parameters[] = ! empty($params) ? $params : [];
+            $this->bind_arr[] = $bindArr;
+            if (str_ends_with($this->query, $link) && $link !== '' && $this->statement != '') {
+                $this->statement = '';
+            }
         }
-        return [$this->statement . $this->braceOpen . $this->statement($r) . $this->braceClose, $parametters, $bindArray];
+        $this->query();
+
+        return [$this->statement . $this->braceOpen . $this->query . $this->braceClose, $this->parameters, $this->bind_arr];
+    }
+
+    protected function useBrace(array $childs = []): void
+    {
+        if (! $this->parent instanceof MainQuery && count($childs) > 1) {
+            $this->braceOpen = '(';
+            $this->braceClose = ')';
+        }
+    }
+
+    private function query() : void
+    {
+        if (str_contains($this->query, $this->statement) && ! empty($this->statement)) {
+            $this->query = str_replace($this->statement, '', $this->query);
+            $countBrackets = StringUtil::countChar($this->query, '(');
+            if (str_contains($this->query, 'WHERE') && $countBrackets > 1) {
+                $this->query = trim(trim($this->query, '()'));
+            }
+        }
+        if (str_contains($this->parent->getQuery(), 'WHERE') && str_contains($this->query, 'WHERE')) {
+            $this->statement = $this->statementLink();
+            $this->query = str_replace('WHERE ', '', $this->query);
+        }
+    }
+
+    private function statementLink() : string
+    {
+        return match (true) {
+            $this->method == 'where' => ' AND',
+            $this->method == 'orWhere' => ' OR',
+        };
     }
 }

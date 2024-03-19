@@ -6,6 +6,8 @@ interface CustomReflectorInterface
 {
     public function reflectionInstance(string $obj) : ReflectionClass;
 
+    public function reflectionObj(object $obj) : ReflectionObject;
+
     public function isInitialized(string $field, Object $class) : bool;
 
     public function getMethod(string $method, object $class) : ReflectionMethod;

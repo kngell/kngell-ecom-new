@@ -13,12 +13,11 @@ class RepositoryFactory
      * Main constructor
      * ==================================================================.
      */
-    public function __construct(string $crudIdentifier, string $tableSchema, string $tableSchemaID, Entity $entity)
+    public function __construct(string $crudIdentifier, string $tableSchema, string $tableSchemaID)
     {
         $this->crudIdentifier = $crudIdentifier;
         $this->tableSchema = $tableSchema;
         $this->tableSchemaID = $tableSchemaID;
-        $this->entity = $entity;
     }
 
     /**
@@ -35,7 +34,6 @@ class RepositoryFactory
         if (! $repositoryObject instanceof RepositoryInterface) {
             throw new BaseUnexpectedValueException(get_class($repositoryObject) . ' is not a valid repository Object!');
         }
-
         return $repositoryObject;
     }
 
@@ -46,7 +44,6 @@ class RepositoryFactory
             [
                 'tableSchema' => $this->tableSchema,
                 'tableSchemaID' => $this->tableSchemaID,
-                'entity' => $this->entity,
                 'options' => [],
             ]
         )->initialize();

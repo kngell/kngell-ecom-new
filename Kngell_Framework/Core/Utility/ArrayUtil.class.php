@@ -14,6 +14,44 @@ final class ArrayUtil
         return array_keys($keys) !== $keys;
     }
 
+    public static function IsEqualArray(array $array1, array $array2) : bool
+    {
+        return array_diff($array1, $array2) == [] && array_diff($array2, $array1) == [];
+    }
+
+    public static function uniqueObjectByKey(array $array, string $key) : array
+    {
+        $result = [];
+        $duplicates = [];
+        foreach ($array as $i) {
+            if (! isset($result[$i->{$key}])) {
+                $result[$i->{$key}] = $i;
+            } else {
+                $duplicates[] = $i->vId;
+            }
+        }
+        sort($result); //Add this if you want to clean up the keys.
+        return [$result, $duplicates];
+    }
+
+    /**
+     * Create multiple arrays from one associative array.
+     *
+     * @param array $array
+     * @return array
+     */
+    public static function multiplesArraysFromAssoc(array $array) : array
+    {
+        if (self::isAssoc($array)) {
+            $newArr = [];
+            foreach ($array as $key => $value) {
+                $newArr[] = [$key => $value];
+            }
+            return $newArr;
+        }
+        throw new Exception('Array is not associative');
+    }
+
     public static function firstElement(array $array) : mixed
     {
         return empty($array) ? null : $array[0];
@@ -141,6 +179,16 @@ final class ArrayUtil
         return $results;
     }
 
+    /** get Values from an associative array */
+    public static function valuesFromArray($array) : array
+    {
+        $values = [];
+        foreach ($array as $key => $value) {
+            $values[] = $value;
+        }
+        return $values;
+    }
+
     public static function cleanUp(array $array) : array
     {
         return self::flatten(self::filter_recursive($array));
@@ -164,5 +212,35 @@ final class ArrayUtil
         );
         $iterator = new RecursiveIteratorIterator($recursiveArrayIterator);
         return iterator_to_array($iterator, false);
+    }
+
+    public static function flattenArray(?array $array = null): array
+    {
+        if (is_array($array)) {
+            $arraySingle = [];
+            foreach ($array as $arr) {
+                foreach ($arr as $val) {
+                    $arraySingle[] = $val;
+                }
+            }
+            return $arraySingle;
+        }
+    }
+
+    public static function flattenArrayRecursive(?array $array = null): array
+    {
+        $flatArray = [];
+        foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($array)) as $value) {
+            $flatArray[] = $value;
+        }
+        return $flatArray;
+    }
+
+    public static function isMultidimentional(array $array) : bool
+    {
+        if (count($array) == count($array, COUNT_RECURSIVE)) {
+            return false;
+        }
+        return true;
     }
 }

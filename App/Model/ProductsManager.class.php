@@ -11,7 +11,7 @@ class ProductsManager extends Model
         parent::__construct($this->_table, $this->_colID);
     }
 
-    public function getProducts(int|string|null $brand = null) : CollectionInterface
+    public function getProducts(int|string|null $brand = 2) : CollectionInterface
     {
         // if ($brand === null) {
         $query = $this->query()
@@ -51,17 +51,15 @@ class ProductsManager extends Model
 
     public function getSingleProduct(string $slug) : ?object
     {
-        $this->table()
-            ->leftJoin('product_categorie', ['pdtId', 'cat_id'])
+        $this->query()
+            ->leftJoin('product_categorie', ['product|pdtId', 'product_categorie|catId'])
+            ->on(['pdtId',  'pdtId'])
             ->leftJoin('categories', ['categorie'])
-            ->leftJoin('brand', ['br_name'])
-            ->on(
-                ['pdtId',  'pdtId'],
-                ['cat_id', 'cat_id'],
-                ['br_id', 'br_id'],
-            )
-            ->where(['slug' => $slug . '|products'])
-            ->groupBy(['pdtId DESC' => 'products'])
+            ->on(['catId', 'catId'])
+            ->leftJoin('brand', ['brName'])
+            ->on(['brId', 'brId'])
+            ->where(['products|slug' => $slug])
+            ->groupBy('products|pdtId DESC')
             ->return('object');
         $pdt = $this->getAll();
         if ($pdt->count() === 1) {

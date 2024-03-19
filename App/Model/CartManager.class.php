@@ -12,23 +12,23 @@ class CartManager extends Model
         parent::__construct($this->_table, $this->_colID);
     }
 
-    public function addUserItem() : self
+    public function addUserItem(UserCartItems $userCart) : self
     {
-        if ($this->cookie->exists(VISITOR_COOKIE_NAME)) {
-            $this->table(null, ['COUNT|cartId|nbItems'])->where([
-                'userId' => $this->cookie->get(VISITOR_COOKIE_NAME),
-                'itemId' => $this->entity->getFieldValue('itemId'),
-            ])->return('current');
-            $userCart = new Collection(current($this->getAll()->get_results()));
-            if ($userCart->offsetGet('nbItems') == 0) {
+        if ($this->cookie->exists(VISITOR_COOKIE_NAME) && $this->entity instanceof CartEntity) {
+            $itemId = $this->entity->getItemId();
+            $cartElt = $userCart->get()->getObjectWithValue('itemId', $itemId);
+            if (empty($cartElt)) {
                 return $this->assign([
                     'userId' => $this->cookie->get(VISITOR_COOKIE_NAME),
                 ])->save();
             }
+            $this->setCount(1); //Item already exist in cart
         } else {
-            Application::diGet(VisitorsManager::class)->addNewVisitor();
+            /** @var VisitorsManager */
+            $m = $this->factory->create(VisitorsManager::class);
+            $m->addNewVisitor();
+            return $this->addUserItem($userCart);
         }
-
         return $this;
     }
 
@@ -45,10 +45,18 @@ class CartManager extends Model
                 ->where(['userId' => $this->cookie->get(VISITOR_COOKIE_NAME)])
                 ->groupBy('products|pdtId')
                 ->return('object');
-
             return new Collection($this->getAll()->get_results());
         }
-
         return new Collection([]);
+    }
+
+    public function delete(?Entity $entity = null): ?Model
+    {
+        if (is_null($entity)) {
+            /** @var CartEntity */
+            $en = $this->entity;
+            $this->query()->delete()->where(['cartId' => $en->getCartId(), 'itemId' => $en->getItemId()])->go();
+        }
+        return parent::delete();
     }
 }

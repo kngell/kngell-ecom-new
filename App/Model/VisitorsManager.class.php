@@ -21,15 +21,44 @@ class VisitorsManager extends Model
         return $this;
     }
 
-    public function manageVisitors(array $params = []) : self
+    public function isVisitorNeedUpdate(Object $visitor) : bool
     {
+        if ($this->entity instanceof VisitorsEntity) {
+            $attrs = $this->entity->getInitializedAttributes();
+            $update = false;
+            foreach ($attrs as $key => $value) {
+                if (in_array($key, array_keys((array) $visitor))) {
+                    if ($key != 'updatedAt' && $visitor->$key != $value) {
+                        $update = true;
+                        break;
+                    }
+                } else {
+                    $update = true;
+                    break;
+                }
+            }
+            return $update;
+        }
+    }
+
+    public function manageVisitors(VisitorsFromCache $cVisitors) : self|bool
+    {
+        $visitors = $cVisitors->get();
+        [$uniqueV,$duplicatesV,$isUniqueV] = $this->isVisitorUnique($visitors, 'ipAddress');
+        if (! $isUniqueV) {
+            $delete = $this->deleteDuplicatesVisitors($duplicatesV, $cVisitors);
+        }
         if ($this->cookie->exists(VISITOR_COOKIE_NAME)) {
-            $visitorInfos = $this->getVisitorInfos($params['ip'] ?? '91.173.88.22');
-            return match ($visitorInfos->count()) {
-                0 => $this->addNewVisitor($this->cookie->get(VISITOR_COOKIE_NAME)),
-                1 => $this->updateVisitorInfos(),
-                default => $this->deleteVisitor()
-            };
+            $cookie = $this->cookie->get(VISITOR_COOKIE_NAME);
+            [$visitor,$vExists] = $this->isVisitorExists($uniqueV);
+            if (! $vExists) {
+                return $this->addNewVisitor($cookie);
+            }
+            $update = $this->isVisitorNeedUpdate($visitor);
+            if ($update) {
+                return $this->updateVisitor();
+            }
+            return $delete ?? $update ?? 'ok';
         } else {
             /** @var VisitorsEntity */
             $entity = $this->getVisitorByIp();
@@ -56,7 +85,6 @@ class VisitorsManager extends Model
             'useragent' => Session::uagent_no_version(),
             'hits' => 1,
         ]);
-
         if ($save = $this->save()) {
             $newV ? $this->cookie->set($cookies) : '';
             return $save;
@@ -64,21 +92,16 @@ class VisitorsManager extends Model
         return false;
     }
 
-    public function getEntity() : VisitorsEntity
-    {
-        return parent::getEntity();
-    }
-
     public function getAllVisitors() : CollectionInterface
     {
-        $this->table()->return('object');
+        $this->query()->return('object');
         return new Collection($this->getAll()->get_results());
     }
 
     public function getVisitorByIp() : ?Entity
     {
-        $this->table()->where([
-            'ipAddress|in' => [[H_visitors::getIP(), '2', '3'], 'visitors'],
+        $this->query()->where([
+            'ipAddress' => [H_visitors::getIP()],
         ])->return('class');
         $v = $this->getAll();
         if ($v->count() > 1) {
@@ -87,50 +110,46 @@ class VisitorsManager extends Model
         return null;
     }
 
-    private function getIpData() : mixed
+    private function isVisitorExists(array $visitors) : array
     {
         if ($this->entity instanceof VisitorsEntity) {
-            $ip = $this->entity->isInitialized('ipAddress') ? $this->entity->getIpAddress() : H_visitors::getIP();
-            if ($ip == '::1') {
-                $ip = '91.173.88.22';
+            $visitorIP = $this->entity->getIpAddress();
+            foreach ($visitors as $visitor) {
+                if ($visitor->ipAddress === $visitorIP) {
+                    return [$visitor, true];
+                }
             }
-            return H_visitors::getIpData($ip);
         }
+        return [[], false];
     }
 
-    private function getVisitorInfos(string $ip) : self
+    private function deleteDuplicatesVisitors(array $duplicatesV, VisitorsFromCache $cVisitors)
     {
-        $this->query()
-            ->where(['cookies' => $this->cookie->get(VISITOR_COOKIE_NAME)])
-            ->whereIn('ipAddress', [$ip, '2', '3'])
-            ->return('class');
-        return $this->getAll();
+        $this->query()->delete()->whereIn('vId', $duplicatesV)->go();
+        $delete = $this->delete();
+        if ($delete) {
+            $cachedFile = $cVisitors->getCachedFiles()['visitors'];
+            $this->cache->delete($cachedFile);
+        }
+        return $delete;
     }
 
-    private function updateVisitorInfos() : self
+    private function isVisitorUnique(CollectionInterface $visitors, string $key) : array
     {
-        // /** @var VisitorsEntity */
-        // $oldVisitor = current($m->get_results());
-        // $this->entity->assign(array_merge($this->helper->transform_keys(! is_array($ipData) ? ['ipAddress' => $ipData] : $ipData, H_visitors::new_IpAPI_keys()), (array) $this->entity));
+        $arrVisitors = $visitors->all();
+        $unique = true;
+        list($uniqueV, $duplicatesV) = ArrayUtil::uniqueObjectByKey($arrVisitors, $key);
+        if (! empty($duplicatesV)) {
+            $unique = false;
+        }
+        return [$uniqueV, $duplicatesV, $unique];
+    }
+
+    private function updateVisitor() : self
+    {
         if (! $update = $this->update()) {
             throw new BaseRuntimeException('Erreur lors de la mise à jour des données visiteur!');
         }
         return $update ?? null;
-    }
-
-    private function deleteVisitor() : self
-    {
-        // $vInfos = $m->get_results();
-        // if (count($vInfos) > 1) {
-        //     foreach ($vInfos as $info) {
-        //         $info->assign((array) $info);
-        //         $info->getQueryParams()->reset();
-        if (! $delete = $this->delete()) {
-            throw new BaseRuntimeException('Erreur lors de la mise à jour des données visiteur!');
-        }
-        // }
-
-        return $delete; //$this->addNewVisitor();
-        // }
     }
 }

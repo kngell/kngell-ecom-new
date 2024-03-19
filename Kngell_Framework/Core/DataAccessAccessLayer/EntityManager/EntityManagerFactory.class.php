@@ -5,7 +5,8 @@ declare(strict_types=1);
 class EntityManagerFactory
 {
     public function __construct(
-        private DataMapperFactory $dataMapperFactory,
+        // private DataMapperFactory $dataMapperFactory,
+        private DataMapperInterface $dataMapper,
         private CrudFactory $crudFactory,
     ) {
     }
@@ -25,9 +26,9 @@ class EntityManagerFactory
         array $options,
         QueryBuilderInterface $queryBuilder
     ) : EntityManagerInterface {
-        $dataMapper = $this->dataMapperFactory->create();
+        // $dataMapper = $this->dataMapperFactory->create();
         $crud = $this->crudFactory->create(
-            $dataMapper,
+            $this->dataMapper,
             $queryBuilder,
             $tableSchema,
             $tableSchemaID,

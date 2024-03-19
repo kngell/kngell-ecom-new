@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 class SettingsEntity extends Entity
 {
+    /** @id */
     private int $setID;
     private string $settingName;
     private string $settingKey;
@@ -15,7 +16,7 @@ class SettingsEntity extends Entity
 
     public function __construct()
     {
-        $this->createdAt = !isset($this->createdAt) ? new DateTimeImmutable() : $this->createdAt;
+        ! isset($this->createdAt) && $this->isPropertiesSet() ? $this->createdAt = new DateTimeImmutable() : '';
     }
 
     /**
@@ -175,6 +176,14 @@ class SettingsEntity extends Entity
     {
         $this->createdAt = $createdAt;
 
+        return $this;
+    }
+
+    public function delete(?string $field = null) : self
+    {
+        if (isset($this->$field)) {
+            unset($this->$field);
+        }
         return $this;
     }
 }
