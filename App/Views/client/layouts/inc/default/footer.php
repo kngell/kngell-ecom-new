@@ -62,8 +62,11 @@
                  </p>
               </div>
               <?= $socialsMedia ?? ''?>
+
            </div>
         </div>
+
+
      </div>
   </footer>
   <!-- End footer -->

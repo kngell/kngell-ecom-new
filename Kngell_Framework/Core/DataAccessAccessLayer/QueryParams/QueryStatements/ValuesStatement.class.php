@@ -31,6 +31,14 @@ class ValuesStatement extends AbstractQueryStatement
         return [$this->statement . $this->braceOpen . $this->query . $this->braceClose, $this->parameters, $this->bind_arr];
     }
 
+    protected function useBrace() : void
+    {
+        if (in_array($this->queryType, ['INSERT', 'WITHCTE'])) {
+            $this->braceOpen = ' (';
+            $this->braceClose = ') ';
+        }
+    }
+
     private function cteQueryValues() : void
     {
         if ($this->queryType == 'WITHCTE') {

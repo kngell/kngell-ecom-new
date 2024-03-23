@@ -14,10 +14,10 @@ class Sanitizer
         $input = [];
         if (is_array($dirtydata) && count($dirtydata) > 0) {
             foreach ($dirtydata as $key => $value) {
-                if (!isset($key)) {
+                if (! isset($key)) {
                     throw new BaseInvalidArgumentException('Invalid Key');
                 }
-                if (!is_array($value)) {
+                if (! is_array($value)) {
                     $value = htmlspecialchars(trim(stripslashes($value)), ENT_QUOTES, 'UTF-8');
                 }
                 $input[$key] = self::sanitizeInput($value);
@@ -25,6 +25,8 @@ class Sanitizer
             if (isset($input) && count($input) > 0) {
                 return $input;
             }
+        } elseif (is_array($dirtydata) && empty($dirtydata)) {
+            return $dirtydata;
         } else {
             $input = htmlspecialchars(trim(stripslashes($dirtydata)), ENT_QUOTES, 'UTF-8');
 
@@ -67,7 +69,7 @@ class Sanitizer
             case is_numeric($value):
                 return isset($value) ? filter_var($value, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION) : '';
                 break;
-            case is_array($value) && !empty($value):
+            case is_array($value) && ! empty($value):
                 $arr = [];
                 if (count($value) > 0) {
                     foreach ($value as $k => $v) {

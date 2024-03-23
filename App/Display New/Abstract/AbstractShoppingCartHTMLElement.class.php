@@ -9,6 +9,7 @@ abstract class AbstractShoppingCartHTMLElement extends AbstractHTMLElement
     protected FormBuilder $frm;
     protected array $userItems;
     protected array $taxesProducts = [];
+
     private string $shoppingDelForm;
 
     public function __construct(string $template, array $params)
@@ -17,7 +18,6 @@ abstract class AbstractShoppingCartHTMLElement extends AbstractHTMLElement
         $this->money = $params['money'];
         $this->frm = $params['frm'];
         $this->shoppingDelForm = $params['shoppingDelForm'];
-
         parent::__construct($template, $params);
     }
 
@@ -43,7 +43,7 @@ abstract class AbstractShoppingCartHTMLElement extends AbstractHTMLElement
 
     protected function filterTaxe(mixed $HT, object $product, CollectionInterface $taxes, int $itemQty) : object
     {
-        $productTaxes = $taxes->filter(fn ($taxe) => $product->catId == $taxe->tr_catID);
+        $productTaxes = $taxes->filter(fn ($taxe) => $product->catId == $taxe->trCatID);
         if (property_exists($this, 'userItems')) {
             $this->userItems[] = ['id' => $product->itemId, 'HT' => $HT, 'taxes' => $productTaxes, 'itemQty' => $itemQty];
         }

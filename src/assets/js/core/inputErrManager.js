@@ -5,13 +5,13 @@ class Input_Manager {
     form.find("div.invalid-feedback").html("");
   };
   //remove invalid input on focus
-  removeInvalidInput(myform) {
-    myform.on("focus", "input,textarea, .ck, .note-editor", function () {
+  removeInvalidInput = (myform) => {
+    myform.find("input,textarea, .ck, .note-editor").on("focus", function () {
       $(this).removeClass("is-invalid");
       $(this).parents(".input-box").children("div.invalid-feedback").html("");
-      $("label[for='" + $(this).attr("id") + "']").css("top", "");
+      $("label[for='" + $(this).attr("id") + "']").css("top", 0);
     });
-  }
+  };
   findLabel = (el) => {
     const idVal = el.id;
     const labels = document.getElementsByTagName("label");
@@ -33,6 +33,7 @@ class Input_Manager {
         div.innerHTML = value;
       } else {
         const input = form.find("#" + key).addClass("is-invalid");
+        console.log(key, value);
         input
           .parents(".input-box")
           .children("div.invalid-feedback")

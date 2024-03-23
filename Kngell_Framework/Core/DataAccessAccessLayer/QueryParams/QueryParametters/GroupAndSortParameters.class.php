@@ -47,10 +47,11 @@ class GroupAndSortParameters extends AbstractStatementParameters
         $params = $this->normalizeCounters($params);
 
         foreach ($params as $tbl => $param) {
+            $alias = is_string($tbl) ? $this->tableAlias($tbl) : '';
             if (is_numeric($tbl)) {
                 $gb[] = $param;
             } else {
-                $gb[] = $tbl . '.' . $param;
+                $gb[] = $alias . '.' . $param;
             }
         }
         return $gb;

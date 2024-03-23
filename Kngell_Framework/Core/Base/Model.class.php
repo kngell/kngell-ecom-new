@@ -21,14 +21,38 @@ class Model extends AbstractModel
         return $this->find();
     }
 
-    public function getDetails(mixed $id = null, string $colID = '', string $mode = 'class') : ?self
+    public function getDetails(...$params) : ?self
     {
-        if (null == $id) {
-            throw new BaseException("Impossible de trouver l'enregistrement souhaité");
+        $condition = [];
+        if(is_array($params) && count($params) == 1) {
+            $params = $params[0];
         }
-        $data_query = $this->query()
-            ->where([$colID != '' ? $colID : $this->tableSchemaID => $id])
-            ->return($mode);
+        if(ArrayUtil::isAssoc($params) && count($params) > 1) {
+            throw new BadQueryArgumentException('Please provide only one condition');
+        }
+        if(ArrayUtil::is_sequential_array($params)) {
+            if(count($params) == 1) {
+                $condition = [$this->tableSchemaID => $params[0]];
+            } elseif(count($params) == 2) {
+                $condition = [$params[0] => $params[1]];
+            } elseif(count($params) == 3) {
+                $condition = [$params[0], $params[1], $params[2]];
+            } else {
+                throw new BadQueryArgumentException('Please provide field/value list for one condition only');
+            }
+        }
+        if(empty($condition)) {
+            $this->query()->select()->return('class');
+        } else {
+            $this->query()->where($condition)->return('class');
+        }
+        // if (null == $colID) {
+        //     $colId = $this->tableSchemaID;
+        //     throw new BaseException("Impossible de trouver l'enregistrement souhaité");
+        // }
+        // $data_query = $this->query()
+        //     ->where([$colID != '' ? $colID : $this->tableSchemaID => $id])
+        //     ->return($mode);
 
         return $this->find();
     }
@@ -38,10 +62,10 @@ class Model extends AbstractModel
         $en = $this->beforeSave($entity);
         if ($en->isInitialized($en->getColId())) {
             $en = $this->beforeSaveUpadate($en);
-            $save = $this->update();
+            $save = $this->update($en);
         } else {
             $en = $this->beforeSaveInsert($en);
-            $save = $this->insert();
+            $save = $this->insert($en);
         }
         if ($save->count() > 0) {
             $params['saveID'] = $save ?? '';
@@ -50,33 +74,32 @@ class Model extends AbstractModel
         return null;
     }
 
-    public function insert() : self
+    public function insert(null|Entity $entity = null) : self
     {
-        /** @var DataMapperInterface */
+        null == $entity ? $this->entity = $entity : '';
         $result = $this->repository()->create();
         $this->setAllReturnedValues($result);
         return $this;
     }
 
-    public function update() : self
+    public function update(null|Entity $entity = null) : self
     {
+        $entity = null == $entity ? $entity : $this->entity;
+        if(! CustomReflector::getInstance()->isInitialized('queryType', $this->queryParams)) {
+            $this->query()->update($entity)->go();
+        }
         $result = $this->repository()->update();
-        $this->setAllReturnedValues($result);
-        return $this;
-    }
-
-    public function deleteWithConditions(null|Entity $entity) : self
-    {
-        null === $entity ? $entity = $this->entity : '';
-        $entity = $this->beforeDelete($entity);
-        $result = $this->repository()->delete();
         $this->setAllReturnedValues($result);
         return $this;
     }
 
     public function delete(null|Entity $entity = null) : ?self
     {
-        return $this->deleteWithConditions($entity);
+        $entity = $this->beforeDelete($entity);
+        $result = $this->repository()->delete();
+        $result = $this->afterDelete($result);
+        $this->setAllReturnedValues($result);
+        return $this;
     }
 
     public function count() : int
@@ -102,20 +125,20 @@ class Model extends AbstractModel
         return $output;
     }
 
-    private function beforeDelete(Entity $entity) : Entity
+    private function beforeDelete(?Entity $entity = null) : Entity|bool
     {
-        if(! isset($this->queryParams) || $this->queryParams->getQueryType()->name !== 'DELETE') {
-            $colID = $entity->getColId();
-            $this->query()->delete($entity)->where([$colID => $this->entity->getFieldValue($colID)])->go();
+        if(CustomReflector::getInstance()->isInitialized('queryType', $this->queryParams) && $this->queryParams->getQueryType()->name == 'DELETE') {
+            return true;
         }
-        return ! is_null($entity) ? $entity : false;
+        $entity = null != $entity ? $entity : $this->entity;
+        $this->query()->delete($entity)->go();
+        return $entity;
     }
 
     //After delete
-    private function afterDelete($params = [])
+    private function afterDelete(DataMapperInterface $resp) : DataMapperInterface
     {
-        $params = null;
-        return true;
+        return $resp;
     }
 
     private function afterSave(array $params = [])

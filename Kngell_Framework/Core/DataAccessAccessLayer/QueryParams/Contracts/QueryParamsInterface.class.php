@@ -10,15 +10,15 @@ interface QueryParamsInterface
 
     public function from(?string $tbl = null) : self;
 
-    public function table(?string $tbl = null) : self;
+    public function table(mixed $tbl) : self;
 
-    public function join(?string $tbl = null, ...$selectors) : self;
+    public function join(string $tbl, string|array|Closure ...$selectors) : self;
 
-    public function leftJoin(?string $tbl = null, ...$selectors) : self;
+    public function leftJoin(string $tbl, string|array|Closure ...$selectors) : self;
 
-    public function rightJoin(?string $tbl = null, ...$selectors) : self;
+    public function rightJoin(string $tbl, string|array|Closure ...$selectors) : self;
 
-    public function on(...$onConditions) : self;
+    public function on(int|string|array|Closure ...$onConditions) : self;
 
     public function where(...$conditions) : self;
 
@@ -40,15 +40,21 @@ interface QueryParamsInterface
 
     public function offset(int|null $offset = null) : self;
 
-    public function insert(...$columns) : self;
+    /**
+     * Insert and array of field/values, collection of entities or an Entity Object.
+     *
+     * @param array|Entity|CollectionInterface ...$data
+     * @return self
+     */
+    public function insert(array|Entity|CollectionInterface ...$data) : self;
 
     public function into(string $tbl) : self;
 
-    public function fields(...$columns) : self;
-
     public function values(...$values) : self;
 
-    public function update(array|Entity|null $updateParams = null) : self;
+    public function update(string|array|Entity|CollectionInterface ...$data) : self;
+
+    public function updateWithCte(string|array|Entity|CollectionInterface ...$data) : self;
 
     public function set(array $setParams = []) : self;
 
@@ -70,49 +76,47 @@ interface QueryParamsInterface
 
     public function getQueryType(): ?QueryType;
 
-    public function getSelect(): FieldsStatement;
+    public function getSelect(): AbstractQueryStatement;
 
-    public function setSelect(FieldsStatement $select): AbstractQueryParams;
+    public function setSelect(AbstractQueryStatement $select): AbstractQueryParams;
 
-    public function getFrom(): QueryStatement;
+    public function getFrom(): AbstractQueryStatement;
 
-    public function setFrom(QueryStatement $from): AbstractQueryParams;
+    public function setFrom(AbstractQueryStatement $from): AbstractQueryParams;
 
-    public function getJoin(): QueryStatement;
+    public function getJoin(): AbstractQueryStatement;
 
-    public function setJoin(QueryStatement $join): AbstractQueryParams;
+    public function setJoin(AbstractQueryStatement $join): AbstractQueryParams;
 
-    public function getWhere(): ConditionStatement;
+    public function getWhere(): AbstractQueryStatement;
 
-    public function setWhere(ConditionStatement $where): AbstractQueryParams;
+    public function setWhere(AbstractQueryStatement $where): AbstractQueryParams;
 
-    public function getOn(): ConditionStatement;
+    public function getHaving(): AbstractQueryStatement;
 
-    public function setOn(ConditionStatement $on): AbstractQueryParams;
+    public function setHaving(AbstractQueryStatement $having): AbstractQueryParams;
 
-    public function getHaving(): ConditionStatement;
+    public function getGroupBy(): AbstractQueryStatement;
 
-    public function setHaving(ConditionStatement $having): AbstractQueryParams;
+    public function setGroupBy(AbstractQueryStatement $groupBy): AbstractQueryParams;
 
-    public function getGroupBy(): GroupAndSortStatement;
+    public function getOrderBy(): AbstractQueryStatement;
 
-    public function setGroupBy(GroupAndSortStatement $groupBy): AbstractQueryParams;
+    public function setOrderBy(AbstractQueryStatement $orderBy): AbstractQueryParams;
 
-    public function getOrderBy(): GroupAndSortStatement;
+    public function getLimit(): AbstractQueryStatement;
 
-    public function setOrderBy(GroupAndSortStatement $orderBy): AbstractQueryParams;
+    public function setLimit(AbstractQueryStatement $limit): AbstractQueryParams;
 
-    public function getLimit(): CounterStatement;
+    public function getOffset(): AbstractQueryStatement;
 
-    public function setLimit(CounterStatement $limit): AbstractQueryParams;
-
-    public function getOffset(): CounterStatement;
-
-    public function setOffset(CounterStatement $offset): AbstractQueryParams;
+    public function setOffset(AbstractQueryStatement $offset): AbstractQueryParams;
 
     public function getQueryParams(): array;
 
-    public function getOptions() : array;
+    public function getQueryOptions(): array;
+
+    public function setQueryOptions(array $options): AbstractQueryParams;
 
     public function setQueryParams(array $queryParams): AbstractQueryParams;
 

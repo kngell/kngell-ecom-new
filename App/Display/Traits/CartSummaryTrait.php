@@ -6,7 +6,7 @@ trait CartSummaryTrait
 {
     protected function filterTaxe(mixed $HT, object $product, CollectionInterface $taxes, int $itemQty) : object
     {
-        $productTaxes = $taxes->filter(fn ($taxe) => $product->cat_id == $taxe->tr_catID);
+        $productTaxes = $taxes->filter(fn ($taxe) => $product->cat_id == $taxe->trCatID);
         if (property_exists($this, 'userItems')) {
             $this->userItems[] = ['id' => $product->itemId, 'HT' => $HT, 'taxes' => $productTaxes, 'itemQty' => $itemQty];
         }

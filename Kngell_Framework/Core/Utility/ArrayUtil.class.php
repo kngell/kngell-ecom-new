@@ -8,6 +8,19 @@ final class ArrayUtil
     {
     }
 
+    public static function transform_keys(array $source = [], array | null $newKeys = []) : array
+    {
+        $S = $source;
+        if (isset($newKeys) && ! empty($newKeys)) {
+            foreach ($source as $key => $val) {
+                if (isset($newKeys[$key]) && $newKeys[$key] !== $key) {
+                    $S = self::_rename_arr_key($key, $newKeys[$key], $S);
+                }
+            }
+        }
+        return $S;
+    }
+
     public static function isAssoc(array $array) : bool
     {
         $keys = array_keys($array);
@@ -242,5 +255,17 @@ final class ArrayUtil
             return false;
         }
         return true;
+    }
+
+    private static function _rename_arr_key(string $oldkey, string $newkey, array $arr = []) : bool|array
+    {
+        if (array_key_exists($oldkey, $arr)) {
+            $arr[$newkey] = $arr[$oldkey];
+            unset($arr[$oldkey]);
+
+            return $arr;
+        } else {
+            return false;
+        }
     }
 }

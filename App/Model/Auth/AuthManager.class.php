@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-class AuthManager extends Model_old
+class AuthManager extends Model
 {
     public static $currentLoggedInUser = null;
     private $_isLoggedIn = false;

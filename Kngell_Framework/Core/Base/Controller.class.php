@@ -18,7 +18,7 @@ class Controller extends AbstractController
         return $this->htmlComp = (new HTMLBaseComponent(''))->setLevel(0);
     }
 
-    protected function model(string|AbstractDataFromCache $m) : Object
+    protected function model(string|AbstractDataFromCache $m) : Model
     {
         if (is_string($m)) {
             return Application::diGet(ModelFactory::class)->create($m);

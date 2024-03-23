@@ -14,10 +14,10 @@ class TaxesManager extends Model
 
     public function getTaxSystem(array $categories = []) : CollectionInterface
     {
-        $this->query()->join('taxe_region', ['tr_catID', 'tr_tax_id'])
-            ->on([$this->_colID, 'tr_tax_id'])
-            ->whereIn('taxe_region|tr_catID', $categories)
-            ->groupBy('tr_tax_id')
+        $this->query()->select()->join('taxe_region', ['trCatID', 'trTaxId'])
+            ->on(['taxes|' . $this->_colID, 'taxe_region|trTaxId'])
+            ->whereIn('taxe_region|trCatID', $categories)
+            ->groupBy('trTaxId')
             ->return('object');
         return new Collection($this->getAll()->get_results());
     }

@@ -10,14 +10,15 @@ class ShoppingCartController extends HttpController
     }
 
     /**
-     * IndexPage
-     * ===================================================================.
+     * Display sinle Product.
+     *
      * @param array $data
-     * @return void
+     * @return ResponseHandler
      */
     protected function indexPage(array $data = []) : ResponseHandler
     {
         $page = new ShoppingCartDecorator($this->page());
+        $page = new NewProductsDecorator($page);
         $this->pageTitle('Shopping Cart');
         return $this->render('shoppingCart' . DS . 'shoppingCart', $page->get()->display());
     }

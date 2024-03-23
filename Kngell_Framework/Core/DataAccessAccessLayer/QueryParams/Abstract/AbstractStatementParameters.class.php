@@ -100,8 +100,8 @@ abstract class AbstractStatementParameters extends AbstractQueryStatement
         }
         foreach ($values as $index => $value) {
             isset($keys) ? $this->arrayPrefixerField($keys, $index, $key) : '';
-            $str .= ':' . $this->field . $index . ',';
-            $this->bind_arr[$this->field][$this->field . $index] = $value;
+            $str .= ':' . strval($this->field . $index) . ',';
+            $this->bind_arr[$this->field . $index] = $value;
         }
         return rtrim($str, ',');
     }
@@ -233,7 +233,13 @@ abstract class AbstractStatementParameters extends AbstractQueryStatement
                         $field = is_string($condition) ? strval($condition) : $condition;
                         $key == 0 ? $this->field = $field : '';
                     }
-                    $cond[] = $type == 'exp' ? $alias . $field : $field;
+                    if ($key == 0 && ! isset($inArgs['field'])) {
+                        $cond[] = $alias . $field;
+                    } elseif (isset($inArgs['field'])) {
+                        $cond[] = $field;
+                    } else {
+                        $cond[] = $type == 'exp' ? $alias . $field : $field;
+                    }
                 } else {
                     $cond[$key] = $condition;
                 }
@@ -269,7 +275,7 @@ abstract class AbstractStatementParameters extends AbstractQueryStatement
         if (null !== $key) {
             $this->field = $keys[$index] . $key;
         } else {
-            $this->field = $keys[$index];
+            $this->field = is_numeric($keys[$index]) ? $this->field . $keys[$index] : $keys[$index];
         }
     }
 

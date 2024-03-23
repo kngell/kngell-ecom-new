@@ -1,7 +1,8 @@
 import { Call_controller } from "corejs/form_crud";
-import input from "corejs/inputErrManager";
+import input from "./inputErrManager";
 import { readurl } from "corejs/profile_img";
 import { csrftoken, frm_name } from "corejs/config";
+// import inputErrManager from "./inputErrManager";
 
 class Login_And_Register {
   constructor(element, header) {
@@ -56,6 +57,7 @@ class Login_And_Register {
     });
 
     //Fill in login from cookies on shonw
+
     phpLR.bs_login_box.addEventListener("shown.bs.modal", function () {
       var data = {
         url: "remember_me",
@@ -78,10 +80,9 @@ class Login_And_Register {
         }
       });
     });
+
     //remove invalid input on focus
-    input.removeInvalidInput(phpLR.loginfrm, (el) => {
-      $("label[for='" + el.attr("id") + "']").css("top", "");
-    });
+    input.removeInvalidInput(phpLR.loginfrm);
     input.removeInvalidInput(phpLR.regfrm);
     input.removeInvalidInput(phpLR.forgotfrm);
     //reset forgot password frm
@@ -117,7 +118,7 @@ class Login_And_Register {
           phpLR.regfrm.find(".alertErr").html(response.msg);
         } else {
           if (response.result == "error-field") {
-            input.error(phpLR.regfrm, response.msg);
+            input.error(phpLR.regfrm, response.msg, 20);
           } else {
             phpLR.regfrm.find("#alertErr").html(response.msg);
           }
@@ -145,6 +146,7 @@ class Login_And_Register {
         frm_name: "login-frm",
       };
       Call_controller(data, (response) => {
+        console.log(response);
         phpLR.loginfrm.find("#login-btn").val("Login");
         if (response.result == "success") {
           // $("#logWindowsScript").empty();

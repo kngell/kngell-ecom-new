@@ -15,17 +15,17 @@ class StatementFactory
         }
     }
 
-    public function getStatementObj(?string $type = null, ?string $method = null, ?string $baseMethod = null, ?AbstractQueryStatement $parent = null) : AbstractQueryStatement
+    public function getStatementObj(?string $method = null, ?string $baseMethod = null, ?AbstractQueryStatement $parent = null) : AbstractQueryStatement
     {
-        $statement = StatementType::get($type)->name;
+        $statement = StatementType::get($baseMethod)->name;
         $obj = new $statement($method, $baseMethod);
         null !== $parent ? $obj->setLevel($parent->getLevel() + 1) : '';
         return $obj;
     }
 
-    public function createParameters(string $type, array $params, string $method, string $basemethod, string $queryType) : AbstractQueryStatement
+    public function createParameters(array $params, string $method, string $basemethod, string $queryType) : AbstractQueryStatement
     {
-        $statement = StatementType::get($type);
+        $statement = StatementType::get($basemethod);
         $statementParams = $statement->parameters($statement->value);
         if (null !== $statementParams) {
             return new $statementParams($params, $method, $basemethod, $queryType);

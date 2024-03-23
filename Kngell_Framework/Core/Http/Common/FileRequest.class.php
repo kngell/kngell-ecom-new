@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use SplFileInfo;
+
 class FileRequest extends SplFileInfo
 {
-    private const ERROR_MESSGAES = [
+    const ERROR_MESSGAES = [
         UPLOAD_ERR_OK => 'There is no error, the file uploaded with success.',
         UPLOAD_ERR_INI_SIZE => 'The file "%s" exceeds the upload_max_filesize directive in php.ini.',
         UPLOAD_ERR_FORM_SIZE => 'The file "%s" exceeds the upload limit in your form.',
@@ -15,21 +17,24 @@ class FileRequest extends SplFileInfo
         UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload.',
         -1 => 'The file "%s" was not upload due to an unknown error.',
     ];
+    private ?string $path;
     private ?string $originalName;
     private ?string $mimeType;
     private int $errorCode;
     private FilesSystemInterface $fm;
 
-    public function __construct(?string $path = null, ?string $originalName = null, ?string $mimeType = null, int|null $errorCode = null, ?FilesSystemInterface $fm = null)
+    public function __construct(array $fileArr = [], ?FilesSystemInterface $fm = null)
     {
-        $this->originalName = $originalName;
-        $this->mimeType = $mimeType ?: 'application/octet-stram';
-        $this->errorCode = $errorCode ?: UPLOAD_ERR_OK;
-        if ($this->errorCode === UPLOAD_ERR_OK && !is_file($path)) {
-            throw new FileNotFoundException($path);
+        $this->path = $fileArr['tmp_name'];
+        $this->originalName = $fileArr['name'];
+        $this->mimeType = $fileArr['type'] ?: 'application/octet-stram';
+        $this->errorCode = (int) $fileArr['error'] ?: UPLOAD_ERR_OK;
+
+        if ($this->errorCode === UPLOAD_ERR_OK && ! is_file($this->path)) {
+            throw new FileNotFoundException($this->path);
         }
         $this->fm = $fm;
-        parent::__construct($path);
+        parent::__construct($this->path);
     }
 
     public function getOriginalName(): ?string
@@ -61,7 +66,7 @@ class FileRequest extends SplFileInfo
 
     public function getErrorCode(): int|null
     {
-        return !$this->isValid() ? $this->errorCode : null;
+        return ! $this->isValid() ? $this->errorCode : null;
     }
 
     public function setErrorCode(int $errorCode): self
@@ -86,7 +91,7 @@ class FileRequest extends SplFileInfo
 
     public function move(string $directory, string|null $newName = null) : string
     {
-        if (!$this->isValid()) {
+        if (! $this->isValid()) {
             throw new FilesException($this->getErrorMessage());
         }
         $this->fm->createDirectory($directory);
@@ -97,7 +102,7 @@ class FileRequest extends SplFileInfo
         });
         $fileMoved = move_uploaded_file($this->getPathname(), $target);
         restore_error_handler();
-        if (!$fileMoved) {
+        if (! $fileMoved) {
             throw new FilesException(sprintf('Could not move file "%s" to "%s"-->"%s".', $this->getPathname(), $target, strip_tags($error)));
         }
         @chmod($target, 0666 & ~umask());

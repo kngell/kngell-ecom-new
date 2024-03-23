@@ -4,11 +4,14 @@ declare(strict_types=1);
 class ShoppingCartHTMLElement extends AbstractShoppingCartHTMLElement
 {
     private string $shoppingQtyform;
+    private string $emptyCartTemplate;
 
     public function __construct(?string $template = null, ?array $params = [])
     {
         parent::__construct($template, $params);
+
         $this->shoppingQtyform = $params['shoppingQtyform'];
+        $this->emptyCartTemplate = $params['emptyTemplate'];
     }
 
     public function display(): array
@@ -28,7 +31,7 @@ class ShoppingCartHTMLElement extends AbstractShoppingCartHTMLElement
                 return $this->itemsHtml($cartItems, $this->template, 'shoppingItems');
             }
         }
-        return str_replace('{{shoppingItems}}', $this->getTemplate('emptycartPath'), $this->template);
+        return str_replace('{{shoppingItems}}', $this->emptyCartTemplate, $this->template);
     }
 
     private function itemsHtml(CollectionInterface $collectionItems, string $template, string $replace) : string

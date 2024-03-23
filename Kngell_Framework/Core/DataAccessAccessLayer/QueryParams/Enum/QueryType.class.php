@@ -14,9 +14,9 @@ enum QueryType: string
     case WITHCTE = 'withCte';
 
     private const METHODS_FLOW_ARY = [
-        'select' => ['select', 'fields', 'from', 'table', 'join', 'on', 'where', 'groupBy', 'orderBy', 'limit', 'offset'],
+        'select' => ['select', 'fields', 'from', 'table', 'join', 'on', 'where', 'having', 'groupBy', 'orderBy', 'limit', 'offset'],
         'insert' => ['insert', 'fields', 'values'],
-        'update' => ['update', 'fields', 'values', 'where'],
+        'update' => ['update', 'values', 'where'],
         'updateCte' => ['update', 'fields', 'join', 'values', 'where'],
         'delete' => ['delete', 'from', 'table', 'where'],
         'create' => [],

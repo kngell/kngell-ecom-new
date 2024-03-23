@@ -27,8 +27,6 @@ class ShoppingCartDecorator extends AbstractPageDecorator
         $shoppingCarttemplate = $this->getTemplate('shoppingCartPath');
         $shoppingItemsCollectiontemplate = $this->getTemplate('shoppingItemCollectionPath');
         $subTotalTemplate = $this->getTemplate('shoppingCartsubtotalPath');
-        $whishlist_template = $this->getTemplate('whishlistPath');
-        $whishlistCollectionTemplate = $this->getTemplate('whishlistCollectionPath');
 
         $cart = new ShoppingCartHTMLComponent($shoppingCarttemplate);
         $cart->setLevel($obj->getLevel() + 1);
@@ -42,11 +40,14 @@ class ShoppingCartDecorator extends AbstractPageDecorator
             'shoppingDelForm' => $this->getTemplate('shoppingDelFormPath'),
             'cartTaxTemplate' => $this->getTemplate('cartTaxTemplate'),
             'proceedTobuyForm' => $this->getTemplate('proceedTobuyFormPath'),
+            'emptyTemplate' => $this->getTemplate('emptycartPath'),
         ];
         $cart->add(new ShoppingCartHTMLElement($shoppingItemsCollectiontemplate, $cartParams));
         $cart->add(new ShoppingCartSubTotalHTMLElement($subTotalTemplate, $cartParams));
         $obj->add($cart);
 
+        $whishlist_template = $this->getTemplate('whishlistPath');
+        $whishlistCollectionTemplate = $this->getTemplate('whishlistCollectionPath');
         $whislist = new WhislistCartHTMLComponent($whishlist_template);
         $whislist->setLevel($obj->getLevel() + 1);
         $whislistParams = [
@@ -54,6 +55,8 @@ class ShoppingCartDecorator extends AbstractPageDecorator
             'money' => $this->money,
             'frm' => $this->frm,
             'shoppingDelForm' => $this->getTemplate('shoppingDelFormPath'),
+            'wishlistItemsPath' => $this->getTemplate('whishlistItemPath'),
+
         ];
         $whislist->add(new WhislistHTMLElement($whishlistCollectionTemplate, $whislistParams));
         $obj->add($whislist);

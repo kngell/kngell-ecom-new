@@ -2,13 +2,23 @@
 
 declare(strict_types=1);
 
-class LoginUserWithAjaxController extends Controller
+class LoginUserWithAjaxController extends AjaxController
 {
+    private VisitorsFromCache $visitors;
+    private ValidatorFactory $vFactory;
+
+    public function __construct(VisitorsFromCache $visitors, ValidatorFactory $vFactory)
+    {
+        $this->visitors = $visitors;
+        $this->vFactory = $vFactory;
+    }
+
     public function index()
     {
+        $userData = $this->isValidRequest();
+        $this->vFactory->create($this, $userData)->validate();
         /** @var AuthenticateUserManager */
-        $model = $this->model(AuthenticateUserManager::class)->assign($this->isValidRequest());
-        $this->isIncommingDataValid(m: $model, ruleMethod:'login');
+        $model = $this->model(AuthenticateUserManager::class)->assign($userData);
         if (list($user, $number) = $model->authenticate()) {
             $this->isLoginAttempsValid($number);
             $this->isPasswordValid($user);
@@ -30,8 +40,8 @@ class LoginUserWithAjaxController extends Controller
     {
         /** @var AuthenticateUserManager */
         $model = $this->model(AuthenticateUserManager::class)->assign($this->isValidRequest());
-        $resp = $model->rememberMeCheck();
-        if (!empty($resp)) {
+        $resp = $model->rememberMeCheck($this->visitors);
+        if (! empty($resp)) {
             $this->jsonResponse(['result' => 'success', 'msg' => $resp]);
         } else {
             $this->jsonResponse(['result' => 'error', 'msg' => '']);
@@ -60,7 +70,7 @@ class LoginUserWithAjaxController extends Controller
         $en = $user->getEntity(); // en from end user
         /** @var UserEntity */
         $enFrmDb = current($user->get_results());
-        if (!password_verify($en->getPassword(), $enFrmDb->getPassword())) {
+        if (! password_verify($en->getPassword(), $enFrmDb->getPassword())) {
             try {
                 $this->model(LoginAttemptsManager::class)->assign([
                     'userId' => $enFrmDb->getUserId(),

@@ -20,8 +20,8 @@ class QueryParamsFactory
      */
     public function create() : QueryParamsInterface
     {
-        $queryParams = new QueryParams($this->query, $this->helper, $this->token, $this->stFactory);
-        if (! $queryParams instanceof QueryBuilderInterface) {
+        $queryParams = new QueryParams($this->query, $this->stFactory, $this->helper, );
+        if (! $queryParams instanceof QueryParamsInterface) {
             throw new QueryBuilderExceptions($queryParams . ' is not a valid query builder Object!');
         }
         return $queryParams;

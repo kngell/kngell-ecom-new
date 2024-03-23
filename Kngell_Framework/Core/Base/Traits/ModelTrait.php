@@ -5,15 +5,12 @@ trait ModelTrait
 {
     public function find() : self
     {
-        /** @var CollectionInterface */
-        $query = $this->queryParams->get();
-        if ($query->count() > 0) {
-            $options = $query->offsetGet('options');
-            if (isset($options['return_mode']) && $options['return_mode'] == 'class' && ! isset($options['class'])) {
-                $options = array_merge($options, ['class' => $this->entity::class]);
-                $query->offsetSet('options', $options);
-            }
+        $options = $this->queryParams->getQueryOptions();
+        if (isset($options['return_mode']) && $options['return_mode'] == 'class' && ! isset($options['class'])) {
+            $options = array_merge($options, ['class' => $this->entity::class]);
+            $this->queryParams->setQueryOptions($options);
         }
+
         $results = $this->repository()->findBy();
         $this->setAllReturnedValues($results);
         $results = null;

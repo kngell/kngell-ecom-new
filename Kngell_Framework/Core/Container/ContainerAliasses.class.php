@@ -32,7 +32,7 @@ final class ContainerAliasses
             'CustomReflectorInterface' => CustomReflector::class,
             'FormBuilder' => FormBuilder::class,
             'PaymentGatewayInterface' => PaymentServicesFactory::class,
-            'QueryParamsInterfaceNew' => QueryParamsNew::class,
+            'QueryParamsInterface' => QueryParams::class,
             'DisplayPagesInterface' => PhonesHomePage::class,
         ];
     }
@@ -50,7 +50,6 @@ final class ContainerAliasses
                 YamlFile::get('database'),
             ],
             'DataMapperInterface' => DataMapper::class,
-            'QueryBuilderInterface' => QueryBuilder::class,
         ];
     }
 

@@ -10,7 +10,7 @@ class ModelFactory extends AbstractBaseFactory
         $this->properties = $properties;
     }
 
-    public function create(string $modelString) : AbstractModel
+    public function create(string $modelString) : Model
     {
         $modelObject = new $modelString;
         if (! $modelObject instanceof AbstractModel) {

@@ -57,7 +57,7 @@ class RequestHandler extends GlobalVariables
 
     public function handler() : Request
     {
-        if (!isset($request)) {
+        if (! isset($request)) {
             $request = new Request();
             if ($request) {
                 $create = $request::createFromGlobals();
@@ -143,7 +143,7 @@ class RequestHandler extends GlobalVariables
             }
             return $r;
         }
-        if (!$input) {
+        if (! $input) {
             $data = [];
             foreach ($postData as $field => $value) {
                 $data[$field] = $this->sanitizer::clean($value);
@@ -155,7 +155,7 @@ class RequestHandler extends GlobalVariables
 
     public function getData(string $input = '', array $getData = []) : array
     {
-        if (is_array($getData) && !empty($getData)) {
+        if (is_array($getData) && ! empty($getData)) {
             $gData = isset($getData['url']) ? $getData['url'] : $getData;
             if (is_string($gData) && str_contains($gData, '/')) {
                 $parts = explode('/', $gData);
@@ -238,7 +238,7 @@ class RequestHandler extends GlobalVariables
      */
     public function isAjax(): bool
     {
-        return !empty($this->getServerVar('HTTP_X_REQUESTED_WITH')) && strtolower($this->getServerVar('HTTP_X_REQUESTED_WITH')) === 'xmlhttprequest';
+        return ! empty($this->getServerVar('HTTP_X_REQUESTED_WITH')) && strtolower($this->getServerVar('HTTP_X_REQUESTED_WITH')) === 'xmlhttprequest';
     }
 
     /**
@@ -270,24 +270,18 @@ class RequestHandler extends GlobalVariables
         }
         foreach ($files as $key => $file) {
             $file = $this->sanitizer::cleanFiles($file);
-            if (!ArrayUtil::isAssoc($file)) {
+            if (! ArrayUtil::isAssoc($file)) {
                 foreach ($file as $subFile) {
-                    $this->processHttpFiles($subFile);
+                    $this->httpFiles->add(Application::diget(FileRequest::class, [
+                        'fileArr' => $subFile,
+                    ]));
                 }
             } else {
-                $this->processHttpFiles($file);
+                $this->httpFiles->add(Application::diget(FileRequest::class, [
+                    'fileArr' => $file,
+                ]));
             }
         }
-    }
-
-    private function processHttpFiles(array $file) : void
-    {
-        $this->httpFiles->add(Container::getInstance()->make(Uploader::class, [
-            'path' => $file['tmp_name'],
-            'originalName' => $file['name'],
-            'mimeType' => $file['type'],
-            'errorCode' => $file['error'],
-        ]));
     }
 
     private function initHeaders() : void

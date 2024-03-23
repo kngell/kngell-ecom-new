@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+use SplFileInfo;
 
 class Uploader extends SplFileInfo implements UploaderInterface
 {
@@ -22,18 +23,19 @@ class Uploader extends SplFileInfo implements UploaderInterface
     private FilesManagerInterface $fm;
     private string $path = null;
 
-    public function __construct(?string $path, ?string $originalName, ?string $mimeType, int|null $errorCode = null, FilesSystemInterface $fileSyst, FilesManagerInterface $fm)
+    public function __construct(array $fileArr, FilesSystemInterface $fileSyst, FilesManagerInterface $fm)
     {
-        $this->originalName = $originalName;
-        $this->mimeType = $mimeType ?: 'application/octet-stram';
-        $this->errorCode = $errorCode ?: UPLOAD_ERR_OK;
-        if ($this->errorCode === UPLOAD_ERR_OK && !is_file($path)) {
-            throw new FileNotFoundException($path);
+        $this->path = $fileArr['tmp_name'];
+        $this->originalName = $fileArr['name'];
+        $this->mimeType = $fileArr['type'] ?: 'application/octet-stram';
+        $this->errorCode = $fileArr['error'] ?: UPLOAD_ERR_OK;
+        if ($this->errorCode === UPLOAD_ERR_OK && ! is_file($this->path)) {
+            throw new FileNotFoundException($this->path);
         }
         $this->fileSyst = $fileSyst;
         $this->fm = $fm;
-        $this->path = $path;
-        parent::__construct($path);
+
+        parent::__construct($this->path);
     }
 
     public function saveFilex()
@@ -41,9 +43,9 @@ class Uploader extends SplFileInfo implements UploaderInterface
         $targetFilePath = $this->fm->getDestinationPath();
         $fileName = $targetFilePath . DS . $this->fm->getFileName();
         if ($this->fileSyst->createDir($this->fm->getTargetDir() . DS . $targetFilePath)) {
-            if (!file_exists($this->fm->getTargetDir() . DS . $fileName)) {
+            if (! file_exists($this->fm->getTargetDir() . DS . $fileName)) {
                 if (move_uploaded_file($this->fm->getSourcePath() . DS . $this->fm->getFileName(), $this->fm->getTargetDir() . DS . $fileName)) {
-                    if (!file_exists(IMAGE_ROOT_SRC . $targetFilePath) && !in_array($this->fm->getDestinationPath(), ['posts'])) {
+                    if (! file_exists(IMAGE_ROOT_SRC . $targetFilePath) && ! in_array($this->fm->getDestinationPath(), ['posts'])) {
                         copy($this->fm->getTargetDir() . DS . $fileName, IMAGE_ROOT_SRC . $fileName);
                     }
                     return $fileName;
@@ -80,20 +82,20 @@ class Uploader extends SplFileInfo implements UploaderInterface
 
     public function saveFile(string $directory, string|null $newName = null) : bool
     {
-        if (!$this->isValid()) {
+        if (! $this->isValid()) {
             throw new FilesException($this->getErrorMessage());
         }
         $directory = $this->fileSyst->checkWritable($directory, true);
         $this->fileSyst->createDirectory($directory);
         $target = rtrim($directory, DS) . DS . ($newName ?? $this->originalName);
         $error = '';
-        if (!file_exists($target)) {
+        if (! file_exists($target)) {
             set_error_handler(function ($type, $msg) use (&$error) {
                 $error = $msg;
             });
             $fileMoved = move_uploaded_file($this->getPathname(), $target);
             restore_error_handler();
-            if (!$fileMoved) {
+            if (! $fileMoved) {
                 throw new FilesException(sprintf('Could not move file "%s " to "%s "-->"%s".', $this->getPathname(), $target, strip_tags($error)));
             }
             @chmod($target, 0666 & ~umask());
@@ -105,7 +107,7 @@ class Uploader extends SplFileInfo implements UploaderInterface
     public function syncSrcLocation(string $file) : void
     {
         $targetFilePath = basename(dirname($file)) . DS . basename($file);
-        if (!file_exists(IMAGE_ROOT_SRC . $targetFilePath)) {
+        if (! file_exists(IMAGE_ROOT_SRC . $targetFilePath)) {
             copy($file, IMAGE_ROOT_SRC . $targetFilePath);
         }
     }
@@ -148,7 +150,7 @@ class Uploader extends SplFileInfo implements UploaderInterface
 
     public function getErrorCode(): int|null
     {
-        return !$this->isValid() ? $this->errorCode : null;
+        return ! $this->isValid() ? $this->errorCode : null;
     }
 
     public function setErrorCode(int $errorCode): self

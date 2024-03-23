@@ -24,7 +24,6 @@ singleton:
   MailerInterface: Mailer
   DataMapperEnvironmentConfig: DataMapperEnvironmentConfig
   DataMapperInterface: DataMapper
-  QueryBuilderInterface: QueryBuilder
   DatabaseConnexionInterface: DatabaseConnexion
   FilesSystemInterface: FileSystem
   UploaderInterface: Uploader

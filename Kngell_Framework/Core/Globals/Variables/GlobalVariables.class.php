@@ -93,7 +93,7 @@ class GlobalVariables implements GlobalVariablesInterface
     public function getServerVar(?string $key = null): mixed
     {
         if (null != $key) {
-            if (!isset($this->serverVar[strtoupper($key)])) {
+            if (! isset($this->serverVar[strtoupper($key)])) {
                 return '';
             }
             return $this->serverVar[strtoupper($key)];
@@ -128,6 +128,7 @@ class GlobalVariables implements GlobalVariablesInterface
         if (null != $key) {
             return $var[$key] ?? null;
         }
-        return array_map('strip_tags', $var ?? []);
+        $var['profileUpload'] = array_map('strip_tags', $var['profileUpload'] ?? []);
+        return $var;
     }
 }

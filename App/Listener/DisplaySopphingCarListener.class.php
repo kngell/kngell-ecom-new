@@ -14,14 +14,13 @@ class DisplayShoppingCartListener implements ListenerInterface
     {
         /** @var UserCartController */
         $object = $event->getObject();
-
-        $page = new ShoppingCartDecorator($object);
+        $page = new ShoppingCartDecorator($object->page());
+        $page = new NewProductsDecorator($page);
         $msg = [
             'cartItems' => $this->userCart->getCartItems(),
             'whishlistItems' => $this->userCart->getWhishlistItems(),
         ];
         $msg = array_merge($msg, $page->get()->display());
-
         $object->getResponse()->jsonResponse([
             'result' => 'success',
             'msg' => $msg,

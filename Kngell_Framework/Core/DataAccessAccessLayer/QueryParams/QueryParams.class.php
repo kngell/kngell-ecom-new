@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-class QueryParamsNew extends AbstractQueryParamsNew implements QueryParamsInterfaceNew
+class QueryParams extends AbstractQueryParams implements QueryParamsInterface
 {
     public function __construct(Mainquery $query, StatementFactory $stFactory, QueryParamsHelper $helper)
     {
@@ -188,64 +188,57 @@ class QueryParamsNew extends AbstractQueryParamsNew implements QueryParamsInterf
         return $this;
     }
 
-    public function join(string|array|null $tbl, string|array|Closure ...$onConditions) : self
+    public function join(string $tbl, string|array|Closure ...$selectors) : self
     {
         $this->checkQuery();
-        list($tbl, $fields) = $this->initJoinTables($tbl);
-        $args = $this->joinParams($onConditions, $tbl, __FUNCTION__);
+        $args = $this->joinParams($selectors, $tbl, __FUNCTION__);
         list($this->params, $method, $baseMethod) = $this->params($args, __FUNCTION__);
         $this->joinTable = $tbl;
-        ! empty($fields) ? $this->fields($fields, $this->entity($tbl), __FUNCTION__) : '';
-        if (! isset($this->join)) {
-            $this->join = StatementFactory::create(__FUNCTION__, __FUNCTION__, $this->queryType->name, $this->query);
-        }
+        ! empty($this->params['selectors']) ? $this->fields($this->params['selectors'], $this->entity($tbl), __FUNCTION__) : '';
 
-        $join = $this->stmtFactory->getStatementObj(__FUNCTION__, $method, $baseMethod, $this->join);
+        $join = $this->stmtFactory->getStatementObj($method, $baseMethod, $this->join);
 
-        $join->add(new QueryParameters($args, $this->method, $baseMethod, $this->queryType->name));
-
-        $onCdtObj = $this->joinOn($tbl, __FUNCTION__, $join);
-
-        $join->add($onCdtObj);
+        $join->add(new QueryParameters($args, $method, $baseMethod, $this->queryType->name));
 
         $this->join->add($join);
+        $this->lastMethod = $baseMethod;
 
         return $this;
     }
 
-    public function joinOn(string $tbl, string $baseMethod, AbstractQueryStatement $parent) : AbstractQueryStatement
+    // public function joinOn(string $tbl, string $baseMethod, AbstractQueryStatement $parent) : AbstractQueryStatement
+    // {
+    //     $method = strtolower(substr(__FUNCTION__, strpos(__FUNCTION__, 'On')));
+    //     $stmtObj = $this->stmtFactory->getStatementObj($method, 'join', $parent);
+    //     $this->addParameters($stmtObj, $tbl, 'on', $method, $baseMethod);
+    //     return $stmtObj;
+    // }
+
+    public function on(int|string|array|Closure ...$onConditions) : self
     {
-        $method = strtolower(substr(__FUNCTION__, strpos(__FUNCTION__, 'On')));
-        $stmtObj = $this->stmtFactory->getStatementObj($method, $method, 'join', $parent);
-        $this->addParameters($stmtObj, $tbl, 'on', $method, $baseMethod);
-        return $stmtObj;
+        $this->addCondition($onConditions, __FUNCTION__);
+        return $this;
     }
 
-    public function on(string|array|Closure ...$onConditions) : self
+    public function leftJoin(string $tbl, string|array|Closure ...$selectors) : self
     {
-        if (! isset($this->on)) {
-            $this->on = StatementFactory::create(__FUNCTION__, __FUNCTION__, $this->queryType->name, $this->query);
+        if (ArrayUtil::isMultidimentional($selectors)) {
+            $selectors = $selectors[0];
         }
-        $tbl = $this->joinTable;
-        $args = $this->params($onConditions, __FUNCTION__);
-        list($this->params, $this->method, $baseMethod) = $args;
-        $this->on = $this->joinOn($tbl, __FUNCTION__, $this->query);
-        return $this;
-    }
-
-    public function leftJoin(string|array|null $tbl, string|array|Closure ...$onConditions) : self
-    {
         $args = [
-            'conditions' => $onConditions,
+            'selectors' => $selectors,
             'method' => __FUNCTION__,
         ];
         return $this->join($tbl, $args);
     }
 
-    public function rightJoin(string|array|null $tbl, string|array|Closure ...$onConditions) : self
+    public function rightJoin(string $tbl, string|array|Closure ...$selectors) : self
     {
+        if (ArrayUtil::isMultidimentional($selectors)) {
+            $selectors = $selectors[0];
+        }
         $args = [
-            'selectors' => $onConditions,
+            'selectors' => $selectors,
             'method' => __FUNCTION__,
         ];
         return $this->join($tbl, $args);
@@ -439,14 +432,14 @@ class QueryParamsNew extends AbstractQueryParamsNew implements QueryParamsInterf
         }
     }
 
-    private function joinParams(array $conditions, string $tbl, string $baseMth) : array
+    private function joinParams(array $selectors, string $tbl, string $baseMth) : array
     {
-        $method = isset($conditions[0]) && is_array($conditions[0]) && array_key_exists('method', $conditions[0]) ? $conditions[0]['method'] : $baseMth;
-        $conditions = isset($conditions[0]) && is_array($conditions[0]) && array_key_exists('conditions', $conditions[0]) ? $conditions[0]['conditions'] : $conditions;
+        $method = isset($selectors[0]) && is_array($selectors[0]) && array_key_exists('method', $selectors[0]) ? $selectors[0]['method'] : $baseMth;
+        $selectors = isset($selectors[0]) && is_array($selectors[0]) && array_key_exists('selectors', $selectors[0]) ? $selectors[0]['selectors'] : $selectors;
 
         return [
             'tbl' => $tbl,
-            'conditions' => $conditions,
+            'selectors' => $selectors,
             'method' => $method,
             'baseMethod' => $baseMth,
         ];
@@ -461,7 +454,6 @@ class QueryParamsNew extends AbstractQueryParamsNew implements QueryParamsInterf
         $entityString = str_replace(' ', '', ucwords(str_replace('_', ' ', $tbl))) . 'Entity';
         if (class_exists($entityString)) {
             $entity = Application::diGet($entityString);
-            $t = $entity->table();
             if ($tbl !== $entity->table()) {
                 throw new BadQueryArgumentException("Table $tbl does not exist");
             }
@@ -617,9 +609,9 @@ class QueryParamsNew extends AbstractQueryParamsNew implements QueryParamsInterf
             if (! isset($this->updateStatus)) {
                 $this->update();
             }
-            if (! isset($this->fieldStatus)) {
-                $this->fields();
-            }
+            // if (! isset($this->fieldStatus)) {
+            //     $this->fields();
+            // }
             if (! isset($this->valuesSatatus)) {
                 $this->values();
             }
@@ -635,28 +627,6 @@ class QueryParamsNew extends AbstractQueryParamsNew implements QueryParamsInterf
                 $this->values();
             }
         }
-    }
-
-    private function initJoinTables(string|array|null $tbl) : array
-    {
-        if (null == $tbl) {
-            throw new BadQueryArgumentException('No Join table to Define!');
-        }
-        $table = [];
-        $fields = [];
-        if (is_array($tbl) && ArrayUtil::isAssoc($tbl)) {
-            $table = key($tbl);
-            $fields = $tbl[key($tbl)];
-        } elseif (is_string($tbl)) {
-            $table = $tbl;
-            $fields = [];
-        } else {
-            throw new BadQueryArgumentException('yourTable is not a valid table');
-        }
-        if ($this->queryType->name == 'SELECT' && ! isset($this->selectStatus)) {
-            $this->select();
-        }
-        return [$table, $fields];
     }
 
     private function updateSelectorsOnSpecifiedTable(string $tbl) : void

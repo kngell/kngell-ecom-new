@@ -13,6 +13,7 @@ class UpdateValuesParameters extends ValuesParameters
 
     public function getValues(Entity $entity, ?int $enKey = null): ?string
     {
+        $entity->disablePrimaryKey();
         $data = $entity->getInitializedAttributes();
         $row = '';
         $rows = '';

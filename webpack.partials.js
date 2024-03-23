@@ -32,7 +32,7 @@ exports.alias = {
 
 /**
  * Server Options
- * ========================================================================================
+ * =================================================
  */
 const serverOpt = {
   compress: true,
@@ -42,37 +42,36 @@ const serverOpt = {
     overlay: {
       errors: true,
       warnings: false,
+      runtimeErrors: true,
     },
-    // progress: true,
-    // reconnect: true,
-    // webSocketTransport: "ws",
-    // webSocketURL: "ws://localhost/ws",
+    reconnect: true,
+    progress: true,
   },
-  // webSocketServer: "ws",
   devMiddleware: {
     index: false,
-    // serverSideRender: true,
+    // publicPath: ASSET_PATH,
+    serverSideRender: true,
     writeToDisk: true,
   },
   hot: true,
   liveReload: false,
-  // magicHtml: true,
+  // open: "chrome",
   open: {
     app: {
       name: "Chrome",
-      // arguments: ["--incognito", "--new-window"],
+      // arguments: ["--incognito"],
     },
   },
   port: 8001,
-  proxy: {
-    context: () => true,
-    "/**": {
+  proxy: [
+    {
+      context: ["/"],
       target: "https://localhost",
+      pathRewrite: { "/": "" },
       secure: false,
-      // changeOrigin: true,
-      pathRewrite: { "^/*": "" },
+      changeOrigin: true,
     },
-  },
+  ],
   server: {
     type: "https",
     options: {
@@ -90,14 +89,6 @@ const serverOpt = {
     },
   ],
   allowedHosts: ["localhost", "kngell-ecom.da"],
-
-  // headers: {
-  //   "Access-Control-Allow-Origin": "*",
-  //   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-  //   "Access-Control-Allow-Headers":
-  //     "X-Requested-With, content-type, Authorization",
-  // },
-  // watchFiles: ["src/**/*.php", "public/**/*"],
 };
 const entries = {
   "css/librairies/frontlib": "./src/assets/css/lib/frontlib.sass",

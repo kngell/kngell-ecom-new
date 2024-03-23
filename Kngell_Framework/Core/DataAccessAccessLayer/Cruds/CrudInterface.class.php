@@ -6,20 +6,6 @@ interface CrudInterface
 {
     /**
      * ---------------------------------------------------------------
-     * Get Data base name.
-     * @return string
-     */
-    public function getSchema():String;
-
-    /**
-     * ---------------------------------------------------------------
-     * Get Primary Key.
-     * @return string
-     */
-    public function getSchemaID():String;
-
-    /**
-     * ---------------------------------------------------------------
      * Get Last Insert ID.
      * @return int
      */
@@ -28,34 +14,30 @@ interface CrudInterface
     /**
      * --------------------------------------------------------------
      * Insert in data base successfully or not.
-     * @param QueryParamsInterface|null $query
      * @return DataMapperInterface
      */
-    public function create(?QueryParamsInterface $queryParams = null): DataMapperInterface;
+    public function create(): DataMapperInterface;
 
     /**
      * Read Data from data base.
      * --------------------------------------------------------------.
-     * @param QueryParamsInterface|null $query
      * @return DataMapperInterface
      */
-    public function read(?QueryParamsInterface $queryParams = null) : DataMapperInterface;
+    public function read() : DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------
      * Update data.
-     * @param QueryParamsInterface|null $query
      * @return DataMapperInterface
      */
-    public function update(?QueryParamsInterface $queryParams = null) : DataMapperInterface;
+    public function update() : DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------
      * Delete data.
-     * @param QueryParamsInterface|null $query
      * @return DataMapperInterface
      */
-    public function delete(?QueryParamsInterface $queryParams = null) :DataMapperInterface;
+    public function delete() :DataMapperInterface;
 
     /**
      * ---------------------------------------------------------------
@@ -113,10 +95,6 @@ interface CrudInterface
 
     public function setProperties(
         DataMapperInterface $dataMapper,
-        queryBuilderInterface $queryBuilder,
-        string $tableSchema,
-        string $tableSchemaID,
-        ?array $options = []
     ) : self;
 
     public function beginTransaction() : bool;

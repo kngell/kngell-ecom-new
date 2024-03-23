@@ -8,9 +8,7 @@ class AuthenticateUserManager extends Model
     protected string $_table = 'users';
 
     public function __construct(
-        protected UserSessionsManager $userSession,
-        protected SessionInterface $session,
-        protected VisitorsManager $visitor
+
     ) {
         parent::__construct($this->_table, $this->_colID);
     }
@@ -26,7 +24,7 @@ class AuthenticateUserManager extends Model
 
     public function login(bool|string $remember_me, array $data) : ?Model
     {
-        if (!AuthManager::isUserLoggedIn()) {
+        if (! AuthManager::isUserLoggedIn()) {
             /* @var UsersEntity */
             $this->setEntity(current($this->get_results()));
             $this->session->set(CURRENT_USER_SESSION_NAME, [
@@ -45,16 +43,21 @@ class AuthenticateUserManager extends Model
         return null;
     }
 
-    public function rememberMeCheck() : array
+    public function rememberMeCheck(VisitorsFromCache $v) : array
     {
-        if (!$this->cookie->exists(REMEMBER_ME_COOKIE_NAME)) {
-            $visitor = $this->visitor->manageVisitors();
-            $cookies = $visitor->getEntity()->getCookies();
+        if (! $this->cookie->exists(REMEMBER_ME_COOKIE_NAME)) {
+            /** @var VisitorsManager */
+            $vm = $this->factory->create(VisitorsManager::class);
+            /** @var VisitorsEntity */
+            $visitorEntity = $vm->manageVisitors($v);
+            $cookies = $visitorEntity->getCookies();
         }
         $rem = $cookies ?? $this->cookie->get(REMEMBER_ME_COOKIE_NAME);
-        $this->userSession->getDetails($rem, 'rememberMeCookie');
-        if ($this->userSession->count() === 1) {
-            $userSession = $this->userSession->get_results();
+        /** @var UserSessionsManager */
+        $userSession = $this->factory->create(UserSessionsManager::class);
+        $userSession->getDetails('rememberMeCookie', $rem);
+        if ($userSession->count() === 1) {
+            $userSession = $userSession->get_results();
             return [
                 'remember' => true,
                 'email' => $userSession->email,
@@ -74,7 +77,7 @@ class AuthenticateUserManager extends Model
         $rem_cookie = '';
         if ($remember_me != false) {
             if ($session->count() === 1) {
-                if (!$session->getEntity()->isInitialized('rememberMeCookie')) {
+                if (! $session->getEntity()->isInitialized('rememberMeCookie')) {
                     return $this->rememberCookie();
                 }
                 $cookieSession = $session->getEntity()->{'getRememberMeCookie'}();
@@ -93,7 +96,7 @@ class AuthenticateUserManager extends Model
     private function rememberCookie() : string
     {
         $rem_cookie = '';
-        if (!$this->cookie->exists(REMEMBER_ME_COOKIE_NAME)) {
+        if (! $this->cookie->exists(REMEMBER_ME_COOKIE_NAME)) {
             $this->userSession->getQueryParams();
             $rem_cookie = $this->userSession->getUniqueId('rememberMeCookie');
             $this->cookie->set($rem_cookie, REMEMBER_ME_COOKIE_NAME);
@@ -108,8 +111,8 @@ class AuthenticateUserManager extends Model
     {
         $sessionToken = '';
         if ($session->count() === 1) {
-            if (!$session->getEntity()->isInitialized('sessionToken')) {
-                if (!$this->cookie->exists(TOKEN_NAME)) {
+            if (! $session->getEntity()->isInitialized('sessionToken')) {
+                if (! $this->cookie->exists(TOKEN_NAME)) {
                     $session->getQueryParams();
                     $sessionToken = $session->getUniqueId('sessionToken');
                     $this->cookie->set($sessionToken, TOKEN_NAME);
@@ -118,7 +121,7 @@ class AuthenticateUserManager extends Model
                 }
             } else {
                 $sessionToken = $session->getEntity()->getSessionToken();
-                if (!$this->cookie->exists(TOKEN_NAME)) {
+                if (! $this->cookie->exists(TOKEN_NAME)) {
                     $this->cookie->set($sessionToken, TOKEN_NAME);
                 } else {
                     if ($this->cookie->get(TOKEN_NAME) !== $sessionToken) {
@@ -127,7 +130,7 @@ class AuthenticateUserManager extends Model
                 }
             }
         } else {
-            if (!$this->cookie->exists(TOKEN_NAME)) {
+            if (! $this->cookie->exists(TOKEN_NAME)) {
                 $session->getQueryParams();
                 $sessionToken = $session->getUniqueId('session_token');
                 $this->cookie->set($sessionToken, TOKEN_NAME);
@@ -160,14 +163,18 @@ class AuthenticateUserManager extends Model
 
     private function loginAttemps(string $email) : self
     {
-        $this->table()
-            ->leftJoin('login_attempts', ['COUNT|laId|number'])
-            ->on(['userId', 'userId|login_attempts'], ['timestamp|>=|' => [time() - 60 * 60, 'login_attempts']])
-            ->where(['email' => $email . '|users'])
-            ->groupBy(['userId' => 'users'])
-            ->return('class')
-            ->build();
-
+        $this->query()
+            ->leftJoin('login_attempts', 'COUNT|laId|number')
+            ->on(
+                'users|userId',
+                'login_attempts|userId',
+                'login_attempts|timestamp',
+                '>=',
+                time() - 60 * 60
+            )
+            ->where(['users|email' => $email])
+            ->groupBy(['users' => 'userId'])
+            ->return('class');
         return $this->getAll();
     }
 

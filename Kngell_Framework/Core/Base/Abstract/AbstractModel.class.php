@@ -6,8 +6,9 @@ abstract class AbstractModel
 {
     protected CacheInterface $cache;
     protected CookieInterface $cookie;
+    protected SessionInterface $session;
     protected Entity $entity;
-    protected QueryParamsInterfaceNew $queryParams;
+    protected QueryParamsInterface $queryParams;
     protected RepositoryInterface $repository;
     protected ?PDOStatement $_statement;
     protected DatabaseConnexionInterface $_con;
@@ -26,15 +27,15 @@ abstract class AbstractModel
         $this->tableSchemaID = $tableSchemaID;
     }
 
-    public function query(?string $queryType = null, ?string $tbl = null, ...$params) : QueryParamsInterfaceNew
+    public function query(?string $queryType = null, ?string $tbl = null, ...$params) : QueryParamsInterface
     {
         if (! isset($this->queryParams)) {
-            $this->queryParams = Application::diGet(QueryParamsInterfaceNew::class);
+            $this->queryParams = Application::diGet(QueryParamsInterface::class);
             $query = $this->queryParams->setBaseOptions(
                 $tbl ?? $this->tableSchema,
                 $this->entity
             )->query($queryType, $params);
-            Application::getInstance()->bindParameters(EntityManagerInterface::class, [
+            Application::getInstance()->bindParameters(EntityManagerFactory::class, [
                 'query' => $query,
             ]);
         }
@@ -44,7 +45,7 @@ abstract class AbstractModel
     public function repository() : RepositoryInterface
     {
         if (! isset($this->repository)) {
-            $this->repository = Application::diGet(RepositoryInterface::class);
+            $this->repository = Application::diGet(RepositoryFactory::class)->create();
         }
         return $this->repository;
     }
@@ -55,6 +56,12 @@ abstract class AbstractModel
     public function getEntity(): Entity
     {
         return $this->entity;
+    }
+
+    public function showColumns(string $table) : string
+    {
+        $this->query()->raw("DESCRIBE $table")->go();
+        return implode('; ', array_column($this->repository()->findBy()->get_results(), 'Field'));
     }
 
     /**

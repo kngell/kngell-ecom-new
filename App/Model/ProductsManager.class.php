@@ -14,15 +14,15 @@ class ProductsManager extends Model
     public function getProducts(int|string|null $brand = 2) : CollectionInterface
     {
         // if ($brand === null) {
-        $query = $this->query()
-            ->leftJoin('product_categorie|pc', ['pdtId', 'catId'])
-            ->on(['products|pdtId',  'pc|pdtId'])
-            ->leftJoin('categories|c', ['categorie'])
-            ->on(['pc|catId', 'c|catId'])
-            ->leftJoin('brand|b', ['brName'])
-            ->on(['b|brId', 'c|brId'])
-            ->leftJoin('order_details|od', ['COUNT|od_quantity|qty_sold'])
-            ->on(['products|pdtId', 'od|od_productId'])
+        $query = $this->query()->select()
+            ->leftJoin('product_categorie', ['pdtId', 'catId'])
+            ->on('products|pdtId', 'product_categorie|pdtId')
+            ->leftJoin('categories', 'categorie')
+            ->on('product_categorie|catId', 'categories|catId')
+            ->leftJoin('brand', 'brName')
+            ->on(['brand|brId' => 'categories|brId'])
+            ->leftJoin('order_details', 'COUNT|od_quantity|qty_sold')
+            ->on('products|pdtId', 'order_details|od_productId')
             ->where(['categories|brId' => $brand])
             ->groupBy('product_categorie|pdtId')
             ->return('object');
@@ -45,20 +45,19 @@ class ProductsManager extends Model
         //         ->groupBy(['pdtId DESC' => 'product_categorie'])
         //         ->return('object');
         // }
-        // dd((new QueryBuilder($query))->query());
         return new Collection($this->getAll()->get_results());
     }
 
     public function getSingleProduct(string $slug) : ?object
     {
         $this->query()
-            ->leftJoin('product_categorie', ['product|pdtId', 'product_categorie|catId'])
-            ->on(['pdtId',  'pdtId'])
-            ->leftJoin('categories', ['categorie'])
-            ->on(['catId', 'catId'])
-            ->leftJoin('brand', ['brName'])
-            ->on(['brId', 'brId'])
-            ->where(['products|slug' => $slug])
+            ->leftJoin('product_categorie', 'pdtId', 'catId')
+            ->on('products|pdtId', 'product_categorie|pdtId')
+            ->leftJoin('categories', 'categorie')
+            ->on('product_categorie|catId', 'categories|catId')
+            ->leftJoin('brand', 'brName')
+            ->on('brand|brId', 'categories|brId')
+            ->where('products|slug', $slug)
             ->groupBy('products|pdtId DESC')
             ->return('object');
         $pdt = $this->getAll();

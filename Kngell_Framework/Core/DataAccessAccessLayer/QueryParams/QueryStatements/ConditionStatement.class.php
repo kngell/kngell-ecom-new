@@ -25,9 +25,9 @@ class ConditionStatement extends AbstractQueryStatement
             $this->query .= $condition . $link;
             $this->parameters[] = ! empty($params) ? $params : [];
             $this->bind_arr[] = $bindArr;
-            if (str_ends_with($this->query, $link) && $link !== '' && $this->statement != '') {
-                $this->statement = '';
-            }
+            // if (str_ends_with($this->query, $link) && $link !== '' && $this->statement != '') {
+            //     $this->statement = '';
+            // }
         }
         $this->query();
 

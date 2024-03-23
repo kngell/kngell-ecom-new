@@ -2,10 +2,22 @@
 
 declare(strict_types=1);
 
-class RegisterUserWithAjaxController extends Controller
+class RegisterUserWithAjaxController extends AjaxController
 {
+    private VisitorsFromCache $visitors;
+    private ValidatorFactory $vFactory;
+
+    public function __construct(VisitorsFromCache $visitors, ValidatorFactory $vFactory)
+    {
+        $this->visitors = $visitors;
+        $this->vFactory = $vFactory;
+    }
+
     public function index(array $args = []) : void
     {
+        $userData = $this->isValidRequest();
+        if ($this->vFactory->create($this, $userData)->validate()) {
+        }
         /** @var RegisterUserManager */
         $model = $this->model(RegisterUserManager::class)->assign($this->isValidRequest());
         $this->isIncommingDataValid(m: $model, ruleMethod:'users', newKeys: [

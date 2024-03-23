@@ -49,7 +49,7 @@ class SingleProductHTMLElement extends AbstractProductsHTMLElement
         }
         $template = str_replace('{{proceedToBuyForm}}', $this->productForm($p, 'Proceed to buy'), $template);
         $template = str_replace('{{addToCartForm}}', $this->productForm($p, 'Add to Cart'), $template);
-        $template = str_replace('{{comparePrice}}', $money->getFormatedAmount($p->comparePrice), $template);
+        $template = str_replace('{{comparePrice}}', $money->getFormatedAmount($p->comparePrice ?? ''), $template);
         $template = str_replace('{{regularPrice}}', $money->getFormatedAmount($p->regularPrice), $template);
         $template = str_replace('{{savings}}', $money->getFormatedAmount(strval($p->comparePrice - $p->regularPrice)), $template);
         $template = str_replace('{{replacement}}', $p->replacement ?? $this->dayOfReplacement, $template);

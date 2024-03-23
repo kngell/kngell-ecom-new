@@ -10,7 +10,7 @@ class EntityManager implements EntityManagerInterface
      * @param CrudInterface $crud
      * @return void
      */
-    public function __construct(private QueryParamsInterface $query, private CrudInterface $crud)
+    public function __construct(private CrudInterface $crud)
     {
         $this->crud = $crud;
     }
@@ -22,32 +22,27 @@ class EntityManager implements EntityManagerInterface
 
     public function create(): DataMapperInterface
     {
-        return $this->crud->create($this->query);
+        return $this->crud->create();
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @return DataMapperInterface
-     */
     public function read(): DataMapperInterface
     {
-        return $this->crud->read($this->query);
+        return $this->crud->read();
+    }
+
+    public function update(): DataMapperInterface
+    {
+        return $this->crud->update();
+    }
+
+    public function delete(): DataMapperInterface
+    {
+        return $this->crud->delete();
     }
 
     public function release(array $selectors = [], array $conditions = [], array $params = [], array $options = []): mixed
     {
         return $this->crud->release($selectors, $conditions, $params, $options);
-    }
-
-    public function update(): DataMapperInterface
-    {
-        return $this->crud->update($this->query);
-    }
-
-    public function delete(): DataMapperInterface
-    {
-        return $this->crud->delete($this->query);
     }
 
     public function search(array $selectors = [], array $searchconditions = []) : mixed

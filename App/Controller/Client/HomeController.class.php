@@ -19,10 +19,11 @@ class HomeController extends HttpController
         if (! empty($data)) {
             throw new InvalidArgumentException('Page invalide', 404);
         }
-        $model = $this->model(SettingsManager::class);
-        $q = $model->testNewQuery();
-        $query = $q->getQuery()->proceed();
-        dd($query);
+        // $model = $this->model(SettingsManager::class);
+        // $q = $model->testNewQuery();
+        // $query = $q->getQuery()->proceed();
+        // dd($query);
+        // dd($model->showColumns('visitors'));
         // Preparing HTML element to display on the home page.
         $page = new BannerAreaDecorator($this->page()); // Banner Area
         $page = new BannerAddsDecorator($page); // Banner Adds

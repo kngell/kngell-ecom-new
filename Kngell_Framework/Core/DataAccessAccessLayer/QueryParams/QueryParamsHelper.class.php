@@ -39,6 +39,8 @@ class QueryParamsHelper
     {
         $newArray = [];
         $narr = [];
+        $max_condition = 1;
+        $i = 0;
         if (is_array($conditions) && count($conditions) == 1 && ArrayUtil::isAssoc($conditions)) {
             $newArray[0] = key($conditions);
             $newArray[1] = $conditions[key($conditions)];
@@ -51,6 +53,16 @@ class QueryParamsHelper
                 if ($next != false && is_array($next)) {
                     $newArray[] = $narr;
                     $narr = [];
+                } else {
+                    if (Operators::exists($condition)) {
+                        $max_condition = $max_condition + 1;
+                    }
+                    if ($max_condition == $i) {
+                        $newArray[] = $narr;
+                        $narr = [];
+                        $i = -1;
+                    }
+                    $i++;
                 }
             } else {
                 $newArray[] = $condition;

@@ -459,7 +459,21 @@ trait QueryParamsGetterAndSettersTrait
      */
     public function getQueryParams(): array
     {
-        return $this->queryParams;
+        return $this->options();
+    }
+
+    public function getQueryOptions(): array
+    {
+        if (isset($this->queryParams['options'])) {
+            return $this->queryParams['options'];
+        }
+        return [];
+    }
+
+    public function setQueryOptions(array $options): self
+    {
+        $this->queryParams['options'] = $options;
+        return $this;
     }
 
     /**

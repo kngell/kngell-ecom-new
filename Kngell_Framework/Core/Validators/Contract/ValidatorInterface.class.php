@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-interface ValitatorInterface
+interface ValidatorInterface
 {
-    public function validateformData();
+    public function validate() : bool;
 }

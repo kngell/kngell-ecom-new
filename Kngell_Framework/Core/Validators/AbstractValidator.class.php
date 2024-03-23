@@ -4,44 +4,45 @@ declare(strict_types=1);
 
 abstract class AbstractValidator
 {
-    protected ContainerInterface $container;
-    protected array $validatorClass;
+    protected ValidatorRulesFactory $factory;
+    protected AbstractController $controller;
+    protected array $userData = [];
+    protected string $errorName = 'error-field';
 
-    protected function ruleCheck(string $rule, mixed $rule_value, array $items, string $item, string $display, Model $obj)
+    public function __construct(AbstractController $controller, array $userData, ValidatorRulesFactory $factory)
     {
-        if ($rule != 'display') {
-            $obj->runValidation($this->container->make($this->validatorClass[$rule], [
-                'model' => $obj,
-                'field' => $item,
-                'rule' => $rule_value,
-                'msg' => $this->validatorMessages($display, $rule_value, $item, $items)[$rule],
-            ]));
-        }
+        $this->userData = $userData;
+        $this->factory = $factory;
+        $this->controller = $controller;
     }
 
-    protected function getTerms(Model $obj) : mixed
+    public function runValidator(string $ruleSetName) : array
     {
-        if (( new ReflectionProperty($obj->getEntity(), $obj->getEntity()->getFields('terms')))->isInitialized($obj->getEntity())) {
-            return $obj->getEntity()->{'getTerms'}();
+        $itemsList = RulesFactory::getItems($ruleSetName);
+        $errors = [];
+        $display = '';
+        ! isset($this->userData['terms']) ? $this->userData['terms'] = '' : '';
+        foreach ($itemsList as $item => $rules) {
+            if (array_key_exists($item, $this->userData)) {
+                list($display, $rules) = $this->display($rules);
+                $ruleSet = $this->factory->create($rules, $this->userData, $item);
+                foreach ($ruleSet as $rule) {
+                    $noPassed = $rule->validate($display);
+                    if (is_string($noPassed)) {
+                        ($noPassed !== 'noPassed' || $noPassed !== 'noPassed' && ! isset($ruleSet['required'])) ? $errors[$item][] = $noPassed : '';
+                    }
+                }
+            }
         }
-
-        return '';
+        return $errors;
     }
 
-    private function validatorMessages(string $display, mixed $rule_value, string $item, array $items) : array
+    private function display(array $rules) : array
     {
-        $matchvalue = isset($items[$rule_value]['display']) ? $items[$rule_value]['display'] : '';
-        return [
-            'required' => ($item == 'terms') ? 'Please accept terms & conditions' : "{$display} is require",
-            'min' => "{$display} must be a minimum of {$rule_value} characters",
-            'max' => "{$display} must be a maximum of {$rule_value} caracters",
-            'valid_email' => "{$display} is not valid Email",
-            'is_numeric' => "{$display} has to be a number. Please use a numeric value",
-            'matches' => "{$display} does not math {$matchvalue}",
-            'unique' => "This {$display} already exist.",
-            'Valid_string' => "{$display} is not valid",
-            'Valid_password' => "{$display} is not valid Password",
-            'Valid_domain' => "{$display} is does not have a valid Domain name!",
-        ];
+        if (isset($rules['display'])) {
+            $display = $rules['display'];
+            unset($rules['display']);
+        }
+        return [$display, $rules];
     }
 }

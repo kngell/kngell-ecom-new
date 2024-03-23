@@ -35,14 +35,14 @@ class CartManager extends Model
     public function getUserCart() : CollectionInterface
     {
         if ($this->cookie->exists(VISITOR_COOKIE_NAME)) {
-            $this->query('select')
-                ->leftJoin('products', ['pdtId', 'title', 'regularPrice', 'chargeTax', 'media', 'color', 'size'])
-                ->on(['itemId', 'pdtId'])
-                ->leftJoin('product_categorie', ['catId'])
-                ->on(['pdtId', 'pdtId'])
-                ->leftJoin('categories', ['categorie'])
-                ->on(['catId', 'catId'])
-                ->where(['userId' => $this->cookie->get(VISITOR_COOKIE_NAME)])
+            $this->query()->select()
+                ->leftJoin('products', 'pdtId', 'title', 'regularPrice', 'chargeTax', 'media', 'color', 'size')
+                ->on('cart|itemId', 'products|pdtId')
+                ->leftJoin('product_categorie', 'catId')
+                ->on('products|pdtId', 'product_categorie|pdtId')
+                ->leftJoin('categories', 'categorie')
+                ->on('product_categorie|catId', 'categories|catId')
+                ->where(['cart|userId' => $this->cookie->get(VISITOR_COOKIE_NAME)])
                 ->groupBy('products|pdtId')
                 ->return('object');
             return new Collection($this->getAll()->get_results());
@@ -50,13 +50,28 @@ class CartManager extends Model
         return new Collection([]);
     }
 
-    public function delete(?Entity $entity = null): ?Model
+    public function deleteItem(?Entity $entity = null): ?Model
     {
         if (is_null($entity)) {
             /** @var CartEntity */
             $en = $this->entity;
-            $this->query()->delete()->where(['cartId' => $en->getCartId(), 'itemId' => $en->getItemId()])->go();
+            $this->query()->delete()->where('cartId', $en->getCartId(), 'itemId', $en->getItemId())->go();
         }
-        return parent::delete();
+        return $this->delete();
+    }
+
+    public function updateQty(UserCartItems $userCart) : self
+    {
+        if ($this->cookie->exists(VISITOR_COOKIE_NAME)
+        && $this->entity instanceof CartEntity) {
+            foreach ($userCart->get()->all() as $item) {
+                if ($item->itemId === $this->entity->getItemId()) {
+                    $item->itemQty = $this->entity->getItemQty();
+                    $this->assign(['cartId' => $item->cartId, 'userId' => $this->cookie->get(VISITOR_COOKIE_NAME)]);
+                }
+            }
+        }
+
+        return $this;
     }
 }

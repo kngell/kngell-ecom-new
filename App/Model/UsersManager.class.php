@@ -8,14 +8,15 @@ class UsersManager extends Model
     protected string $_colContent = '';
     protected string $_media_img = 'profileImage';
 
-    public function __construct(private GroupsMaganer $groups)
+    public function __construct()
     {
         parent::__construct($this->_table, $this->_colID);
     }
 
     public function get_selectedOptions(?Model $m = null)
     {
-        $query_params = $this->groups->table()->join('group_user', ['userId', 'groupId'])
+        $groups = $this->factory->create(GroupsMaganer::class);
+        $query_params = $groups->table()->join('group_user', ['userId', 'groupId'])
             ->on(['grId', 'groupId'])
             ->where(['userId' => $m->getEntity()->{'getUserId'}() . '|group_user'])
             ->return('class')
@@ -34,7 +35,7 @@ class UsersManager extends Model
 
     public function singleUser(int $id = -1) : ?self
     {
-        if (!($id < 0)) {
+        if (! ($id < 0)) {
             $this->table()->leftJoin('user_extra_data', ['u_descr', 'u_comment', 'gender', 'dob', 'u_function'])
                 ->on(['userId', 'userId'])
                 ->where(['userId' => $id])

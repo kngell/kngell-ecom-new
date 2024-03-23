@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-abstract class AbstractQueryParamsNew
+abstract class AbstractQueryParams
 {
     use QueryParamsGetterAndSettersTrait;
 
@@ -93,38 +93,37 @@ abstract class AbstractQueryParamsNew
         ];
         $args = $this->params($args, $method);
         list($this->params, $this->method, $baseMethod) = $args;
-        $this->{$method}->add($this->stmtFactory->createParameters($method, $this->params, $this->method, $baseMethod, $this->queryType->name));
+        $this->{$method}->add($this->stmtFactory->createParameters($this->params, $method, $baseMethod, $this->queryType->name));
         $this->lastMethod = $baseMethod;
     }
 
     protected function addStatement(array $args, string $method)
     {
-        list($this->params, $this->method, $baseMethod) = $this->params($args, $method);
-        $this->{$method}->add($this->stmtFactory->getStatementObj($method, $this->method, $baseMethod, $this->query));
+        list($this->params, $method, $baseMethod) = $this->params($args, $method);
+        $this->{$method}->add($this->stmtFactory->getStatementObj($method, $baseMethod, $this->query));
         $this->{$method}->getChildren()->last()->add(
-            $this->stmtFactory->createParameters($method, $this->params, $this->method, $baseMethod, $this->queryType->name)
+            $this->stmtFactory->createParameters($this->params, $method, $baseMethod, $this->queryType->name)
         );
 
         $this->lastMethod = $baseMethod;
     }
 
-    protected function addCondition(array $args, string $method) : void
+    protected function addCondition(array $args, string $baseMethod) : void
     {
-        $tbl = $method == 'on' ? $this->joinTable : $this->currentTable;
-        $args = $this->params($args, $method);
-        list($this->params, $this->method, $baseMethod) = $args;
-        $statement = $this->statement($method);
+        $tbl = $baseMethod == 'on' ? $this->joinTable : $this->currentTable;
+        $args = $this->params($args, $baseMethod);
+        list($this->params, $method, $baseMethod) = $args;
+        $statement = $this->statement($baseMethod);
         if ($this->queryType->name !== 'INSERT') {
-            $this->params = $this->helper->normalize($this->params, $this->method);
-            // $this->params = $this->parseFields($this->params, $this->method);
+            $this->params = $this->helper->normalize($this->params, $method);
         }
         /** @var AbstractQueryStatement */
-        $stmtParent = $method == 'on' ? $this->{$statement}->getChildren()->last() : $this->query;
+        $stmtParent = $baseMethod == 'on' ? $this->{$statement}->getChildren()->last() : $this->query;
 
-        $statementObj = $method !== 'values' ? $this->stmtFactory->getStatementObj($method, $this->method, $baseMethod, $stmtParent) : $this->{$statement};
+        $statementObj = $this->stmtFactory->getStatementObj($method, $baseMethod, $stmtParent);
 
         $this->addParameters($statementObj, $tbl, $statement, $method, $baseMethod);
-        $method == 'on' ? $this->{$statement}->getChildren()->last()->add($statementObj) : ($method !== 'values' ? $this->{$statement}->add($statementObj) : '');
+        $baseMethod == 'on' ? $this->{$statement}->getChildren()->last()->add($statementObj) : $this->{$statement}->add($statementObj);
         $this->lastMethod = $baseMethod;
     }
 
@@ -140,11 +139,11 @@ abstract class AbstractQueryParamsNew
         return (int) $keyRule;
     }
 
-    protected function selfInstance(AbstractQueryStatement $statementObj, string $tbl, string $statement) : QueryParamsNew
+    protected function selfInstance(AbstractQueryStatement $statementObj, string $tbl, string $statement) : QueryParams
     {
         $this->fromStatus = $this->fromStatus ?? false;
         /** @var self */
-        $queryParams = new QueryParamsNew(new MainQuery(), $this->stmtFactory, $this->helper);
+        $queryParams = new QueryParams(new MainQuery(), $this->stmtFactory, $this->helper);
         foreach ($this as $key => $value) {
             if (method_exists($queryParams, 'set' . ucfirst($key)) && ! $this->$key instanceof AbstractQueryStatement) {
                 $value = match (true) {
@@ -171,7 +170,7 @@ abstract class AbstractQueryParamsNew
                 $method = $args[1];
             }
         }
-        if (! isset($this->{$bMethod}) && $bMethod != 'join') {
+        if (! isset($this->{$bMethod}) & $bMethod !== 'on') {
             $this->{$bMethod} = StatementFactory::create($method, $bMethod, $this->queryType->name, $this->query);
         }
         // if (empty($params)) {
@@ -195,13 +194,12 @@ abstract class AbstractQueryParamsNew
             if (is_array($condition)) {
                 $statementObj->add(
                     $this->stmtFactory->createParameters(
-                        $method,
                         [
                             'data' => $condition,
                             'tbl' => $tbl,
                             'queryParams' => $queryParams ?? null,
                         ],
-                        $this->method,
+                        $method,
                         $baseMethod,
                         $this->queryType->name
                     )
@@ -210,13 +208,12 @@ abstract class AbstractQueryParamsNew
                 $results[$key] = $condition;
                 if ($key == array_key_last($this->params)) {
                     $statementObj->add($this->stmtFactory->createParameters(
-                        $method,
                         [
                             'data' => $results,
                             'tbl' => $tbl,
                             'queryParams' => $queryParams ?? null,
                         ],
-                        $this->method,
+                        $method,
                         $baseMethod,
                         $this->queryType->name
                     ));
@@ -229,7 +226,7 @@ abstract class AbstractQueryParamsNew
     {
         $statement = $method;
         if (isset($this->lastMethod) && str_contains($this->lastMethod, 'join')) {
-            if ($this->method !== 'on') {
+            if ($method !== 'on') {
                 throw new BadQuerySyntaxExceptionException('Joined Tables must have ON Conditions');
             } else {
                 $statement = 'join';

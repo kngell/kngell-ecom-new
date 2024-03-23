@@ -14,9 +14,8 @@ $this->start('head'); ?>
    <?= $whislist ?? ''?>
    <!-- !Wishlist -->
    <!-- New Phones -->
-   <?= $new_products ?? ''?>
+   <?= $newProducts ?? ''?>
    <!-- End New Phones -->
-   <input type="hidden" id="ipAddress" style="display:none" value="<?=H_visitors::getIP()?>">
 </main>
 <!-- End  Main -->
 

@@ -51,6 +51,7 @@ class Cart_Manager {
         frm_name: frm.attr("class"),
       };
       Call_controller(data, (response) => {
+        console.log(response);
         if (response.result == "success") {
           frm
             .parents("#cart_items")

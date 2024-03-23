@@ -51,20 +51,18 @@ abstract class AbstractEntity
         return CustomReflector::getInstance();
     }
 
-    protected function assingParams(array $attrs, array $params) : self|bool
+    protected function assingParams(array $attrs, array $params) : self
     {
         foreach ($params as $field => $value) {
             $field = $this->regenerateField($field);
             if (is_string($field) && in_array($field, $attrs)) {
                 $this->updateEntity($field, $value);
-            } else {
-                return false;
             }
         }
         return $this;
     }
 
-    protected function assingEntity(array $attrs, array $params) :  self|bool
+    protected function assingEntity(array $attrs, array $params) :  self
     {
         foreach ($attrs as $attr) {
             $attr = $this->getOriginalField($attr);
@@ -72,8 +70,6 @@ abstract class AbstractEntity
                 $value = $params[$attr];
                 $attr = $this->regenerateField($attr);
                 $this->updateEntity($attr, $value);
-            } else {
-                return false;
             }
         }
         return $this;

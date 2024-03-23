@@ -21,12 +21,11 @@ class UserCartController extends AjaxController
         if ($model->addUserItem($this->userCart)->count() === 1) {
             $link != null ? $this->setUrl($link) : '';
             Application::getInstance()->bind(UserCartHTMLInterface::class, UserCartHTMLElement::class);
-            $this->dispatcher()->dispatch(new UserCartChangeEvent($this, '', ['displayUserCart']));
+            $this->dispatcher()->dispatch(new UserCartChangeEvent($this));
         }
-        $this->jsonResponse(['result' => 'error', 'msg' => $this->helper->showMessage('warning', 'Something goes wrong!')]);
     }
 
-    public function deleteItem(array $args = [], ?string $process = 'delete') : void
+    public function deleteItem(array $args = [], ?string $process = 'deleteItem') : void
     {
         $userIncomeData = $this->isValidRequest();
         $selectedItem = $this->selectedItem($userIncomeData);
@@ -37,46 +36,14 @@ class UserCartController extends AjaxController
                 ])->$process();
             if ($resp->count() === 1) {
                 Application::getInstance()->bind(UserCartHTMLInterface::class, UserCartHTMLElement::class);
-                $this->dispatcher()->dispatch(new ShoppingCartChangeEvent($this, ''));
+                $this->dispatcher()->dispatch(new ShoppingCartChangeEvent($this));
             }
         }
-        $this->jsonResponse(['result' => 'error', 'msg' => $this->helper->showMessage('warning', 'Something goes wrong!')]);
     }
 
     public function saveForLater(array $args = []) : void
     {
-        // /** @var CartManager */
-        // $model = $this->model(CartManager::class)->assign($this->isValidRequest());
-        // $shopping_cart = $this->selectedItem($model);
         $this->deleteItem($args, 'save');
-
-        // $userIncomeData = $this->isValidRequest();
-        // $selectedItem = $this->selectedItem($userIncomeData);
-        // if ($selectedItem->count() === 1) {
-        //     $resp = $this->model($this->userCart)->assign([
-        //         'cartId' => $selectedItem->pop()->cartId,
-        //         'itemId' => $userIncomeData['itemId'],
-        //     ])->save();
-        //     if ($resp->count() === 1) {
-        //         Application::getInstance()->bind(UserCartHTMLInterface::class, UserCartHTMLElement::class);
-        //         $this->dispatcher()->dispatch(new ShoppingCartChangeEvent($this, '', [
-        //             'displayUserCart',
-        //             'displayShoppingCart',
-        //         ]));
-        //     }
-        // }
-        // $this->jsonResponse(['result' => 'error', 'msg' => $this->helper->showMessage('warning', 'Something goes wrong!')]);
-
-        // if ($shopping_cart->count() === 1) {
-        //     $item = $shopping_cart->pop();
-        //     $model->assign(['cartId' => $item->cartId]);
-        //     if ($model->save()->count() === 1) {
-        //         $this->dispatcher->dispatch(new UserCartChangeEvent($this, '', [
-        //             'displayUserCart',
-        //             'displayShoppingCart',
-        //         ]));
-        //     }
-        // }
     }
 
     /**
@@ -93,12 +60,11 @@ class UserCartController extends AjaxController
     public function qtyChange(array $args = []) : void
     {
         /** @var CartManager */
-        $model = $this->model(CartManager::class)->assign($this->isValidRequest());
-        $model = $this->updateQty($model);
-        if ($model->save()) {
-            $this->dispatcher->dispatch(new UserCartChangeEvent($this, '', ['shoppingCart']));
-            // $this->cache->delete($this->cachedFiles['user_cart']);
-            // $this->jsonResponse(['result' => 'success', 'msg' => $this->shoppingCart()['shoppingCart']]);
+        $model = $this->model($this->userCart)->assign($this->isValidRequest());
+        $resp = $model->updateQty($this->userCart);
+        if ($resp->save()) {
+            Application::getInstance()->bind(UserCartHTMLInterface::class, UserCartHTMLElement::class);
+            $this->dispatcher()->dispatch(new ShoppingCartChangeEvent($this));
         }
         $this->jsonResponse(['result' => 'success', 'msg' => ['nbItems' => 0]]);
     }
@@ -144,21 +110,5 @@ class UserCartController extends AjaxController
         return $items->filter(function ($sc) use ($item) {
             return $sc->itemId === $item;
         });
-    }
-
-    private function updateQty(CartManager $m) : CartManager
-    {
-        /** @var CollectionInterface */
-        $shopping_cart = $this->getUserCart();
-        /** @var CartEntity */
-        $en = $m->getEntity();
-        foreach ($shopping_cart as $item) {
-            if ($item->itemId === $en->getItemId()) {
-                $item->itemQty = $en->getItemQty();
-                $m->assign(['cartId' => $item->cartId]);
-            }
-        }
-
-        return $m;
     }
 }

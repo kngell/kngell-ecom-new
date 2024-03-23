@@ -43,7 +43,7 @@ class WhislistHTMLElement extends AbstractShoppingCartHTMLElement
     {
         if ($collectionItems->count() > 0) {
             $ItemsHtml = '';
-            $itemHtml = $this->params['shoppingItemPath'];
+            $itemHtml = $this->params['wishlistItemsPath'];
             foreach ($collectionItems->all() as $item) {
                 if ($item->cartType == 'wishlist') {
                     $ItemsHtml .= $this->whishlistItemHtml($item, $itemHtml);
@@ -64,6 +64,8 @@ class WhislistHTMLElement extends AbstractShoppingCartHTMLElement
             $temp = str_replace('{{title}}', $item->title, $temp);
             $temp = str_replace('{{categorie}}', $item->categorie, $temp);
             $temp = str_replace('{{whishlist_del_frm}}', $this->shoppingItemDelForm($item, 'wishlist'), $temp);
+            // $temp = str_replace('{{itemQtyForm}}', $this->shoppingItemQtyForm($item), $temp);
+            // $temp = str_replace('{{itemDelItemFrom}}', $this->shoppingItemDelForm($item, 'cart'), $temp);
             $temp = str_replace('{{price}}', $this->money->getFormatedAmount(strval($item->regularPrice * $item->itemQty)), $temp);
         }
 

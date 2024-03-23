@@ -6,5 +6,6 @@ response: ResponseHandler
 token: Token
 helper: ControllerHelper
 factory: ControllerFactory
+modelFactory: modelFactory
 # dispatcher: DispatcherFactory
 # comment: CommentsFactory

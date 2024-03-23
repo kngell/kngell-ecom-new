@@ -23,9 +23,9 @@ class VisitorsManager extends Model
 
     public function isVisitorNeedUpdate(Object $visitor) : bool
     {
-        if ($this->entity instanceof VisitorsEntity) {
+        $update = false;
+        if ($this->entity instanceof VisitorsEntity && $this->entity->isPropertiesSet()) {
             $attrs = $this->entity->getInitializedAttributes();
-            $update = false;
             foreach ($attrs as $key => $value) {
                 if (in_array($key, array_keys((array) $visitor))) {
                     if ($key != 'updatedAt' && $visitor->$key != $value) {
@@ -37,11 +37,11 @@ class VisitorsManager extends Model
                     break;
                 }
             }
-            return $update;
         }
+        return $update;
     }
 
-    public function manageVisitors(VisitorsFromCache $cVisitors) : self|bool
+    public function manageVisitors(VisitorsFromCache $cVisitors) : Entity
     {
         $visitors = $cVisitors->get();
         [$uniqueV,$duplicatesV,$isUniqueV] = $this->isVisitorUnique($visitors, 'ipAddress');
@@ -50,7 +50,7 @@ class VisitorsManager extends Model
         }
         if ($this->cookie->exists(VISITOR_COOKIE_NAME)) {
             $cookie = $this->cookie->get(VISITOR_COOKIE_NAME);
-            [$visitor,$vExists] = $this->isVisitorExists($uniqueV);
+            [$visitor,$vExists] = $this->isVisitorExists($uniqueV, $cookie);
             if (! $vExists) {
                 return $this->addNewVisitor($cookie);
             }
@@ -58,7 +58,7 @@ class VisitorsManager extends Model
             if ($update) {
                 return $this->updateVisitor();
             }
-            return $delete ?? $update ?? 'ok';
+            return $this->entity->assign((array) $visitor);
         } else {
             /** @var VisitorsEntity */
             $entity = $this->getVisitorByIp();
@@ -100,24 +100,19 @@ class VisitorsManager extends Model
 
     public function getVisitorByIp() : ?Entity
     {
-        $this->query()->where([
-            'ipAddress' => [H_visitors::getIP()],
-        ])->return('class');
+        $this->query()->where(['ipAddress' => H_visitors::getIP()])->return('class');
         $v = $this->getAll();
-        if ($v->count() > 1) {
+        if ($v->count() >= 1) {
             return current($v->get_results());
         }
         return null;
     }
 
-    private function isVisitorExists(array $visitors) : array
+    private function isVisitorExists(array $visitors, string $cookie) : array
     {
-        if ($this->entity instanceof VisitorsEntity) {
-            $visitorIP = $this->entity->getIpAddress();
-            foreach ($visitors as $visitor) {
-                if ($visitor->ipAddress === $visitorIP) {
-                    return [$visitor, true];
-                }
+        foreach ($visitors as $visitor) {
+            if ($visitor->cookies === $cookie) {
+                return [$visitor, true];
             }
         }
         return [[], false];

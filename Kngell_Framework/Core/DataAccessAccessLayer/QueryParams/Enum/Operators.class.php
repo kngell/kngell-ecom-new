@@ -41,7 +41,7 @@ enum Operators : string
                 return $case->value;
             }
         }
-        return false;
+        return self::getOp('', self::DEFAULT_OPS);
     }
 
     public static function exists(mixed $op) : bool

@@ -24,7 +24,7 @@ class SettingsManager extends Model
     public function testNewQuery()
     {
         // if (! isset($this->queryParams)) {
-        //     $this->queryParams = Application::diGet(QueryParamsNew::class);
+        //     $this->queryParams = Application::diGet(QueryParams::class);
         // }
         // return $this->query()->delete()->from('adcb')->where('A', 'B')->go();
         // return $this->query()->delete()->where('A', 'B')->go();
@@ -57,33 +57,33 @@ class SettingsManager extends Model
         // return $this->query()->update(['settingName' => 'values1', 'settingKey' => 'value2'])->where('A', 'B')->go();
         // return $this->query()->update($this->entity)->where('azer', 12)->go();
         // return $this->query()->raw('SELECT * FROM TABLE')->where('azer', 12)->go();
-        // $q = $this->query()->select('t1|itemId', ['aaaa', 'v|bbbb'], 'v|uuuu')
-        //     ->where('visitors|parti', 'cart|ppat1507')
-        //     ->where('visitors|key1', 'cart|val1', ['key2!aph' => 'syntec'], ['key3', 012])
-        //     ->orWhere(function ($qn) {
-        //         $qn->where('chat_msg_from', '=', '$to_id')
-        //             ->where('chat_msg_to', '=', 'auth()->user()->id')
-        //             ->orwhere(function ($f) {
-        //                 $f->whereNotIn('next', ['Kalala', '00123pp'])
-        //                     ->where(['beef' => 'soja']);
-        //             });
-        //     })
-        //     ->orWhere('keyx', 1500, ['keyexxtra', 'valueextra'])
-        //     ->leftJoin(['cart|t1' => ['feild1', 'field2']], 'cookies', '=', 'bbbb')
-        //     ->join('visitors|t2', function ($join) {
-        //         $join->on('visitors|HSF', 'cart|acb')
-        //             ->where(['cart|pout' => 50]);
-        //     })
-        //     ->groupBy('tbl1|f1', 'tbl1|f2', 'vvvv', ['tblm1' => 'p1'], ['tblm2' => 'p2'])
-        //     ->having(function ($q) {
-        //         $q->having('tb1|field0', 150, )
-        //             ->havingNotIn('feildppp', ['qsdf', 'azer', '250']);
-        //     })
-        //     ->orderBy('AAA', 'DESC', ['tbl|BBB', 'ASC'])
-        //     ->limit(50)
-        //     ->offset(4)
-        //     ->return('object');
-        // return $q;
+        $q = $this->query()->select('t1|itemId', ['aaaa', 'v|bbbb'], 'v|uuuu')
+            ->where('visitors|parti', 'cart|ppat1507')
+            ->where('visitors|key1', 'cart|val1', ['key2!aph' => 'syntec'], ['key3', 012])
+            ->orWhere(function ($qn) {
+                $qn->where('chat_msg_from', '=', '$to_id')
+                    ->where('chat_msg_to', '=', 'auth()->user()->id')
+                    ->orwhere(function ($f) {
+                        $f->whereNotIn('next', ['Kalala', '00123pp'])
+                            ->where(['beef' => 'soja']);
+                    });
+            })
+            ->orWhere('keyx', 1500, ['keyexxtra', 'valueextra'])
+            ->leftJoin('cart|t1', ['feild1', 'field2'])
+            ->on('cookies', '=', 'bbbb')
+            ->join('visitors|t2')
+            ->on('visitors|HSF', 'cart|acb')
+            ->where(['cart|pout' => 50])
+            ->groupBy('tbl1|f1', 'tbl1|f2', 'vvvv', ['tblm1' => 'p1'], ['tblm2' => 'p2'])
+            ->having(function ($q) {
+                $q->having('visitors|field0', 150, )
+                    ->havingNotIn('feildppp', ['qsdf', 'azer', '250']);
+            })
+            ->orderBy('AAA', 'DESC', ['tbl|BBB', 'ASC'])
+            ->limit(50)
+            ->offset(4)
+            ->return('object');
+        return $q;
         // return $this->query()->select()->from()->table('address_book')->return('object');
         // return $this->query()->select()->return('object');
     }

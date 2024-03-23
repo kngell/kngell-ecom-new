@@ -33,7 +33,7 @@ class MoneyManager
 
     public function persistPrice(mixed $price) : string
     {
-        if (empty($price) || !isset($price)) {
+        if (empty($price) || ! isset($price)) {
             $price = '0';
         }
         return (string) $this->getAmount($price)->getAmount();
@@ -46,26 +46,26 @@ class MoneyManager
 
     public function getAmount(string $p = '')
     {
-        $this->isEmpty($p);
+        $p = $this->isEmpty($p);
         return Money::of($p, 'EUR', new AutoContext());
     }
 
     public function getCustomAmt(string $p, int $context)
     {
-        $this->isEmpty($p);
+        $p = $this->isEmpty($p);
 
         return Money::of($p, 'EUR', new CustomContext($context), RoundingMode::DOWN);
     }
 
     public function getFormatedAmount(string $p = '')
     {
-        $this->isEmpty($p);
+        $p = $this->isEmpty($p);
         return Money::of($p, 'EUR', new CustomContext(2), RoundingMode::DOWN)->formatTo('fr_FR');
     }
 
     public function getIntAmount(string $p = '') : int
     {
-        $this->isEmpty($p);
+        $p = $this->isEmpty($p);
 
         return Money::of($p, 'EUR', new CustomContext(2), RoundingMode::UP)->getMinorAmount()->toInt();
     }
@@ -80,11 +80,11 @@ class MoneyManager
         return RoundingMode::DOWN;
     }
 
-    private function isEmpty(string $p) : int|bool
+    private function isEmpty(string $p) : string
     {
         if (empty($p)) {
-            return 0;
+            return '0';
         }
-        return true;
+        return $p;
     }
 }
